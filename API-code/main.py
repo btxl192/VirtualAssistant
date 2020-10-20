@@ -5,9 +5,12 @@ from starlette.templating import Jinja2Templates
 from starlette.staticfiles import StaticFiles
 from starlette.responses import FileResponse
 from pydantic import BaseModel
-import json
 from copy import deepcopy
-from pytube import YouTube 
+from handled_intents.intent_base import text_response
+import json
+import asyncio
+import os
+import importlib
 
 app = FastAPI()
 
@@ -15,7 +18,6 @@ templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 logs = ""
-videoUrl = ""
 
 class Notifier:
     def __init__(self):
@@ -50,15 +52,13 @@ class Notifier:
 
 notifier = Notifier()
 
-def uploadVideo(url):
-    yt = YouTube(url)
-    yt.streams.filter(mime_type="video/mp4", res="720p", progressive=True)[0].download(output_path="./static", filename="video")
-
 @app.get("/")
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+#Sends a message through the websocket to the Unity client
 async def push_to_notifier(text):
+    print(f"Pushing {text} to notifier")
     await notifier.push(f"{text}")
 
 @app.post("/api/v1/speechLogs")
@@ -91,59 +91,11 @@ async def startup():
 def get_log():
     global logs
     return logs
-
-@app.get("/api/v1/video")
-def get_video():
-    global videoUrl
-    return videoUrl
-
-@app.delete("/api/v1/video")
-def reset_video():
-    global videoUrl
-    videoUrl = ""
-    return ""
-
+    
 @app.get("/companyVideo")
 async def video():
     response = FileResponse("./static/video.mp4")
     return response
-
-@app.post('/videoPost')
-async def video_post(video:str):
-    await uploadVideo(video)
-
-@app.post('/videoControl')
-async def video_control(control:str):
-    await notifier.push(f"{control}")
-
-####################
-# Alexa skills API #
-####################
-
-json_response_template = {
-    "version":"1.0",
-    # "sessionAttributes": {
-
-    # },
-    "response":{
-        "outputSpeech":{
-            #https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html#outputspeech-object
-            "type":"PlainText",
-        #    "text":"text to output from alexa",
-            "playBehaviour":"REPLACE_ENQUEUED"
-        },
-    #  "reprompt": {
-    #   "outputSpeech": {
-    #     "type": "PlainText",
-    #     "text": "Plain text string to speak",
-    #     "playBehavior": "REPLACE_ENQUEUED"             
-    #   }
-    # },
-        # "directives": [
-        # ],
-        "shouldEndSession": False,
-    }
-}
 
 class AlexaRequest(BaseModel):
     version: str
@@ -151,89 +103,42 @@ class AlexaRequest(BaseModel):
     context: dict
     request: dict
 
+func_mappings = {}
+#read the .py files in ./handled_intents and map each intent to its corresponding action
+#the action returns a 2-tuple
+#   - (list of notifier messages to be sent, json text response)
+def create_intent_mappings():
+    blacklist = ["test.py", "intent_base.py", "__init__.py"]
+    for file in os.listdir("./handled_intents"):
+        if file not in blacklist and file[-3:] == ".py":
+            filename = file[:-3]
+            intent_name = filename.replace("_",".")
+            imported_intent = importlib.import_module(filename)
+            intent_instance = getattr(imported_intent, filename)()
+            func_mappings[intent_name] = intent_instance.run
+
 @app.post('/api/v1/blueassistant')
 async def blue_assistant(baseRequest: AlexaRequest):
     if baseRequest.request.get("type") == "LaunchRequest":
-        return text_response("Hi, welcome to Blue, your personal lab assistant. How may I help you today?")
+        create_intent_mappings()
+        t = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"  
+        await push_to_notifier(f"Speech: {t}")
+        await push_to_notifier("SpeechControl: Start")
+        return text_response(t)
     elif baseRequest.request.get("type") == "SessionEndedRequest":
+        await push_to_notifier("Speech: SessionEndedRequest")
         return text_response("")
-    print(baseRequest.request)
+        
     intents = baseRequest.request.get("intent")
     specific_intent = intents.get("name")
-    if specific_intent == "AMAZON.PauseIntent":
-        await video_control_intent("Pause")
-        return text_response("")
-    elif specific_intent == "AMAZON.ResumeIntent":
-        await video_control_intent("Resume")
-        return text_response("")
-    elif specific_intent == "AMAZON.FallbackIntent":
-        response = deepcopy(json_response_template)
-        response["response"]["outputSpeech"]["text"] = ""
-        response["response"]["repromt"] = {"outputSpeech":""}
-        return response
-    elif specific_intent == "StopVideoIntent":
-        await video_control_intent("Stop")
-        return text_response("")
-    elif specific_intent == "AMAZON.StopIntent":
-        await video_control_intent("Stop")
-        await notifier.push("Idle")
-        r = text_response("Goodbye")
-        r["response"]["shouldEndSession"] = True
-        return r
-    elif specific_intent == "AMAZON.FallbackIntent":
-        return text_response("Sorry I did not understand that, please try again")
-    slots = intents.get("slots")
-    company = slots.get("Company").get("value").lower().replace(" ", "")
-    try:
-        sector = slots.get("Sector").get("resolutions").get("resolutionsPerAuthority")[0].get("values")[0].get("value").get("name")
-    except (TypeError, AttributeError) as e:
-        sector = None
-    if specific_intent == "CompanyInfoIntent":
-        return company_info_intent(company, sector)
-    elif specific_intent == "CompanyVideoIntent":
-        response = company_video_intent(company, sector)
-        if "I couldn't find a video for that" not in response["response"]["outputSpeech"]["text"]:
-            await video_control_intent("Playing video")
-        return response
-
-def text_response(text):
-    response = deepcopy(json_response_template)
-    response["response"]["outputSpeech"]["text"] = text
-    return response
-
-async def video_control_intent(intent_type):
-    await notifier.push(f"{intent_type}")
-
-def company_info_intent(company, sector):
-    response = deepcopy(json_response_template)
-    with open("companyInfo.json", "r") as file:
-        f = json.load(file)
-        companyInfo = f.get(company)
-    if companyInfo is None:
-        return text_response("Sorry I could not recognise that company, please try again")
-    if sector is None:
-        response["response"]["outputSpeech"]["text"] = companyInfo.get("about")[0]
-    elif sector in companyInfo.keys():
-        response["response"]["outputSpeech"]["text"] = companyInfo.get(sector)[0] 
-    return response
-
-def company_video_intent(company, sector):
-    response = deepcopy(json_response_template)
-    with open("companyInfo.json", "r") as file:
-        f = json.load(file)
-        companyVideos = f.get(company).get("videos")
-    outputSpeech = "Playing "
-    global videoUrl
-    if sector is None:
-        #outputSpeech = outputSpeech + companyVideos.get("about").get("title")
-        videoUrl = companyVideos.get("about").get("url")
-        uploadVideo(videoUrl)
-    else:
-        if sector in companyVideos.keys():
-            #outputSpeech = outputSpeech + companyVideos.get(sector).get("title")
-            videoUrl = companyVideos.get(sector).get("url")
-            uploadVideo(videoUrl)
-        else:
-            outputSpeech = "I couldn't find a video for that"
-    response["response"]["outputSpeech"]["text"] = outputSpeech
-    return response
+    
+    if specific_intent in func_mappings.keys():
+        #get the corresponding notifier messages and Alexa text response from an intent
+        #result[0] contains a list of notifier messages to be sent
+        #result[1] contains the json text response
+        result = func_mappings[specific_intent](intents)
+        for msg in result[0]:
+            await push_to_notifier(msg)
+        await push_to_notifier("SpeechControl: Start")
+        return result[1]
+    return text_response("ERROR")
