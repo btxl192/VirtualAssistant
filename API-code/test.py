@@ -1,3 +1,7 @@
+import os
+import importlib
+
+func_mappings = {}
 blacklist = ["test.py", "intent_base.py", "__init__.py"]
 for file in os.listdir("./handled_intents"):
     if file not in blacklist and file[-3:] == ".py":
