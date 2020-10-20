@@ -1,0 +1,163 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "blue assistant",
+            "intents": [
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": [
+                        "close blue assistant"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "CompanyInfoIntent",
+                    "slots": [
+                        {
+                            "name": "Company",
+                            "type": "AMAZON.Corporation"
+                        },
+                        {
+                            "name": "Sector",
+                            "type": "Sector"
+                        }
+                    ],
+                    "samples": [
+                        "what is {Company}",
+                        "what does {Company} do",
+                        "tell me about {Company}",
+                        "i would like to know more about {Company}",
+                        "what's {Company}",
+                        "how does {Company} work in the {Sector}",
+                        "how does {Company} work in {Sector}",
+                        "what does {Company} do in {Sector}"
+                    ]
+                },
+                {
+                    "name": "CompanyVideoIntent",
+                    "slots": [
+                        {
+                            "name": "Company",
+                            "type": "AMAZON.Corporation"
+                        },
+                        {
+                            "name": "Sector",
+                            "type": "Sector"
+                        }
+                    ],
+                    "samples": [
+                        "play a video about {Company}",
+                        "show me a video about what {Company} does in {Sector}",
+                        "show me video about {Company}",
+                        "video about {Company} in {Sector}",
+                        "show me a video about {Company} in {Sector}",
+                        "play a video about {Company} in {Sector}"
+                    ]
+                },
+                {
+                    "name": "AMAZON.PauseIntent",
+                    "samples": [
+                        "Pause ",
+                        "Pause the video"
+                    ]
+                },
+                {
+                    "name": "AMAZON.ResumeIntent",
+                    "samples": [
+                        "Resume",
+                        "Continue",
+                        "Play",
+                        "Play the video"
+                    ]
+                },
+                {
+                    "name": "StopVideoIntent",
+                    "slots": [],
+                    "samples": [
+                        "Stop playing video",
+                        "Stop video",
+                        "Stop the video"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "Sector",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "automotive",
+                                "synonyms": [
+                                    "auto insdustry",
+                                    "auto services",
+                                    "auto",
+                                    "automotive services",
+                                    "automotive industry",
+                                    "automotive sector"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "telecommunications",
+                                "synonyms": [
+                                    "telecoms industry",
+                                    "telecoms sector",
+                                    "telecoms services",
+                                    "telecoms",
+                                    "telecommunications services",
+                                    "telecommuications sector",
+                                    "telecommunications industry"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "insurance",
+                                "synonyms": [
+                                    "insurance industry",
+                                    "insurance services",
+                                    "insurance sector"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "media",
+                                "synonyms": [
+                                    "media sector",
+                                    "media industry",
+                                    "media services"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "public",
+                                "synonyms": [
+                                    "public sector",
+                                    "public services"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

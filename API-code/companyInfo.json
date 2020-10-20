@@ -1,0 +1,56 @@
+{
+    "nttdata":{
+        "about": [
+            "NTT DATA can help you navigate today’s world of fast-growing technological complexity, ever-rising customer expectations and rapidly changing business environments. Through innovation, in-depth industry expertise and dedicated onshore and offshore teams of experts, we provide the capabilities, resources and experience to guide your digital development."
+        ],
+        "vision": [
+            "Our vision is to maintain and enhance our position as a trusted global innovator. We provide reliable guidance on how to use innovation in the best ways possible. We work with our clients to anticipate the future of IT and help them adapt to the ever-changing business environment."
+        ],
+        "telecommunications": [
+            "We recognise the huge technical and behavioural shifts that are accelerating change in the telecommunications landscape. Whether it’s technical advancements in fibre, or the introduction of 5G, business needs and legacy business models are facing massive disruption."
+        ],
+        "insurance": [
+            "The insurance industry must constantly address new regulatory requirements whilst remaining relevant and responsive to customer needs. At NTT DATA we know this is a complex problem with a multiplicity of options, which is why our team of skilled consultants engage with an open mind."
+        ],
+        "media": [
+            "NTT DATA has a team of experts who can help your business compete in this ever-changing market. Our applications specialists can help you establish an agile, digital enterprise to speed up the time to market. While our digital consultants can help you develop the right omnichannel strategy that delivers a frictionless customer experience leveraging intelligent data analytics."
+        ],
+        "public services": [
+            "We are proud of our long track record of supporting clients across the public sector with a wide variety of business initiatives, IT-enabled change projects, the development and implementation of solutions, support services and the exploitation of digital services. Our commitment to innovation has helped us to support public sector organisations in meeting their challenges."
+        ],
+        "automotive": [
+            "NTT DATA technology-enabled automotive services and solutions help you optimize the end-to-end processes for the entire lifecycle of your products, from new product development, recipe management, and production to cost, quality, and regulatory management."
+        ],
+        "design": [
+            "NTT Data's Design team love to work on complex large-scale projects, delivering deeply functional tools with powerfully intuitive user experiences. The award-winning digital solutions they create have set new standards since 2005, mixing sound strategy, innovative design, and applied technology."
+        ],
+        "videos": {
+            "about":{
+                "title": "NTT DATA Impact - Guiding leaders from challenge to change",
+                "url": "https://www.youtube.com/watch?v=ICu9rSOp7dY"
+            },
+            "telecommunications":{
+                "title": "NTT DATA UK: Delivering innovation to Telecoms Operators",
+                "url": "https://www.youtube.com/watch?v=b2DuX7OJ63U"
+            },
+            "insurance":{
+                "title": "",
+                "url": ""
+            },
+            "media":{
+                "title": "",
+                "url": ""
+            },
+            "public services":{
+                "title": "",
+                "url": ""
+            },
+            "automotive":{
+                "title": "MOVE - Trailer Automotive Industry",
+                "url": "https://www.youtube.com/watch?v=LMyU_gfvsdM"
+            }
+            
+        }
+    }
+
+}

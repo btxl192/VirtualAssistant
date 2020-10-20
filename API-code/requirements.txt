@@ -1,0 +1,6 @@
+wheel
+fastapi
+uvicorn
+aiofiles
+Jinja2
+pytube3
