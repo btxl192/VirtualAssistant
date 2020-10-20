@@ -52,7 +52,7 @@ class intent_base:
 
     #Send a speech message to Unity. Text is converted into phonetic alphabet
     def add_notif_speech(self, to_say):
-        self.notif.append("Speech: " + ipa.convert(to_send))
+        self.notif.append("Speech: " + ipa.convert(to_say))
 
     #Sets the Alexa response with an output speech
     def set_response(self, output_speech):
