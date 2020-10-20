@@ -34,7 +34,7 @@ class CompanyVideoIntent(intent_base):
                         output_speech = "I couldn't find a video for that"
         else:
             output_speech = "I couldn't recognise that company"
-        return text_response(output_speech)
+        return output_speech
 
     def action(self, intents):
         slots = intents.get("slots")
@@ -44,11 +44,12 @@ class CompanyVideoIntent(intent_base):
         except (TypeError, AttributeError) as e:
             sector = None
 
-        self.response = self.company_video_intent(company, sector)
-        response_text = self.response["response"]["outputSpeech"]["text"]
+        response_text = self.company_video_intent(company, sector)
+        self.set_response(response_text)
+        
         if "couldn't" not in response_text:
             uploadVideo(self.videoUrl)
-            self.notif.append("VidControl: Play")
-            self.notif.append("Speech: Playing video")
+            self.add_notif("VidControl: Play")
+            self.add_notif_speech("Playing video")
         else:
-            self.notif.append(f"Speech: {response_text}")
+            self.add_notif_speech(response_text)
