@@ -59,7 +59,7 @@ async def root(request: Request):
 
 #Sends a message through the websocket to the Unity client
 async def push_to_notifier(text):
-    print(f"Pushing {text} to notifier")
+    print(f"Pushing [{text}] to notifier")
     await notifier.push(f"{text}")
 
 @app.post("/api/v1/speechLogs")
