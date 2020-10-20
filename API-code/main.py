@@ -11,6 +11,7 @@ import json
 import asyncio
 import os
 import importlib
+import eng_to_ipa as ipa
 
 app = FastAPI()
 
@@ -122,11 +123,11 @@ async def blue_assistant(baseRequest: AlexaRequest):
     if baseRequest.request.get("type") == "LaunchRequest":
         create_intent_mappings()
         t = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"  
-        await push_to_notifier(f"Speech: {t}")
+        await push_to_notifier("Speech: " + ipa.convert(t))
         await push_to_notifier("SpeechControl: Start")
         return text_response(t)
     elif baseRequest.request.get("type") == "SessionEndedRequest":
-        await push_to_notifier("Speech: SessionEndedRequest")
+        await push_to_notifier("Msg: SessionEndedRequest")
         return text_response("")
         
     intents = baseRequest.request.get("intent")
