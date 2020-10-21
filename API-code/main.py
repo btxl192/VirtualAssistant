@@ -137,7 +137,7 @@ async def blue_assistant(baseRequest: AlexaRequest):
         #get the corresponding notifier messages and Alexa text response from an intent
         #result[0] contains a list of notifier messages to be sent
         #result[1] contains the json text response
-        result = func_mappings[specific_intent](intents)
+        result = await func_mappings[specific_intent](intents)
         #for msg in result[0]:
         #    await push_to_notifier(msg)
         #await push_to_notifier("SpeechControl: Start")
