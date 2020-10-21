@@ -106,8 +106,6 @@ class AlexaRequest(BaseModel):
 
 func_mappings = {}
 #read the .py files in ./handled_intents and map each intent to its corresponding action
-#the action returns a 2-tuple
-#   - (list of notifier messages to be sent, json text response)
 def create_intent_mappings():
     blacklist = ["test.py", "intent_base.py", "__init__.py"]
     for file in os.listdir("./handled_intents"):
@@ -133,13 +131,8 @@ async def blue_assistant(baseRequest: AlexaRequest):
     intents = baseRequest.request.get("intent")
     specific_intent = intents.get("name")
     
+    #get the corresponding action from an intent
     if specific_intent in func_mappings.keys():
-        #get the corresponding notifier messages and Alexa text response from an intent
-        #result[0] contains a list of notifier messages to be sent
-        #result[1] contains the json text response
         result = await func_mappings[specific_intent](intents)
-        #for msg in result[0]:
-        #    await push_to_notifier(msg)
-        #await push_to_notifier("SpeechControl: Start")
         return result
     return text_response("ERROR")

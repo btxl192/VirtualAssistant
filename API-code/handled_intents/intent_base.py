@@ -48,6 +48,10 @@ class intent_base:
     async def action(self, intents):
         pass
 
+    async def run(self, intents):
+        await self.action(intents)
+        return self.response
+
     #Sends a message through the websocket to the Unity client
     async def push_to_notifier(self, text):
         print(f"Pushing [{text}] to notifier")
@@ -61,8 +65,3 @@ class intent_base:
     #Sets the Alexa response with an output speech
     def set_response(self, output_speech):
         self.response = text_response(output_speech)
-
-    async def run(self, intents):
-        #self.notif.clear()
-        await self.action(intents)
-        return self.response
