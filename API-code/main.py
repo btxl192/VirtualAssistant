@@ -115,7 +115,7 @@ def create_intent_mappings():
             filename = file[:-3]
             intent_name = filename.replace("_",".")
             imported_intent = importlib.import_module("handled_intents." + filename)
-            intent_instance = getattr(imported_intent, filename)()
+            intent_instance = getattr(imported_intent, filename)(notifier)
             func_mappings[intent_name] = intent_instance.run
 
 @app.post('/api/v1/blueassistant')
@@ -138,8 +138,8 @@ async def blue_assistant(baseRequest: AlexaRequest):
         #result[0] contains a list of notifier messages to be sent
         #result[1] contains the json text response
         result = func_mappings[specific_intent](intents)
-        for msg in result[0]:
-            await push_to_notifier(msg)
-        await push_to_notifier("SpeechControl: Start")
-        return result[1]
+        #for msg in result[0]:
+        #    await push_to_notifier(msg)
+        #await push_to_notifier("SpeechControl: Start")
+        return result
     return text_response("ERROR")

@@ -12,13 +12,13 @@ def company_info_intent(company, sector):
         return "Sorry I could not recognise that company, please try again"
     if sector is None:
         return company_info.get("about")[0]
-    elif sector in companyInfo.keys():
+    elif sector in company_info.keys():
         return company_info.get(sector)[0]
     else:
         return "Sorry I could not recognise that sector, please try again"
 
 class CompanyInfoIntent(intent_base):
-    def action(self, intents):  
+    async def action(self, intents):  
         slots = intents.get("slots")
         company = slots.get("Company").get("value").lower().replace(" ", "")
         try:
@@ -27,5 +27,5 @@ class CompanyInfoIntent(intent_base):
             sector = None
     
         output_speech = company_info_intent(company, sector)
-        self.add_notif_speech(output_speech)
+        await self.push_to_notifier_speech(output_speech)
         self.set_response(output_speech)

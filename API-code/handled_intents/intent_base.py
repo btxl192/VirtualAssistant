@@ -1,6 +1,7 @@
 from copy import deepcopy
 import sys, inspect
 import eng_to_ipa as ipa
+import asyncio
 
 ####################
 # Alexa skills API #
@@ -38,27 +39,30 @@ def text_response(text):
     
 class intent_base:
     response = None
-    notif = []
+    notifier = None
     
-    def __init__(self):
+    def __init__(self, notifier):
         self.response = text_response("")
+        self.notifier = notifier
     
-    def action(self, intents):
+    async def action(self, intents):
         pass
 
-    #Send a message to Unity
-    def add_notif(self, to_send):
-        self.notif.append(to_send)
+    #Sends a message through the websocket to the Unity client
+    async def push_to_notifier(self, text):
+        print(f"Pushing [{text}] to notifier")
+        await self.notifier.push(f"{text}")
 
-    #Send a speech message to Unity. Text is converted into phonetic alphabet
-    def add_notif_speech(self, to_say):
-        self.notif.append("Speech: " + ipa.convert(to_say))
+    async def push_to_notifier_speech(self, text):
+        t = ipa.convert(text)
+        print(f"Pushing [Speech: {t}] to notifier")
+        await self.notifier.push(f"Speech: {t}")    
 
     #Sets the Alexa response with an output speech
     def set_response(self, output_speech):
         self.response = text_response(output_speech)
 
-    def run(self, intents):
-        self.notif.clear()
-        self.action(intents)
-        return (self.notif, self.response)
+    async def run(self, intents):
+        #self.notif.clear()
+        await self.action(intents)
+        return self.response
