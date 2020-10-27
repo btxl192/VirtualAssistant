@@ -32,12 +32,13 @@ from avs.interface.system import System
 import avs.config
 import avs.auth
 import requests
+from os import environ
 
 logger = logging.getLogger(__name__)
 
 
 class AlexaStateListener(object):
-    ENDPOINT = "https://alexaapi.compositegrid.com/api/v1/speechLogs?text="
+    ENDPOINT = environ["ENDPOINT"]
 
     def __init__(self):
         pass
@@ -420,7 +421,7 @@ def main():
 
         if is_quit.is_set():
             break
-            
+
         alexa.listen()
 
     alexa.stop()

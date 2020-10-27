@@ -1,0 +1,10 @@
+docker run \
+  -v /run/user/1000/pulse/native:/run/user/1000/pulse/native \
+  -e PULSE_SERVER=unix:/run/user/1000/pulse/native \
+  -v ~/.config/pulse/cookie:/home/dev/.config/pulse/cookie \
+  # --device /dev/snd \
+  # --group-add (getent group audio | cut -d: -f3) \
+  -p 127.0.0.1:3000:3000 \
+  -e ENDPOINT='https://blueassistant-btxl.eastus.cloudapp.azure.com/api/v1/speechLogs?text=' \
+  -it \
+  35c7e079cfb7
