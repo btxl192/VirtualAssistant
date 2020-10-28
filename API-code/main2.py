@@ -6,6 +6,7 @@ from copy import deepcopy
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.utils import is_intent_name
 from ask_sdk_model.ui import SimpleCard
+import ask_sdk_core.utils as ask_utils
 
 class LaunchRequestHandler(AbstractRequestHandler):
     """Handler for Skill Launch."""
