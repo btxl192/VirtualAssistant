@@ -11,6 +11,7 @@ skill_adapter = SkillAdapter(
 
 @app.route("/api/v1/blueassistant")
 def invoke_skill():
+    print("here")
     return skill_adapter.dispatch_request()
 
 app.run()
