@@ -18,18 +18,12 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        _ = handler_input.attributes_manager.request_attributes["_"]
-        speak_output = _("test")
+        speech_text = "test"
 
-        return (
-            handler_input.response_builder
-            .speak(speak_output)
-            .ask(speak_output)
-            .response
-        )
+        return handler_input.response_builder.speak(speech_text).set_card(SimpleCard("Hello World", speech_text)).response
 
 class SessionEndedRequest(AbstractRequestHandler):
-    """Handler for Skill Launch."""
+    """Handler for Skill End."""
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
@@ -38,15 +32,9 @@ class SessionEndedRequest(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        _ = handler_input.attributes_manager.request_attributes["_"]
-        speak_output = _("test2")
+        speech_text = "test2"
 
-        return (
-            handler_input.response_builder
-            .speak(speak_output)
-            .ask(speak_output)
-            .response
-        )
+        return handler_input.response_builder.speak(speech_text).set_card(SimpleCard("Hello World", speech_text)).response
 
 app = Flask(__name__)
 skill_builder = SkillBuilder()
