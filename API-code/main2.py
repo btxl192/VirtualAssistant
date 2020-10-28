@@ -67,4 +67,4 @@ class LaunchRequestHandler(AbstractRequestHandler):
             .response
         )
 
-sb.add_request_handler(LaunchRequestHandler())
+skill_builder.add_request_handler(LaunchRequestHandler())
