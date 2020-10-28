@@ -9,9 +9,6 @@ skill_builder = SkillBuilder()
 skill_adapter = SkillAdapter(
     skill=skill_builder.create(), skill_id="1", app=app)
 
-@app.route("/api/v1/blueassistant")
+@app.route("/api/v1/blueassistant", methods=['POST'])
 def invoke_skill():
-    print("here")
     return skill_adapter.dispatch_request()
-
-app.run()
