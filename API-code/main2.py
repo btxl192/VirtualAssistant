@@ -51,10 +51,10 @@ app = Flask(__name__)
 skill_builder = SkillBuilder()
 # Register your intent handlers to the skill_builder object
 
-skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app)
-
 skill_builder.add_request_handler(LaunchRequestHandler())
 skill_builder.add_request_handler(SessionEndedRequest())
+
+skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app)
 
 @app.route("/api/v1/blueassistant", methods=['POST'])
 def invoke_skill():
