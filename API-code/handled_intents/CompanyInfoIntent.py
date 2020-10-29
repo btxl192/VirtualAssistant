@@ -28,4 +28,4 @@ class CompanyInfoIntent(intent_base):
     
         output_speech = company_info_intent(company, sector)
         await self.push_to_notifier_speech(output_speech)
-        self.set_response(output_speech)
+        self.response = output_speech

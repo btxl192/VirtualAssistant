@@ -44,12 +44,11 @@ class CompanyVideoIntent(intent_base):
         except (TypeError, AttributeError) as e:
             sector = None
 
-        response_text = self.company_video_intent(company, sector)
-        self.set_response(response_text)
+        self.response = self.company_video_intent(company, sector)
         
-        if "couldn't" not in response_text:
+        if "couldn't" not in self.response:
             uploadVideo(self.videoUrl)
             await self.push_to_notifier("VidControl: Play")
             await self.push_to_notifier_speech("Playing video")
         else:
-            await self.push_to_notifier_speech(response_text)
+            await self.push_to_notifier_speech(self.response)
