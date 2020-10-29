@@ -32,14 +32,6 @@ class SessionEndedRequest(AbstractRequestHandler):
         speech_text = ""
         return handler_input.response_builder.speak(speech_text).response
 
-@socketio.on('connect', namespace='/ws')
-def test_connect():
-    emit('my response', {'data': 'Connected'})
-
-@socketio.on('disconnect', namespace='/ws')
-def test_disconnect():
-    print('Client disconnected')
-
 app = Flask(__name__)
 socketio = SocketIO(app)
 skill_builder = SkillBuilder()
@@ -63,3 +55,11 @@ skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app
 def invoke_skill():
     emit('my response', {'data': "testdata"})
     return skill_adapter.dispatch_request()
+
+@socketio.on('connect', namespace='/ws')
+def test_connect():
+    emit('my response', {'data': 'Connected'})
+
+@socketio.on('disconnect', namespace='/ws')
+def test_disconnect():
+    print('Client disconnected')
