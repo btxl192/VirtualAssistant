@@ -10,10 +10,6 @@ from ask_sdk_core.utils import is_intent_name, is_request_type
 
 import importlib
 import os
-import sys
-
-cert_path = sys.argv[1]
-key_path = sys.argv[2]
 
 class LaunchRequestHandler(AbstractRequestHandler):
     """Handler for Skill Launch."""
@@ -66,4 +62,4 @@ def test_connect():
 def test_disconnect():
     print('Client disconnected')
 
-app.run(host="0.0.0.0", port="4430", cert=cert_path, key=key_path)
+socketio.run(app)
