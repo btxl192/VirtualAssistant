@@ -46,19 +46,19 @@ for file in os.listdir("./handled_intents"):
         filename = file[:-3]
         intent_name = filename.replace("_",".")
         imported_intent = importlib.import_module("handled_intents." + filename)
-        intent_instance = getattr(imported_intent, filename)(notifier)
+        intent_instance = getattr(imported_intent, filename)(socketio)
         skill_builder.add_request_handler(intent_instance)
 
 skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app)
 
 @app.route("/api/v1/blueassistant", methods=['POST'])
 def invoke_skill():
-    emit('my response', {'data': "testdata"})
+    socketio.emit("testdata")
     return skill_adapter.dispatch_request()
 
 @socketio.on('connect', namespace='/ws')
 def test_connect():
-    emit('my response', {'data': 'Connected'})
+    emit("Connected")
 
 @socketio.on('disconnect', namespace='/ws')
 def test_disconnect():

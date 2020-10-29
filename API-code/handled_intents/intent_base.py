@@ -33,9 +33,9 @@ class intent_base(AbstractRequestHandler):
     #Sends a message through the websocket to the Unity client
     async def push_to_notifier(self, text):
         print(f"Pushing [{text}] to notifier")
-        await self.notifier.push(f"{text}")
+        await self.notifier.emit(f"{text}")
 
     async def push_to_notifier_speech(self, text):
         t = ipa.convert(text)
         print(f"Pushing [Speech: {t}] to notifier")
-        await self.notifier.push(f"Speech: {t}")    
+        await self.notifier.emit(f"Speech: {t}")    
