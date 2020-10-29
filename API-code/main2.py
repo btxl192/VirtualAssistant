@@ -1,7 +1,9 @@
 from flask import Flask
+from flask_socketio import SocketIO, emit
 from ask_sdk_core.skill_builder import SkillBuilder
 from flask_ask_sdk.skill_adapter import SkillAdapter
 from copy import deepcopy
+from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.utils import is_intent_name, is_request_type
@@ -9,35 +11,7 @@ from ask_sdk_core.utils import is_intent_name, is_request_type
 import importlib
 import os
 
-class Notifier:
-    def __init__(self):
-        self.connections: List[WebSocket] = []
-        self.generator = self.get_notification_generator()
 
-    async def get_notification_generator(self):
-        while True:
-            message = yield
-            await self._notify(message)
-
-    async def push(self, msg: str):
-        await self.generator.asend(msg)
-
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.connections.append(websocket)
-
-    def remove(self, websocket: WebSocket):
-        self.connections.remove(websocket)
-
-    async def _notify(self, message: str):
-        living_connections = []
-        while len(self.connections) > 0:
-            # Looping like this is necessary in case a disconnection is handled
-            # during await websocket.send_text(message)
-            websocket = self.connections.pop()
-            await websocket.send_text(message)
-            living_connections.append(websocket)
-        self.connections = living_connections
 
 class LaunchRequestHandler(AbstractRequestHandler):
     """Handler for Skill Launch."""
@@ -58,9 +32,16 @@ class SessionEndedRequest(AbstractRequestHandler):
         speech_text = ""
         return handler_input.response_builder.speak(speech_text).response
 
-notifier = Notifier()
+@socketio.on('connect', namespace='/ws')
+def test_connect():
+    emit('my response', {'data': 'Connected'})
+
+@socketio.on('disconnect', namespace='/ws')
+def test_disconnect():
+    print('Client disconnected')
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 skill_builder = SkillBuilder()
 # Register your intent handlers to the skill_builder object
 
@@ -80,4 +61,5 @@ skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app
 
 @app.route("/api/v1/blueassistant", methods=['POST'])
 def invoke_skill():
+    emit('my response', {'data': "testdata"})
     return skill_adapter.dispatch_request()
