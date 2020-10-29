@@ -56,10 +56,9 @@ def invoke_skill():
 
 @socketio.on('connect', namespace='/ws')
 def test_connect():
+    print("TEST")
     emit("Connected")
 
 @socketio.on('disconnect', namespace='/ws')
 def test_disconnect():
     print('Client disconnected')
-
-socketio.run(app)
