@@ -55,10 +55,10 @@ def invoke_skill():
     return skill_adapter.dispatch_request()
 
 @socketio.on('connect', namespace='/ws')
-def test_connect():
+def test_connect(j):
     print("TEST")
     socketio.emit("Connected")
 
 @socketio.on('disconnect', namespace='/ws')
-def test_disconnect():
+def test_disconnect(j):
     print('Client disconnected')
