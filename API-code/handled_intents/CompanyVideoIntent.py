@@ -4,7 +4,7 @@ from pytube import YouTube
 
 def uploadVideo(url):
     yt = YouTube(url)
-    yt.streams.filter(mime_type="video/mp4", res="720p", progressive=True)[0].download(output_path="../static", filename="video")
+    yt.streams.filter(mime_type="video/mp4", res="720p", progressive=True)[0].download(output_path="/static", filename="video")
 
 def get_company_info(company):
     with open("companyInfo.json", "r") as file:
