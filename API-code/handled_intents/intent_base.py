@@ -18,7 +18,7 @@ class intent_base(AbstractRequestHandler):
     def getIntentName(self):
         return self.__class__.__name__.replace("_",".")
 
-    async def action(self, intents):
+    def action(self, intents):
         pass
 
     def can_handle(self, handler_input):

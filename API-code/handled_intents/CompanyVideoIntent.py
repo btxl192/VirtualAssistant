@@ -36,7 +36,7 @@ class CompanyVideoIntent(intent_base):
             output_speech = "I couldn't recognise that company"
         return output_speech
 
-    async def action(self, intents):
+    def action(self, intents):
         slots = intents.get("slots")
         company = slots.get("Company").get("value").lower().replace(" ", "")
         try:
@@ -48,7 +48,7 @@ class CompanyVideoIntent(intent_base):
         
         if "couldn't" not in self.response:
             uploadVideo(self.videoUrl)
-            await self.push_to_notifier("VidControl: Play")
-            await self.push_to_notifier_speech("Playing video")
+            self.push_to_notifier("VidControl: Play")
+            self.push_to_notifier_speech("Playing video")
         else:
-            await self.push_to_notifier_speech(self.response)
+            self.push_to_notifier_speech(self.response)

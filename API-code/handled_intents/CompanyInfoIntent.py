@@ -18,7 +18,7 @@ def company_info_intent(company, sector):
         return "Sorry I could not recognise that sector, please try again"
 
 class CompanyInfoIntent(intent_base):
-    async def action(self, intents):  
+    def action(self, intents):  
         slots = intents.get("slots")
         company = slots.get("Company").get("value").lower().replace(" ", "")
         try:
@@ -27,5 +27,5 @@ class CompanyInfoIntent(intent_base):
             sector = None
     
         output_speech = company_info_intent(company, sector)
-        await self.push_to_notifier_speech(output_speech)
+        self.push_to_notifier_speech(output_speech)
         self.response = output_speech
