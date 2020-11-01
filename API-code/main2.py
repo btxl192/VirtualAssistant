@@ -81,4 +81,6 @@ def client_connect():
 def client_disconnect():
     print('Client disconnected')
 
+print(cert)
+print(key)
 wsgi.server(eventlet.wrap_ssl(eventlet.listen(('', 4430)), certfile=cert, keyfile=key, server_side=True), app)
