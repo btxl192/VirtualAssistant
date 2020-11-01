@@ -1,7 +1,6 @@
 from copy import deepcopy
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.utils import is_intent_name
-from threading import Thread
 import sys, inspect
 import eng_to_ipa as ipa
 import asyncio

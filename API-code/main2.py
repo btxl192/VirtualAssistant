@@ -4,6 +4,7 @@ from ask_sdk_core.skill_builder import SkillBuilder
 from flask_ask_sdk.skill_adapter import SkillAdapter
 from copy import deepcopy
 from eventlet import wsgi
+from eng_to_ipa import ipa
 
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.utils import is_intent_name, is_request_type
@@ -19,8 +20,8 @@ class LaunchRequestHandler(AbstractRequestHandler):
         return is_request_type("LaunchRequest")(handler_input)
 
     def handle(self, handler_input):
-        print(handler_input.request_envelope)
         speech_text = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"
+        socketio.emit("message", "Speech: " + ipa.convert(speech_text))
         return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
 class SessionEndedRequest(AbstractRequestHandler):
@@ -81,6 +82,4 @@ def client_connect():
 def client_disconnect():
     print('Client disconnected')
 
-print(cert)
-print(key)
 wsgi.server(eventlet.wrap_ssl(eventlet.listen(('', 4430)), certfile=cert, keyfile=key, server_side=True), app)

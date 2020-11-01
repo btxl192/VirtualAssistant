@@ -11,18 +11,18 @@ def company_info_intent(company, sector):
     if company_info is None:
         return "Sorry I could not recognise that company, please try again"
     if sector is None:
-        return company_info.get("about")[0]
+        return company_info["about"][0]
     elif sector in company_info.keys():
-        return company_info.get(sector)[0]
+        return company_info[sector][0]
     else:
         return "Sorry I could not recognise that sector, please try again"
 
 class CompanyInfoIntent(intent_base):
     def action(self, intents):  
-        slots = intents.get("slots")
-        company = slots.get("Company").get("value").lower().replace(" ", "")
+        slots = intents["slots"]
+        company = slots["Company"]["value"].lower().replace(" ", "")
         try:
-            sector = slots.get("Sector").get("resolutions").get("resolutionsPerAuthority")[0].get("values")[0].get("value").get("name")
+            sector = slots["Sector"]["resolutions"]["resolutionsPerAuthority"][0]["values"][0]["value"]["name"]
         except (TypeError, AttributeError) as e:
             sector = None
     
