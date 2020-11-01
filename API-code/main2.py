@@ -30,7 +30,7 @@ class SessionEndedRequest(AbstractRequestHandler):
         speech_text = ""
         return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
-logs = []
+logs = ["start of logs"]
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode = "threading")
 #sio = socketio.AsyncServer(async_mode='aiohttp', async_handlers=True)
