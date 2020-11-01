@@ -51,6 +51,7 @@ skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app
 
 @app.route("/api/v1/blueassistant", methods=['POST'])
 def invoke_skill():
+    print("skill started")
     return skill_adapter.dispatch_request()
 
 @app.route("/companyVideo")
