@@ -19,7 +19,7 @@ def company_info_intent(company, sector):
 
 class CompanyInfoIntent(intent_base):
     def action(self, intents):  
-        slots = intents.get("slots")
+        slots = intents.to_dict().get("slots")
         company = slots.get("Company").get("value").lower().replace(" ", "")
         try:
             sector = slots.get("Sector").get("resolutions").get("resolutionsPerAuthority")[0].get("values")[0].get("value").get("name")
