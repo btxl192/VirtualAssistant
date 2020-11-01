@@ -31,7 +31,8 @@ class SessionEndedRequest(AbstractRequestHandler):
 
 logs = []
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode = "threading")
+#sio = socketio.AsyncServer(async_mode='aiohttp', async_handlers=True)
 skill_builder = SkillBuilder()
 # Register your intent handlers to the skill_builder object
 
