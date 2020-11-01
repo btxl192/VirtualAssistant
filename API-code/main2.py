@@ -75,9 +75,9 @@ def speechlogs(text: str = ""):
         return "\n".join(logs)
 
 @socketio.on('connect')
-def client_connect():
+async def client_connect():
     print("Client connected")
 
 @socketio.on('disconnect')
-def client_disconnect():
+async def client_disconnect():
     print('Client disconnected')
