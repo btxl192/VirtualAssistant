@@ -66,7 +66,7 @@ def video():
     return response
 
 @app.route("/api/v1/speechLogs", methods=["GET", "POST"])
-def speechlogs(text: str = ""):
+async def speechlogs(text: str = ""):
     if request.method == 'POST':
         logs.append(text)
         #socketio.emit("message", f"{text}")
