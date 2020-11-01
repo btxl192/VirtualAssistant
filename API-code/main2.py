@@ -51,14 +51,15 @@ skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app
 
 @app.route("/api/v1/blueassistant", methods=['POST'])
 def invoke_skill():
-    socketio.emit("testdata")
+    socketio.emit("message", "testdata")
     return skill_adapter.dispatch_request()
 
 @socketio.on('connect')
 def test_connect():
-    print("TEST")
-    socketio.emit("Connected")
+    print("Client connected")
 
 @socketio.on('disconnect')
 def test_disconnect():
     print('Client disconnected')
+
+    
