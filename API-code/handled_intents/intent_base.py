@@ -1,6 +1,7 @@
 from copy import deepcopy
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.utils import is_intent_name
+from threading import Thread
 import sys, inspect
 import eng_to_ipa as ipa
 import asyncio
@@ -29,7 +30,8 @@ class intent_base(AbstractRequestHandler):
     #Sends a message through the websocket to the Unity client
     async def push_to_notifier(self, text):
         print(f"Pushing [{text}] to notifier")
-        await self.notifier.emit("message", f"{text}")
+        Thread(target=(lambda: self.notifier.emit("message", text))).start()
+        #await self.notifier.emit("message", f"{text}")
 
     async def push_to_notifier_speech(self, text):
         t = ipa.convert(text)

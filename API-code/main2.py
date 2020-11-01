@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, emit
 from ask_sdk_core.skill_builder import SkillBuilder
 from flask_ask_sdk.skill_adapter import SkillAdapter
 from copy import deepcopy
+from threading import Thread
 
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.utils import is_intent_name, is_request_type
@@ -18,7 +19,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         print(handler_input.request_envelope)
         speech_text = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"
-        return handler_input.response_builder.speak(speech_text).response
+        return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
 class SessionEndedRequest(AbstractRequestHandler):
     """Handler for Skill End."""
@@ -27,7 +28,7 @@ class SessionEndedRequest(AbstractRequestHandler):
 
     def handle(self, handler_input):
         speech_text = ""
-        return handler_input.response_builder.speak(speech_text).response
+        return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
 logs = []
 app = Flask(__name__)
@@ -50,6 +51,9 @@ for file in os.listdir("./handled_intents"):
 
 skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app)
 
+def push_to_notifier(s):
+    Thread(target=(lambda: socketio.emit("message", s))).start()
+
 @app.route("/api/v1/blueassistant", methods=['POST'])
 def invoke_skill():
     print("skill started")
@@ -64,7 +68,8 @@ async def video():
 async def speechlogs(text: str = ""):
     if request.method == 'POST':
         logs.append(text)
-        socketio.emit("message", f"{text}")
+        #socketio.emit("message", f"{text}")
+        push_to_notifier(text)
     else:
         return "\n".join(logs)
 
