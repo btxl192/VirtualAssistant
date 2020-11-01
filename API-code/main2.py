@@ -52,7 +52,8 @@ for file in os.listdir("./handled_intents"):
 skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app)
 
 def push_to_notifier(s):
-    Thread(target=(lambda: socketio.emit("message", s))).start()
+    print("pushing")
+    socketio.start_background_task(target=(lambda: socketio.emit("message", s))).start()
 
 @app.route("/api/v1/blueassistant", methods=['POST'])
 def invoke_skill():
@@ -60,12 +61,12 @@ def invoke_skill():
     return skill_adapter.dispatch_request()
 
 @app.route("/companyVideo")
-async def video():
+def video():
     response = send_file("./static/video.mp4")
     return response
 
 @app.route("/api/v1/speechLogs", methods=["GET", "POST"])
-async def speechlogs(text: str = ""):
+def speechlogs(text: str = ""):
     if request.method == 'POST':
         logs.append(text)
         #socketio.emit("message", f"{text}")
