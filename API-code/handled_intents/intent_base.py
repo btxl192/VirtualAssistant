@@ -9,6 +9,7 @@ import asyncio
 class intent_base(AbstractRequestHandler):
     response = None
     notifier = None
+    should_end_session = False
 
     def __init__(self, notifier):
         self.response = "Warning: no speech output was set to this intent"
@@ -25,7 +26,7 @@ class intent_base(AbstractRequestHandler):
 
     def handle(self, handler_input):
         self.action(handler_input.request_envelope)
-        return handler_input.response_builder.speak(self.response).response
+        return handler_input.response_builder.speak(self.response).set_should_end_session(self.should_end_session).response
 
     #Sends a message through the websocket to the Unity client
     def push_to_notifier(self, text):
