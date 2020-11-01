@@ -4,7 +4,7 @@ from ask_sdk_core.skill_builder import SkillBuilder
 from flask_ask_sdk.skill_adapter import SkillAdapter
 from copy import deepcopy
 from eventlet import wsgi
-from eng_to_ipa import ipa
+import eng_to_ipa as ipa
 
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.utils import is_intent_name, is_request_type
