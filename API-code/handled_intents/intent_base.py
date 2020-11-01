@@ -28,12 +28,11 @@ class intent_base(AbstractRequestHandler):
         return handler_input.response_builder.speak(self.response).response
 
     #Sends a message through the websocket to the Unity client
-    async def push_to_notifier(self, text):
+    def push_to_notifier(self, text):
         print(f"Pushing [{text}] to notifier")
-        Thread(target=(lambda: self.notifier.emit("message", text))).start()
-        #await self.notifier.emit("message", f"{text}")
+        self.notifier.emit("message", f"{text}")
 
-    async def push_to_notifier_speech(self, text):
+    def push_to_notifier_speech(self, text):
         t = ipa.convert(text)
         print(f"Pushing [Speech: {t}] to notifier")
-        await self.notifier.emit("message", f"Speech: {t}")    
+        self.notifier.emit("message", f"Speech: {t}")    

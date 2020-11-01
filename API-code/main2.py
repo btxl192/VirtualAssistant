@@ -3,13 +3,15 @@ from flask_socketio import SocketIO, emit
 from ask_sdk_core.skill_builder import SkillBuilder
 from flask_ask_sdk.skill_adapter import SkillAdapter
 from copy import deepcopy
-from threading import Thread
+from eventlet import wsgi
 
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.utils import is_intent_name, is_request_type
 
+import eventlet
 import importlib
 import os
+import sys
 
 class LaunchRequestHandler(AbstractRequestHandler):
     """Handler for Skill Launch."""
@@ -32,9 +34,11 @@ class SessionEndedRequest(AbstractRequestHandler):
 
 logs = ["start of logs"]
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode = "threading")
-#sio = socketio.AsyncServer(async_mode='aiohttp', async_handlers=True)
+socketio = SocketIO(app, async_mode = "eventlet")
 skill_builder = SkillBuilder()
+
+cert = sys.argv[1]
+key = sys.argv[2]
 # Register your intent handlers to the skill_builder object
 
 skill_builder.add_request_handler(LaunchRequestHandler())
@@ -51,10 +55,6 @@ for file in os.listdir("./handled_intents"):
 
 skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app)
 
-def push_to_notifier(s):
-    print("pushing")
-    socketio.start_background_task(target=(lambda: socketio.emit("message", s))).start()
-
 @app.route("/api/v1/blueassistant", methods=['POST'])
 def invoke_skill():
     print("skill started")
@@ -66,18 +66,19 @@ def video():
     return response
 
 @app.route("/api/v1/speechLogs", methods=["GET", "POST"])
-async def speechlogs(text: str = ""):
+def speechlogs(text: str = ""):
     if request.method == 'POST':
         logs.append(text)
-        #socketio.emit("message", f"{text}")
-        push_to_notifier(text)
+        socketio.emit("message", f"{text}")
     else:
         return "\n".join(logs)
 
 @socketio.on('connect')
-async def client_connect():
+def client_connect():
     print("Client connected")
 
 @socketio.on('disconnect')
-async def client_disconnect():
+def client_disconnect():
     print('Client disconnected')
+
+wsgi.server(eventlet.wrap_ssl(eventlet.listen(('', 4430)), certfile=cert, keyfile=key, server_side=True), app)
