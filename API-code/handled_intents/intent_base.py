@@ -25,9 +25,7 @@ class intent_base(AbstractRequestHandler):
         return is_intent_name(self.getIntentName())(handler_input)
 
     def handle(self, handler_input):
-        print(json.loads(str(handler_input.request_envelope)))
-        print("success")
-        self.action(handler_input.request_envelope)
+        self.action(handler_input.request_envelope.request.intent)
         return handler_input.response_builder.speak(self.response).set_should_end_session(self.should_end_session).response
 
     #Sends a message through the websocket to the Unity client
