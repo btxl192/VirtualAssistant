@@ -1,9 +1,8 @@
-from flask import Flask
+from flask import Flask, send_file, request
 from flask_socketio import SocketIO, emit
 from ask_sdk_core.skill_builder import SkillBuilder
 from flask_ask_sdk.skill_adapter import SkillAdapter
 from copy import deepcopy
-from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.utils import is_intent_name, is_request_type
@@ -30,6 +29,7 @@ class SessionEndedRequest(AbstractRequestHandler):
         speech_text = ""
         return handler_input.response_builder.speak(speech_text).response
 
+logs = []
 app = Flask(__name__)
 socketio = SocketIO(app)
 skill_builder = SkillBuilder()
@@ -53,13 +53,23 @@ skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app
 def invoke_skill():
     return skill_adapter.dispatch_request()
 
+@app.route("/companyVideo")
+async def video():
+    response = send_file("./static/video.mp4")
+    return response
+
+@app.route("/api/v1/speechLogs", methods=["GET", "POST"])
+async def speechlogs(text: str = ""):
+    if request.method == 'POST':
+        logs.append(text)
+        socketio.emit("message", f"{text}")
+    else:
+        return "\n".join(logs)
+
 @socketio.on('connect')
-def test_connect():
-    socketio.emit("message", "testdata")
+def client_connect():
     print("Client connected")
 
 @socketio.on('disconnect')
-def test_disconnect():
+def client_disconnect():
     print('Client disconnected')
-
-    
