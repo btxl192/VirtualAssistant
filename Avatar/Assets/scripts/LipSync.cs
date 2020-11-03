@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class LipSync : MonoBehaviour
 {
@@ -18,22 +19,10 @@ public class LipSync : MonoBehaviour
     }
 
     public SkinnedMeshRenderer MTH_DEF;
-    [SerializeField]
-    private float _lipsyncdelay;
-    public float lipsyncdelay 
-    {
-        get
-        {
-            return _lipsyncdelay;
-        }
-        set
-        {
-            _lipsyncdelay = value;
-            lipsyncDelayInput.text = _lipsyncdelay.ToString();
-        }
-    }
-    public UnityEngine.UI.InputField lipsyncDelayInput;
+    [HideInInspector]
+    public bool getAudio = false;
 
+    private AudioSource thisaudiosource;
     private const int mthIndexA = 6;
     private const int mthIndexE = 9;
     private const int mthIndexI = 7;
@@ -44,8 +33,9 @@ public class LipSync : MonoBehaviour
     private const float punctuationdelayconso = 0.1f;
     private const float consonantdelay = 0.6f * mouthdelay;
 
-    private bool start = false;
-  
+    private bool receivedText = false;
+    private bool receivedAudio = false;
+
     private Dictionary<char, float[]> charMouthMappings = new Dictionary<char, float[]>()
     {
         { 'j', aeiou(0, 0, 0, 0, 75) },
@@ -69,18 +59,17 @@ public class LipSync : MonoBehaviour
         { 'g', aeiou(0, 0, 75, 0, 0) },
         { 'u', aeiou(0, 0, 0 , 30, 75) }
     };
-    //haɪ, ˈwɛlkəm tɪ blu, jʊr ˈpərsɪnəl læb əˈsɪstənt. haʊ meɪ aɪ hɛlp ju təˈdeɪ
-    //sɑri aɪ kʊd nɑt ˈrɛkəgˌnaɪz ðət ˈkəmpəˌni, pliz traɪ əˈgɛn
+
     private List<char> consonants = new List<char>() { 'f', 'θ', 'd', 's', 'ð', 'p', 't' };
     private List<char> punctuation = new List<char>() { ',', '.' };
 
     private Queue<ArrChar> lipsyncQueue = new Queue<ArrChar>();
     private float currentdelay = mouthdelay;
-    private float[] currentvals = new float[] { 0,0,0,0,0};
+    private float[] currentvals = new float[] { 0,0,0,0,0 };
 
     private void Start()
     {
-        lipsyncDelayInput.text = lipsyncdelay.ToString();
+        thisaudiosource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -94,13 +83,16 @@ public class LipSync : MonoBehaviour
             currentvals[3] == 0 &&
             currentvals[4] == 0;
 
+        //only increment if currentdelay < mouthdelay
         if (currentdelay < mouthdelay)
             currentdelay += Time.deltaTime;
 
-        if (start)
+        //start lipsyncing when text and audio is received
+        if (receivedText && receivedAudio)
         {
             if (currentdelay < mouthdelay)
             {
+                //if not idle and there is still text to lipsync
                 if (!isIdle && lipsyncQueue.Count > 0)
                 {
                     //interpolate from the current mouth position to the next mouth position in the queue
@@ -108,12 +100,15 @@ public class LipSync : MonoBehaviour
                     SetMouthShape(interpolatedvals);                    
                 }
             }
+            //when currentdelay reaches mouthdelay, and there is still text to lipsync
             else if (lipsyncQueue.Count > 0)
             {
                 ArrChar a = lipsyncQueue.Dequeue();
-                float[] vals = a.vals;
-                SetMouthShape(vals);
+                float[] vals = a.vals; //dequeued text's aeiou values
+                SetMouthShape(vals); //set the mouth shape to the dequeued text's aeiou values
                 currentdelay = 0;
+
+                //different delay based on type of character
                 if (punctuation.Contains(a.character))
                 {
                     currentdelay = -punctuationdelayvowel;
@@ -129,15 +124,18 @@ public class LipSync : MonoBehaviour
                 }
 
             }
+            //reset mouth when idle
             else if (!isIdle)
             {
                 lipsyncQueue.Enqueue(new ArrChar(new float[] { 0, 0, 0, 0, 0 }, ' '));
                 currentdelay = 0;
-                start = false;
+                receivedText = false;
+                receivedAudio = false;
             }
 
 
         }
+        //keep on interpolating towards default mouth position when not idle
         else if (!isIdle)
         {
             float[] interpolatedvals = interpolate(currentvals, new float[] { 0, 0, 0, 0, 0}, mouthdelay, currentdelay / 2f);
@@ -154,17 +152,23 @@ public class LipSync : MonoBehaviour
             //lipsync("haɪ, ˈwɛlkəm tɪ blu, jʊr ˈpərsɪnəl læb əˈsɪstənt. haʊ meɪ aɪ hɛlp ju təˈdeɪ");
             //lipsync("sɑri aɪ kʊd nɑt ˈrɛkəgˌnaɪz ðət ˈkəmpəˌni, pliz traɪ əˈgɛn");
             //lipsync("ˈkəmpəˌni, pliz traɪ əˈgɛn");
-            StartLipSync();
+            //StartLipSync();
         }
 
+        if (getAudio)
+        {
+            getAudio = false;
+            StartCoroutine(GetAlexaAudio());
+        }
     }
 
     public void lipsync(string IPA)
     {
         foreach (char c in IPA)
-        {
+        {           
             if (punctuation.Contains(c))
             {
+                //fixed mouth shape for punctuation
                 lipsyncQueue.Enqueue(new ArrChar(new float[] { 0, 0, 100, 0, 0 }, c));
             }
             else if (charMouthMappings.ContainsKey(c))
@@ -172,11 +176,11 @@ public class LipSync : MonoBehaviour
                 lipsyncQueue.Enqueue(new ArrChar(charMouthMappings[c], c));
             }
         }
+        receivedText = true;
     }
 
     public void delay(float secs)
     {
-        print(secs);
         currentdelay -= secs;
     }
 
@@ -217,34 +221,13 @@ public class LipSync : MonoBehaviour
         return new float[] { a, e, i, o, u };
     }
 
-    public void StartLipSync()
+    public IEnumerator GetAlexaAudio()
     {
-        start = true;     
-    }
-
-    float calcSentenceDelay(string s)
-    {
-        return 0.5f * Mathf.Max(s.Length - 75, 0);
-    }
-
-    public void delayText(string s)
-    {
-        delay(calcSentenceDelay(s) + lipsyncdelay);
-    }
-
-    public void Calibrate(string s)
-    {
-        lipsyncdelay = float.Parse(lipsyncDelayInput.text);
-    }
-
-    public void IncDelay()
-    {
-        lipsyncdelay += 0.1f;
-    }
-
-    public void DecDelay()
-    {
-        lipsyncdelay -= 0.1f;
+        UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort.ToString(), AudioType.WAV);
+        yield return www.SendWebRequest();
+        thisaudiosource.clip = DownloadHandlerAudioClip.GetContent(www);
+        thisaudiosource.Play();
+        receivedAudio = true;
     }
 
 }

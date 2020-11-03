@@ -1,38 +1,61 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using NativeWebSocket;
+using EngineIOSharp.Common.Enum;
+using SocketIOSharp.Client;
+using SocketIOSharp.Common;
+using Newtonsoft.Json.Linq;
 
 public class WebsocketHandler : MonoBehaviour
 {
 
-    private WebSocket websocket;
     private videoPlayerScript videoPlayer;
     private player thisplayer;
     private LipSync thislipsync;
+    private SocketIOClient alexaWs;
+    private SocketIOClient localWs;
 
-    async void Start()
+    void Start()
     {
         thisplayer = GetComponent<player>();
         thislipsync = GetComponent<LipSync>();
 
-        //videoPlayer = GameObject.Find("Video Player").GetComponent<videoPlayerScript>();
+        videoPlayer = GameObject.Find("Video Player").GetComponent<videoPlayerScript>();
 
-        websocket = new WebSocket("wss://" + config.domainName + "/ws");
-        websocket.OnOpen += () => { Debug.Log("Connection open!"); };
-        websocket.OnError += (e) => { Debug.LogError("Error! " + e); };
-        websocket.OnClose += (e) => { Debug.LogWarning("Connection closed!"); };
-
-        websocket.OnMessage += (bytes) =>
+        alexaWs = new SocketIOClient(new SocketIOClientOption(EngineIOScheme.https, config.domainName, config.vmPort));
+        alexaWs.On(SocketIOEvent.CONNECTION, () => { print(config.domainName + "ws Connected!"); });
+        alexaWs.On(SocketIOEvent.DISCONNECT, () => { print(config.domainName + "ws Disconnected!"); });
+        alexaWs.On(SocketIOEvent.ERROR, WsHandleError);
+        alexaWs.On("message", (Data) => // Argument can be used without type.
         {
-            // getting the message as a string
-            string line = System.Text.Encoding.UTF8.GetString(bytes);
-            Debug.Log("SocketMessage! " + line);
-            HandleMsg(line);
-        };
+            if (Data != null && Data.Length > 0 && Data[0] != null)
+            {
+                print(config.domainName + "ws Message : " + Data[0]);
+                HandleMsg(Data[0].ToString());
+            }
+        });
 
-        // waiting for messages
-        await websocket.Connect();
+        localWs = new SocketIOClient(new SocketIOClientOption(EngineIOScheme.http, config.alexaResponseIP, config.alexaResponsePort));
+        localWs.On(SocketIOEvent.CONNECTION, () => { print(config.alexaResponseIP + "ws Connected!"); });
+        localWs.On(SocketIOEvent.DISCONNECT, () => { print(config.alexaResponseIP + "ws Disconnected!"); });
+        localWs.On(SocketIOEvent.ERROR, WsHandleError);
+        localWs.On("message", (Data) => // Argument can be used without type.
+        {
+            if (Data != null && Data.Length > 0 && Data[0] != null)
+            {
+                print(config.alexaResponseIP + "ws Message : " + Data[0]);
+                HandleMsg(Data[0].ToString());
+            }
+        });
+
+        localWs.Connect();
+        alexaWs.Connect();
+    }
+
+    void WsHandleError(JToken[] Data)
+    {
+        if (Data != null && Data.Length > 0 && Data[0] != null) { print("Error : " + Data[0]); }
+        else { print("Unkown Error"); }
     }
 
     void HandleMsg(string msg)
@@ -46,12 +69,13 @@ public class WebsocketHandler : MonoBehaviour
                 VidControl(text);
                 break;
             case "Speech":
-                thislipsync.delayText(text);
                 thislipsync.lipsync(text);
                 break;
             case "SpeechControl":
-                if (text.Equals("Start"))
-                    thislipsync.StartLipSync();
+                if (text.ToLower().Equals("written"))
+                {
+                    thislipsync.getAudio = true;
+                }
                 break;
             default:
                 Debug.LogWarning("Unhandled control message:    " + msg);
@@ -98,8 +122,9 @@ public class WebsocketHandler : MonoBehaviour
         }
     }
 
-    private async void OnApplicationQuit()
+    private void OnApplicationQuit()
     {
-        await websocket.Close();
+        localWs.Dispose();
+        alexaWs.Dispose();
     }
 }

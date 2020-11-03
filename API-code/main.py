@@ -1,138 +1,89 @@
-from fastapi import FastAPI
-from starlette.requests import Request
-from starlette.websockets import WebSocket, WebSocketDisconnect
-from starlette.templating import Jinja2Templates
-from starlette.staticfiles import StaticFiles
-from starlette.responses import FileResponse
-from pydantic import BaseModel
+from flask import Flask, send_file, request
+from flask_socketio import SocketIO, emit
+from ask_sdk_core.skill_builder import SkillBuilder
+from flask_ask_sdk.skill_adapter import SkillAdapter
 from copy import deepcopy
-from handled_intents.intent_base import text_response
-import json
-import asyncio
-import os
-import importlib
+from eventlet import wsgi
 import eng_to_ipa as ipa
 
-app = FastAPI()
+from ask_sdk_core.dispatch_components import AbstractRequestHandler
+from ask_sdk_core.utils import is_intent_name, is_request_type
 
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+import eventlet
+import importlib
+import os
+import sys
 
-logs = ""
+#class to handle the launch intent
+class LaunchRequestHandler(AbstractRequestHandler):
+    """Handler for Skill Launch."""
+    def can_handle(self, handler_input):
+        return is_request_type("LaunchRequest")(handler_input)
 
-class Notifier:
-    def __init__(self):
-        self.connections: List[WebSocket] = []
-        self.generator = self.get_notification_generator()
+    def handle(self, handler_input):
+        speech_text = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"
+        socketio.emit("message", "Speech: " + ipa.convert(speech_text))
+        return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
-    async def get_notification_generator(self):
-        while True:
-            message = yield
-            await self._notify(message)
+#class to handle the session end intent
+class SessionEndedRequest(AbstractRequestHandler):
+    """Handler for Skill End."""
+    def can_handle(self, handler_input):
+        return is_request_type("SessionEndedRequest")(handler_input)
 
-    async def push(self, msg: str):
-        await self.generator.asend(msg)
+    def handle(self, handler_input):
+        speech_text = ""
+        return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.connections.append(websocket)
+logs = ["start of logs"]
+app = Flask(__name__)
+socketio = SocketIO(app, async_mode = "eventlet")
+skill_builder = SkillBuilder()
 
-    def remove(self, websocket: WebSocket):
-        self.connections.remove(websocket)
+#get path to ssl certificate and key from console
+cert = sys.argv[1]
+key = sys.argv[2]
 
-    async def _notify(self, message: str):
-        living_connections = []
-        while len(self.connections) > 0:
-            # Looping like this is necessary in case a disconnection is handled
-            # during await websocket.send_text(message)
-            websocket = self.connections.pop()
-            await websocket.send_text(message)
-            living_connections.append(websocket)
-        self.connections = living_connections
+# Register your intent handlers to the skill_builder object
+skill_builder.add_request_handler(LaunchRequestHandler())
+skill_builder.add_request_handler(SessionEndedRequest())
 
+#add the intents from the ./handled_intents folder to the skill_builder
+blacklist = ["test.py", "intent_base.py", "__init__.py"]
+for file in os.listdir("./handled_intents"):
+    if file not in blacklist and file[-3:] == ".py":
+        filename = file[:-3]
+        intent_name = filename.replace("_",".")
+        imported_intent = importlib.import_module("handled_intents." + filename)
+        intent_instance = getattr(imported_intent, filename)(socketio)
+        skill_builder.add_request_handler(intent_instance)
 
-notifier = Notifier()
+skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app)
 
-@app.get("/")
-async def root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+@app.route("/api/v1/blueassistant", methods=['POST'])
+def invoke_skill():
+    print("skill started")
+    return skill_adapter.dispatch_request()
 
-#Sends a message through the websocket to the Unity client
-async def push_to_notifier(text):
-    print(f"Pushing [{text}] to notifier")
-    await notifier.push(f"{text}")
-
-@app.post("/api/v1/speechLogs")
-async def post_log(text: str = ""):
-    # global logs
-    # logs = text
-    # return "ok"
-    # push_to_notifier(text)
-    global logs
-    logs = text
-    await notifier.push(f"{text}")
-
-
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await notifier.connect(websocket)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            await websocket.send_text(f"{data}")
-    except WebSocketDisconnect:
-        notifier.remove(websocket)
-
-@app.on_event("startup")
-async def startup():
-    # Prime the push notification generator
-    await notifier.generator.asend(None)
-
-@app.get("/api/v1/speechLogs")
-def get_log():
-    global logs
-    return logs
-    
-@app.get("/companyVideo")
-async def video():
-    response = FileResponse("./static/video.mp4")
+@app.route("/companyVideo")
+def video():
+    response = send_file("./static/video.mp4")
     return response
 
-class AlexaRequest(BaseModel):
-    version: str
-    session: dict
-    context: dict
-    request: dict
+@app.route("/api/v1/speechLogs", methods=["GET", "POST"])
+def speechlogs(text: str = ""):
+    if request.method == 'POST':
+        logs.append(text)
+        socketio.emit("message", f"{text}")
+    else:
+        return "\n".join(logs)
 
-func_mappings = {}
-#read the .py files in ./handled_intents and map each intent to its corresponding action
-def create_intent_mappings():
-    blacklist = ["test.py", "intent_base.py", "__init__.py"]
-    for file in os.listdir("./handled_intents"):
-        if file not in blacklist and file[-3:] == ".py":
-            filename = file[:-3]
-            intent_name = filename.replace("_",".")
-            imported_intent = importlib.import_module("handled_intents." + filename)
-            intent_instance = getattr(imported_intent, filename)(notifier)
-            func_mappings[intent_name] = intent_instance.run
+@socketio.on('connect')
+def client_connect():
+    print("Client connected")
 
-@app.post('/api/v1/blueassistant')
-async def blue_assistant(baseRequest: AlexaRequest):
-    if baseRequest.request.get("type") == "LaunchRequest":
-        create_intent_mappings()
-        t = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"  
-        await push_to_notifier("Speech: " + ipa.convert(t))
-        await push_to_notifier("SpeechControl: Start")
-        return text_response(t)
-    elif baseRequest.request.get("type") == "SessionEndedRequest":
-        await push_to_notifier("Msg: SessionEndedRequest")
-        return text_response("")
-        
-    intents = baseRequest.request.get("intent")
-    specific_intent = intents.get("name")
-    
-    #get the corresponding action from an intent
-    if specific_intent in func_mappings.keys():
-        result = await func_mappings[specific_intent](intents)
-        return result
-    return text_response("ERROR")
+@socketio.on('disconnect')
+def client_disconnect():
+    print('Client disconnected')
+
+wsgi.server(eventlet.wrap_ssl(eventlet.listen(('', 4430)), certfile=cert, keyfile=key, server_side=True), app)

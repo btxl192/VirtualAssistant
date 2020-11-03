@@ -5,4 +5,8 @@ using UnityEngine;
 public class config
 {
     public static string domainName { get => "blueassistant-btxl.eastus.cloudapp.azure.com"; }
+    public static ushort vmPort { get => 4430; }
+
+    public static string alexaResponseIP { get => "localhost"; }
+    public static ushort alexaResponsePort { get => 5000; }
 }
