@@ -458,9 +458,12 @@
     <Compile Include="Assets\OpenCV+Unity\Demo\Scripts\WebCamera.cs" />
     <Compile Include="Assets\OpenCV+Unity\Demo\Tracking\TrackingScript.cs" />
     <Compile Include="Assets\scripts\LipSync.cs" />
+    <Compile Include="Assets\scripts\LipSyncSound.cs" />
+    <Compile Include="Assets\scripts\PitchTracker.cs" />
     <Compile Include="Assets\scripts\WebsocketHandler.cs" />
     <Compile Include="Assets\scripts\config.cs" />
     <Compile Include="Assets\scripts\player.cs" />
+    <Compile Include="Assets\scripts\test.cs" />
     <Compile Include="Assets\scripts\videoPlayerScript.cs" />
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\Scripts\AutoBlink.cs" />
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\Scripts\CameraController.cs" />
@@ -678,28 +681,10 @@
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.1f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.PhoneticMatching">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Assets/Microsoft.PhoneticMatching.dll</HintPath>
+      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-master/Avatar/Assets/Microsoft.PhoneticMatching.dll</HintPath>
     </Reference>
     <Reference Include="InTheHand.Net.Personal">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Assets/32feet.NET.3.5.0.0/lib/net/InTheHand.Net.Personal.dll</HintPath>
-    </Reference>
-    <Reference Include="EmitterSharp">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Assets/Debug/net40/EmitterSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="EngineIOSharp">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Assets/Debug/net40/EngineIOSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Assets/Debug/net40/Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SimpleThreadMonitor">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Assets/Debug/net40/SimpleThreadMonitor.dll</HintPath>
-    </Reference>
-    <Reference Include="SocketIOSharp">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Assets/Debug/net40/SocketIOSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="WebSocketSharp.CustomHeaders.CustomHttpServer">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Assets/Debug/net40/WebSocketSharp.CustomHeaders.CustomHttpServer.dll</HintPath>
+      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-master/Avatar/Assets/32feet.NET.3.5.0.0/lib/net/InTheHand.Net.Personal.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.1f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
@@ -1056,31 +1041,31 @@
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.1f1/Editor/Data/MonoBleedingEdge/lib/mono/unityscript/Boo.Lang.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-master/Avatar/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-master/Avatar/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
-      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-codebase-master/blue-assistant-master/Avatar/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+      <HintPath>D:/Files/Studies/Year3IXN/blue-assistant-master/Avatar/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
