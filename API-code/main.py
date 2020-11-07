@@ -1,239 +1,89 @@
-from fastapi import FastAPI
-from starlette.requests import Request
-from starlette.websockets import WebSocket, WebSocketDisconnect
-from starlette.templating import Jinja2Templates
-from starlette.staticfiles import StaticFiles
-from starlette.responses import FileResponse
-from pydantic import BaseModel
-import json
+from flask import Flask, send_file, request
+from flask_socketio import SocketIO, emit
+from ask_sdk_core.skill_builder import SkillBuilder
+from flask_ask_sdk.skill_adapter import SkillAdapter
 from copy import deepcopy
-from pytube import YouTube 
+from eventlet import wsgi
+import eng_to_ipa as ipa
 
-app = FastAPI()
+from ask_sdk_core.dispatch_components import AbstractRequestHandler
+from ask_sdk_core.utils import is_intent_name, is_request_type
 
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+import eventlet
+import importlib
+import os
+import sys
 
-logs = ""
-videoUrl = ""
+#class to handle the launch intent
+class LaunchRequestHandler(AbstractRequestHandler):
+    """Handler for Skill Launch."""
+    def can_handle(self, handler_input):
+        return is_request_type("LaunchRequest")(handler_input)
 
-class Notifier:
-    def __init__(self):
-        self.connections: List[WebSocket] = []
-        self.generator = self.get_notification_generator()
+    def handle(self, handler_input):
+        speech_text = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"
+        socketio.emit("message", "Speech: " + ipa.convert(speech_text))
+        return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
-    async def get_notification_generator(self):
-        while True:
-            message = yield
-            await self._notify(message)
+#class to handle the session end intent
+class SessionEndedRequest(AbstractRequestHandler):
+    """Handler for Skill End."""
+    def can_handle(self, handler_input):
+        return is_request_type("SessionEndedRequest")(handler_input)
 
-    async def push(self, msg: str):
-        await self.generator.asend(msg)
+    def handle(self, handler_input):
+        speech_text = ""
+        return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.connections.append(websocket)
+logs = ["start of logs"]
+app = Flask(__name__)
+socketio = SocketIO(app, async_mode = "eventlet")
+skill_builder = SkillBuilder()
 
-    def remove(self, websocket: WebSocket):
-        self.connections.remove(websocket)
+#get path to ssl certificate and key from console
+cert = sys.argv[1]
+key = sys.argv[2]
 
-    async def _notify(self, message: str):
-        living_connections = []
-        while len(self.connections) > 0:
-            # Looping like this is necessary in case a disconnection is handled
-            # during await websocket.send_text(message)
-            websocket = self.connections.pop()
-            await websocket.send_text(message)
-            living_connections.append(websocket)
-        self.connections = living_connections
+# Register your intent handlers to the skill_builder object
+skill_builder.add_request_handler(LaunchRequestHandler())
+skill_builder.add_request_handler(SessionEndedRequest())
 
+#add the intents from the ./handled_intents folder to the skill_builder
+blacklist = ["test.py", "intent_base.py", "__init__.py"]
+for file in os.listdir("./handled_intents"):
+    if file not in blacklist and file[-3:] == ".py":
+        filename = file[:-3]
+        intent_name = filename.replace("_",".")
+        imported_intent = importlib.import_module("handled_intents." + filename)
+        intent_instance = getattr(imported_intent, filename)(socketio)
+        skill_builder.add_request_handler(intent_instance)
 
-notifier = Notifier()
+skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app)
 
-def uploadVideo(url):
-    yt = YouTube(url)
-    yt.streams.filter(mime_type="video/mp4", res="720p", progressive=True)[0].download(output_path="./static", filename="video")
+@app.route("/api/v1/blueassistant", methods=['POST'])
+def invoke_skill():
+    print("skill started")
+    return skill_adapter.dispatch_request()
 
-@app.get("/")
-async def root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
-
-async def push_to_notifier(text):
-    await notifier.push(f"{text}")
-
-@app.post("/api/v1/speechLogs")
-async def post_log(text: str = ""):
-    # global logs
-    # logs = text
-    # return "ok"
-    # push_to_notifier(text)
-    global logs
-    logs = text
-    await notifier.push(f"{text}")
-
-
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await notifier.connect(websocket)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            await websocket.send_text(f"{data}")
-    except WebSocketDisconnect:
-        notifier.remove(websocket)
-
-@app.on_event("startup")
-async def startup():
-    # Prime the push notification generator
-    await notifier.generator.asend(None)
-
-@app.get("/api/v1/speechLogs")
-def get_log():
-    global logs
-    return logs
-
-@app.get("/api/v1/video")
-def get_video():
-    global videoUrl
-    return videoUrl
-
-@app.delete("/api/v1/video")
-def reset_video():
-    global videoUrl
-    videoUrl = ""
-    return ""
-
-@app.get("/companyVideo")
-async def video():
-    response = FileResponse("./static/video.mp4")
+@app.route("/companyVideo")
+def video():
+    response = send_file("./static/video.mp4")
     return response
 
-@app.post('/videoPost')
-async def video_post(video:str):
-    await uploadVideo(video)
-
-@app.post('/videoControl')
-async def video_control(control:str):
-    await notifier.push(f"{control}")
-
-####################
-# Alexa skills API #
-####################
-
-json_response_template = {
-    "version":"1.0",
-    # "sessionAttributes": {
-
-    # },
-    "response":{
-        "outputSpeech":{
-            #https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html#outputspeech-object
-            "type":"PlainText",
-        #    "text":"text to output from alexa",
-            "playBehaviour":"REPLACE_ENQUEUED"
-        },
-    #  "reprompt": {
-    #   "outputSpeech": {
-    #     "type": "PlainText",
-    #     "text": "Plain text string to speak",
-    #     "playBehavior": "REPLACE_ENQUEUED"             
-    #   }
-    # },
-        # "directives": [
-        # ],
-        "shouldEndSession": False,
-    }
-}
-
-class AlexaRequest(BaseModel):
-    version: str
-    session: dict
-    context: dict
-    request: dict
-
-@app.post('/api/v1/blueassistant')
-async def blue_assistant(baseRequest: AlexaRequest):
-    if baseRequest.request.get("type") == "LaunchRequest":
-        return text_response("Hi, welcome to Blue, your personal lab assistant. How may I help you today?")
-    elif baseRequest.request.get("type") == "SessionEndedRequest":
-        return text_response("")
-    print(baseRequest.request)
-    intents = baseRequest.request.get("intent")
-    specific_intent = intents.get("name")
-    if specific_intent == "AMAZON.PauseIntent":
-        await video_control_intent("Pause")
-        return text_response("")
-    elif specific_intent == "AMAZON.ResumeIntent":
-        await video_control_intent("Resume")
-        return text_response("")
-    elif specific_intent == "AMAZON.FallbackIntent":
-        response = deepcopy(json_response_template)
-        response["response"]["outputSpeech"]["text"] = ""
-        response["response"]["repromt"] = {"outputSpeech":""}
-        return response
-    elif specific_intent == "StopVideoIntent":
-        await video_control_intent("Stop")
-        return text_response("")
-    elif specific_intent == "AMAZON.StopIntent":
-        await video_control_intent("Stop")
-        await notifier.push("Idle")
-        r = text_response("Goodbye")
-        r["response"]["shouldEndSession"] = True
-        return r
-    elif specific_intent == "AMAZON.FallbackIntent":
-        return text_response("Sorry I did not understand that, please try again")
-    slots = intents.get("slots")
-    company = slots.get("Company").get("value").lower().replace(" ", "")
-    try:
-        sector = slots.get("Sector").get("resolutions").get("resolutionsPerAuthority")[0].get("values")[0].get("value").get("name")
-    except (TypeError, AttributeError) as e:
-        sector = None
-    if specific_intent == "CompanyInfoIntent":
-        return company_info_intent(company, sector)
-    elif specific_intent == "CompanyVideoIntent":
-        response = company_video_intent(company, sector)
-        if "I couldn't find a video for that" not in response["response"]["outputSpeech"]["text"]:
-            await video_control_intent("Playing video")
-        return response
-
-def text_response(text):
-    response = deepcopy(json_response_template)
-    response["response"]["outputSpeech"]["text"] = text
-    return response
-
-async def video_control_intent(intent_type):
-    await notifier.push(f"{intent_type}")
-
-def company_info_intent(company, sector):
-    response = deepcopy(json_response_template)
-    with open("companyInfo.json", "r") as file:
-        f = json.load(file)
-        companyInfo = f.get(company)
-    if companyInfo is None:
-        return text_response("Sorry I could not recognise that company, please try again")
-    if sector is None:
-        response["response"]["outputSpeech"]["text"] = companyInfo.get("about")[0]
-    elif sector in companyInfo.keys():
-        response["response"]["outputSpeech"]["text"] = companyInfo.get(sector)[0] 
-    return response
-
-def company_video_intent(company, sector):
-    response = deepcopy(json_response_template)
-    with open("companyInfo.json", "r") as file:
-        f = json.load(file)
-        companyVideos = f.get(company).get("videos")
-    outputSpeech = "Playing "
-    global videoUrl
-    if sector is None:
-        #outputSpeech = outputSpeech + companyVideos.get("about").get("title")
-        videoUrl = companyVideos.get("about").get("url")
-        uploadVideo(videoUrl)
+@app.route("/api/v1/speechLogs", methods=["GET", "POST"])
+def speechlogs(text: str = ""):
+    if request.method == 'POST':
+        logs.append(text)
+        socketio.emit("message", f"{text}")
     else:
-        if sector in companyVideos.keys():
-            #outputSpeech = outputSpeech + companyVideos.get(sector).get("title")
-            videoUrl = companyVideos.get(sector).get("url")
-            uploadVideo(videoUrl)
-        else:
-            outputSpeech = "I couldn't find a video for that"
-    response["response"]["outputSpeech"]["text"] = outputSpeech
-    return response
+        return "\n".join(logs)
+
+@socketio.on('connect')
+def client_connect():
+    print("Client connected")
+
+@socketio.on('disconnect')
+def client_disconnect():
+    print('Client disconnected')
+
+wsgi.server(eventlet.wrap_ssl(eventlet.listen(('', 4430)), certfile=cert, keyfile=key, server_side=True), app)
