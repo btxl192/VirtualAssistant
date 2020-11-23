@@ -18,6 +18,8 @@ public class LipSync : MonoBehaviour
         }
     }
 
+    public Animator anim;
+
     public SkinnedMeshRenderer MTH_DEF;
     [HideInInspector]
     public bool getAudio = false;
@@ -70,6 +72,7 @@ public class LipSync : MonoBehaviour
     private void Start()
     {
         thisaudiosource = GetComponent<AudioSource>();
+        //anim.set
     }
 
     void Update()
