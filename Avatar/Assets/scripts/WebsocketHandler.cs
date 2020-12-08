@@ -77,6 +77,9 @@ public class WebsocketHandler : MonoBehaviour
                     thislipsync.getAudio = true;
                 }
                 break;
+            case "AlexaResponse":
+                print("GOT ALEXA RESPONSE: " + msg);
+                break;
             default:
                 Debug.LogWarning("Unhandled control message:    " + msg);
                 break;
