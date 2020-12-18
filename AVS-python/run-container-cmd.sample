@@ -4,4 +4,4 @@ docker run \
   -p 127.0.0.1:3000:3000 \
   -e ENDPOINT='https://blue-assistant-btxl.works/api/v1/speechLogs?text=' \
   -it \
-  35c7e079cfb7
+  373da9934f7e

@@ -4,10 +4,13 @@ import time
 import requests
 import os
 
+import logging
+logging.basicConfig(level="DEBUG")
 
 def get_alexa_output():
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--mute-audio")
+    chrome_options.add_argument("--no-sandbox")
 
     chrome_webdriver = webdriver.Chrome(chrome_options=chrome_options)
     chrome_webdriver.get("https://developer.amazon.com/alexa/console/ask/test/amzn1.ask.skill.fa7cfeb1-e524-4024-a258-5249bec81e5f/development/en_GB/")
@@ -34,7 +37,7 @@ def get_alexa_output():
         socketio.sleep(delay)
         if (listen_length > 0):
             current_time += delay
-    
+
 from flask import Flask, send_file
 from flask_socketio import SocketIO, emit
 from eventlet import wsgi
@@ -54,8 +57,6 @@ def test_connect():
 @socketio.on('disconnect')
 def test_disconnect():
     print('Client disconnected')
-    
+
 socketio.start_background_task(target=get_alexa_output)
 wsgi.server(eventlet.listen(('', 5000)), app)
-    
-    

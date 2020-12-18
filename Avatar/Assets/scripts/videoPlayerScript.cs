@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class videoPlayerScript : MonoBehaviour
 {
-	
+
 	public string vidUrl {get; set;}
 	public bool paused { get; set; }
 
@@ -15,13 +15,14 @@ public class videoPlayerScript : MonoBehaviour
     {
         paused = true;
         videoPlayer = GetComponent<UnityEngine.Video.VideoPlayer>();
-        videoPlayer.url = "https://" + config.domainName + "/companyVideo";
+        // videoPlayer.url = "https://" + config.domainName + "/companyVideo";
+        // videoPlayer.url = "https://mw-public-data.s3.eu-west-2.amazonaws.com/93cc49bdf8bc759864e2c64be16e3938b205424fb9490e1814a91211440da690.mp4";
         rawimage = GetComponent<UnityEngine.UI.RawImage>();
     }
 
     private void Update()
     {
-        
+
         if (Input.GetKeyDown(KeyCode.P))
         {
             paused = !paused;

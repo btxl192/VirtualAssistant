@@ -50,6 +50,8 @@ public class WebsocketHandler : MonoBehaviour
 
         localWs.Connect();
         alexaWs.Connect();
+
+        HandleMsg("VidControl:Play");
     }
 
     void WsHandleError(JToken[] Data)
