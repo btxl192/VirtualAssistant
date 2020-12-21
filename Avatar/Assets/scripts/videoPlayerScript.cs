@@ -4,33 +4,41 @@ using UnityEngine;
 
 public class videoPlayerScript : MonoBehaviour
 {
-	
+
 	public string vidUrl {get; set;}
 	public bool paused { get; set; }
 
     private UnityEngine.Video.VideoPlayer videoPlayer;
     private UnityEngine.UI.RawImage rawimage;
 
+    public Animator animator;
+    public Animator avatorAnimator;
+
     void Start()
     {
         paused = true;
         videoPlayer = GetComponent<UnityEngine.Video.VideoPlayer>();
-        videoPlayer.url = "https://" + config.domainName + "/companyVideo";
+        // videoPlayer.url = "https://" + config.domainName + "/companyVideo";
+        // videoPlayer.url = "https://mw-public-data.s3.eu-west-2.amazonaws.com/e2cac2b3c9d4be3abac3be760b7b9c5e44330f66f9e2d902ef13dc7ea71369e2.webm";
         rawimage = GetComponent<UnityEngine.UI.RawImage>();
     }
 
     private void Update()
     {
-        
+
         if (Input.GetKeyDown(KeyCode.P))
         {
             paused = !paused;
         }
+        if (Input.GetKeyDown(KeyCode.S)) {
+            StopVideo();
+        }
         if (!paused && !videoPlayer.isPlaying)
         {
             videoPlayer.enabled = true;
-            rawimage.enabled = true;
             videoPlayer.Play();
+            animator.SetBool("stopped", false);
+            avatorAnimator.SetBool("videoPlaying", true);
         }
         else if (paused && videoPlayer.isPlaying)
         {
@@ -41,22 +49,16 @@ public class videoPlayerScript : MonoBehaviour
 
         void EndReached(UnityEngine.Video.VideoPlayer vp)
         {
-            StopVideo(vp);
+            StopVideo();
         }
     }
 
     public void StopVideo()
     {
         videoPlayer.Stop();
-        videoPlayer.enabled = false;
-        rawimage.enabled = false;
-    }
-
-    private void StopVideo(UnityEngine.Video.VideoPlayer vp)
-    {
-        vp.Stop();
-        videoPlayer.enabled = false;
-        rawimage.enabled = false;
+        paused = true;
+        animator.SetBool("stopped", true);
+        avatorAnimator.SetBool("videoPlaying", false);
     }
 
     private void OnApplicationQuit()
