@@ -20,6 +20,7 @@ public class videoPlayerScript : MonoBehaviour
         videoPlayer = GetComponent<UnityEngine.Video.VideoPlayer>();
         // videoPlayer.url = "https://" + config.domainName + "/companyVideo";
         // videoPlayer.url = "https://mw-public-data.s3.eu-west-2.amazonaws.com/e2cac2b3c9d4be3abac3be760b7b9c5e44330f66f9e2d902ef13dc7ea71369e2.webm";
+        videoPlayer.url = "https://mw-public-data.s3.eu-west-2.amazonaws.com/93cc49bdf8bc759864e2c64be16e3938b205424fb9490e1814a91211440da690.mp4";
         rawimage = GetComponent<UnityEngine.UI.RawImage>();
     }
 
