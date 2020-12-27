@@ -52,3 +52,4 @@ class CompanyVideoIntent(intent_base):
             self.push_to_notifier_speech("Playing video")
         else:
             self.push_to_notifier_speech(self.response)
+        self.user_input = "Asked to play a video about " + company

@@ -1,5 +1,6 @@
 from .intent_base import *
 
 class StopVideoIntent(intent_base):
-    async def action(self, intents):
-        await self.push_to_notifier("VidControl: Stop")
+    def action(self, intents):
+        self.push_to_notifier("VidControl: Stop")
+        self.user_input = "Stopped video"

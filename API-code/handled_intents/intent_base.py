@@ -9,10 +9,12 @@ import json
 class intent_base(AbstractRequestHandler):
     response = None
     notifier = None
+    user_input = None
     should_end_session = False
 
     def __init__(self, notifier):
         self.response = "Warning: no speech output was set to this intent"
+        self.user_input = "No user input was defined in this intent"
         self.notifier = notifier
     
     def getIntentName(self):
@@ -27,6 +29,7 @@ class intent_base(AbstractRequestHandler):
     def handle(self, handler_input):
         self.action(handler_input.request_envelope.request.intent)
         self.push_to_notifier("AlexaResponse: " + self.response)
+        self.push_to_notifier("UserInput: " + self.user_input)
         return handler_input.response_builder.speak(self.response).set_should_end_session(self.should_end_session).response
 
     #Sends a message through the websocket to the Unity client

@@ -29,3 +29,4 @@ class CompanyInfoIntent(intent_base):
         output_speech = company_info_intent(company, sector)
         self.push_to_notifier_speech(output_speech)
         self.response = output_speech
+        self.user_input = "Asked for info about " + company
