@@ -10,7 +10,7 @@ public class weatherControl : MonoBehaviour
     private static string API_KEY = "c9a3173c6264df62ecb1f0cc390ed75d";
     private static string location = "London";
     private string URL = "api.openweathermap.org/data/2.5/weather?q=" + location + "&appid=" + API_KEY;
-    public string weather;
+    private string weather;
 
     public Material clear;
     public Material cloudy;
