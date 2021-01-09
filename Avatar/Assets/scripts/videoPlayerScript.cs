@@ -14,6 +14,8 @@ public class videoPlayerScript : MonoBehaviour
     public Animator animator;
     public Animator avatorAnimator;
 
+    public float slideInProg = 0.0f;
+
     void Start()
     {
         paused = true;
@@ -52,6 +54,12 @@ public class videoPlayerScript : MonoBehaviour
         {
             StopVideo();
         }
+
+        RectTransform rt = GetComponent<RectTransform>();
+        float ratio = 16.0f / 9.0f;
+        float vid_width = Screen.width * 0.8f;
+        rt.sizeDelta = new Vector2(vid_width, vid_width / ratio);
+        rt.anchoredPosition = new Vector2((1-slideInProg)*Screen.width + Screen.width * 0.08f, 0);
     }
 
     public void StopVideo()
