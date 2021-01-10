@@ -13,7 +13,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Bubbles
   - 
   - 
   - 
@@ -38,6 +38,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Bubbles
+    uniqueID: 1218430785
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
