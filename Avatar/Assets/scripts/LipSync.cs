@@ -6,228 +6,272 @@ using UnityEngine.Networking;
 public class LipSync : MonoBehaviour
 {
 
-    class ArrChar
-    {
-        public float[] vals;
-        public char character;
+    public bool receivedText = false;
+    public bool receivedAudio = false;
 
-        public ArrChar(float[] vals, char character)
-        {
-            this.vals = vals;
-            this.character = character;
-        }
-    }
+    public string speechurl = "";
 
-    public SkinnedMeshRenderer MTH_DEF;
-    [HideInInspector]
-    public bool getAudio = false;
-
+    private Animator anim;
+    private Queue<char> lipsyncQueue = new Queue<char>();
     private AudioSource thisaudiosource;
-    private const int mthIndexA = 6;
-    private const int mthIndexE = 9;
-    private const int mthIndexI = 7;
-    private const int mthIndexO = 10;
-    private const int mthIndexU = 8;
-    private const float mouthdelay = 0.15f;
-    private const float punctuationdelayvowel = 0.3f;
-    private const float punctuationdelayconso = 0.1f;
-    private const float consonantdelay = 0.6f * mouthdelay;
 
-    private bool receivedText = false;
-    private bool receivedAudio = false;
+    private float timer = 0;
+    private float syllabletime = 0.05f;
+    private float crossfadetime = 0.25f;
 
-    private Dictionary<char, float[]> charMouthMappings = new Dictionary<char, float[]>()
-    {
-        { 'j', aeiou(0, 0, 0, 0, 75) },
-        { 'ɪ', aeiou(30, 75, 0, 0, 0) },
-        { 'i', aeiou(10, 75, 0, 0, 0) },
-        { 'ɛ', aeiou(10, 75, 0, 0 ,0) },
-        { 'o', aeiou(0, 0, 0, 50, 0) },
-        { 'ʊ', aeiou(0, 0, 0, 20 , 75) },
-        { 'æ', aeiou(100, 0, 0, 0, 0 ) },
-        { 'f', aeiou(0, 75, 75, 0, 0) },
-        { 'θ', aeiou(0, 75, 75, 0, 0) },
-        { 'a', aeiou(0, 0, 0, 75 , 0 ) },
-        { 'd', aeiou(0, 0, 75, 0, 0) },
-        { 'ə', aeiou(75, 0, 0, 0 , 0) },
-        { 's', aeiou(0, 0, 75, 0, 0) },
-        { 'ð', aeiou(0, 0, 75, 0, 0) },
-        { 'p', aeiou(0, 0, 75, 0, 30) },
-        { 't', aeiou(0, 0, 75, 0, 0) },
-        { 'w', aeiou(0, 0, 0, 0, 75) },
-        { 'e', aeiou(10, 75, 0, 0, 0) },
-        { 'g', aeiou(0, 0, 75, 0, 0) },
-        { 'u', aeiou(0, 0, 0 , 30, 75) }
+    private float timeoutTimer = 0;
+    private float timeoutTime = 1f; //in seconds
+    public bool startTimeout = false;
+
+    private float currentAverageVolume = 0;
+    private float volumeThreshold = 0.0001f;
+    private bool isSilent { get => currentAverageVolume < volumeThreshold; }
+
+    [HideInInspector]
+    public bool getAudio;
+    private List<char> supportedIPA = new List<char>()
+    {   'j',
+        'ɪ',
+        'i',
+        'ɛ',
+        'o',
+        'ʊ',
+        'æ',
+        'f',
+        'θ',
+        'a',
+        'd',
+        'ə',
+        's',
+        'ð',
+        'p',
+        't',
+        'w',
+        'e',
+        'g',
+        'u',
+        'n',
+        'm'
     };
 
-    private List<char> consonants = new List<char>() { 'f', 'θ', 'd', 's', 'ð', 'p', 't' };
-    private List<char> punctuation = new List<char>() { ',', '.' };
-
-    private Queue<ArrChar> lipsyncQueue = new Queue<ArrChar>();
-    private float currentdelay = mouthdelay;
-    private float[] currentvals = new float[] { 0,0,0,0,0 };
-
-    private void Start()
+    private Dictionary<char, float> IPATimeMod = new Dictionary<char, float>()
     {
+        {'p', -0.1f},
+        {'s', -0.15f},
+        {'n', -0.1f},
+        {'u', -0.1f},
+        {'t', -0.1f},
+        {'ʊ', -0.1f}
+    };
+
+    void printarr<T>(T[] arr)
+    {
+        string s = "";
+        for (int i = 10000; i < 15000; i++)
+        {
+            if (i < arr.Length)
+            {
+                s += arr[i].ToString() + ", ";
+            }
+
+        }
+        print(s);
+    }
+
+    void Start()
+    {
+        anim = GetComponent<Animator>();
         thisaudiosource = GetComponent<AudioSource>();
+        //StartCoroutine(GetAlexaAudio());
+    }
+    float GetTimeMod(char c)
+    {
+        if (IPATimeMod.ContainsKey(c))
+        {
+            return IPATimeMod[c];
+        }
+        return 0;
+    }
+
+    public void lipsync(string IPA)
+    {
+        foreach (char c in IPA)
+        {
+            lipsyncQueue.Enqueue(c);
+        }
+        receivedText = true;
+    }
+
+    float getAverageVolume()
+    {
+        float[] clipSampleData = new float[1024];
+        thisaudiosource.GetSpectrumData(clipSampleData, 0, FFTWindow.Rectangular);
+        return System.Linq.Enumerable.Average(clipSampleData);
     }
 
     void Update()
     {
-
-        //check if the mouth is in the default position
-        bool isIdle =
-            currentvals[0] == 0 &&
-            currentvals[1] == 0 &&
-            currentvals[2] == 0 &&
-            currentvals[3] == 0 &&
-            currentvals[4] == 0;
-
-        //only increment if currentdelay < mouthdelay
-        if (currentdelay < mouthdelay)
-            currentdelay += Time.deltaTime;
-
-        //start lipsyncing when text and audio is received
-        if (receivedText && receivedAudio)
-        {
-            if (currentdelay < mouthdelay)
-            {
-                //if not idle and there is still text to lipsync
-                if (!isIdle && lipsyncQueue.Count > 0)
-                {
-                    //interpolate from the current mouth position to the next mouth position in the queue
-                    float[] interpolatedvals = interpolate(currentvals, lipsyncQueue.Peek().vals, mouthdelay, currentdelay );
-                    SetMouthShape(interpolatedvals);                    
-                }
-            }
-            //when currentdelay reaches mouthdelay, and there is still text to lipsync
-            else if (lipsyncQueue.Count > 0)
-            {
-                ArrChar a = lipsyncQueue.Dequeue();
-                float[] vals = a.vals; //dequeued text's aeiou values
-                SetMouthShape(vals); //set the mouth shape to the dequeued text's aeiou values
-                currentdelay = 0;
-
-                //different delay based on type of character
-                if (punctuation.Contains(a.character))
-                {
-                    currentdelay = -punctuationdelayvowel;
-
-                    if (lipsyncQueue.Count > 0 && consonants.Contains(lipsyncQueue.Peek().character))
-                    {
-                        currentdelay = -punctuationdelayconso;
-                    }
-                }
-                else if (consonants.Contains(a.character))
-                {
-                    currentdelay = consonantdelay;
-                }
-
-            }
-            //reset mouth when idle
-            else if (!isIdle)
-            {
-                lipsyncQueue.Enqueue(new ArrChar(new float[] { 0, 0, 0, 0, 0 }, ' '));
-                currentdelay = 0;
-                receivedText = false;
-                receivedAudio = false;
-            }
-
-
-        }
-        //keep on interpolating towards default mouth position when not idle
-        else if (!isIdle)
-        {
-            float[] interpolatedvals = interpolate(currentvals, new float[] { 0, 0, 0, 0, 0}, mouthdelay, currentdelay / 2f);
-            SetMouthShape(interpolatedvals);
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-
-            //lipsync("hɛˈloʊ"); //hello
-            //lipsync("'ˈjunɪti"); //unity
-            //lipsync("hɛˈloʊfʊt");
-            //lipsync("'ˈsɑri aɪ dɪd nɑt ˌəndərˈstænd ðət, pliz traɪ əˈgɛn'");
-            //lipsync("haɪ, ˈwɛlkəm tɪ blu, jʊr ˈpərsɪnəl læb əˈsɪstənt. haʊ meɪ aɪ hɛlp ju təˈdeɪ");
-            //lipsync("sɑri aɪ kʊd nɑt ˈrɛkəgˌnaɪz ðət ˈkəmpəˌni, pliz traɪ əˈgɛn");
-            //lipsync("ˈkəmpəˌni, pliz traɪ əˈgɛn");
-            //StartLipSync();
-        }
+        currentAverageVolume = getAverageVolume();
 
         if (getAudio)
         {
             getAudio = false;
             StartCoroutine(GetAlexaAudio());
         }
-    }
-
-    public void lipsync(string IPA)
-    {
-        foreach (char c in IPA)
-        {           
-            if (punctuation.Contains(c))
-            {
-                //fixed mouth shape for punctuation
-                lipsyncQueue.Enqueue(new ArrChar(new float[] { 0, 0, 100, 0, 0 }, c));
-            }
-            else if (charMouthMappings.ContainsKey(c))
-            {
-                lipsyncQueue.Enqueue(new ArrChar(charMouthMappings[c], c));
-            }
-        }
-        receivedText = true;
-    }
-
-    public void delay(float secs)
-    {
-        currentdelay -= secs;
-    }
-
-    //linearly interpolate each value from a to b
-    float[] interpolate(float[] a, float[] b, float totalTime, float t)
-    {
-        float[] outp = new float[a.Length];
-        for (int i = 0; i < a.Length; i++)
+        if (timer < syllabletime)
         {
-            outp[i] = ((b[i] - a[i])/totalTime) * Mathf.Max(t, 0) + a[i];
+            timer += Time.deltaTime;
         }
-        return outp;
-    }
 
-    void SetMouthShape(float[] AEIOU)
-    {
-        MTH_DEF.SetBlendShapeWeight(mthIndexA, AEIOU[0]);
-        MTH_DEF.SetBlendShapeWeight(mthIndexE, AEIOU[1]);
-        MTH_DEF.SetBlendShapeWeight(mthIndexI, AEIOU[2]);
-        MTH_DEF.SetBlendShapeWeight(mthIndexO, AEIOU[3]);
-        MTH_DEF.SetBlendShapeWeight(mthIndexU, AEIOU[4]);
-        currentvals = AEIOU;
-    }
-
-    void printarr(float[] f)
-    {
-        string s = "";
-        foreach (float g in f)
+        if (receivedText && receivedAudio && timer >= syllabletime)
         {
-            s += g.ToString() + ",";
-        }
-        print(s);
+            if (!startTimeout)
+            {
+                timeoutTimer = 0;
+                startTimeout = true;
+            }
 
+            if (isSilent)
+            {
+                SetMouthShape('\0', crossfadetime / 2f);
+            }
+            else
+            {
+                timeoutTimer = 0;
+                if (lipsyncQueue.Count > 0)
+                {
+
+                    char c = lipsyncQueue.Dequeue();
+                    //print(c);
+                    if (supportedIPA.Contains(c))
+                    {
+                        //print(c);
+                        timer = 0;
+                        SetMouthShape(c, crossfadetime + GetTimeMod(c));
+                    }
+
+
+                }
+            }
+
+            if (lipsyncQueue.Count == 0)
+            {
+                startTimeout = false;
+                receivedAudio = false;
+                receivedText = false;
+                anim.SetBool("isTalking", false);
+                SetMouthShape("smile", crossfadetime);
+            }
+        }
+        if (startTimeout)
+        {
+            if (timeoutTimer < timeoutTime)
+            {
+                timeoutTimer += Time.deltaTime;
+            }
+            else
+            {
+                startTimeout = false;
+                lipsyncQueue.Clear();
+            }
+        }
+
+        //for testing
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            StartCoroutine(GetAlexaAudioHi());
+            //lipsync("hɛˈloʊ"); //hello
+            //lipsync("'ˈjunɪti"); //unity
+            //lipsync("hɛˈloʊfʊt");
+            //lipsync("'ˈsɑri aɪ dɪd nɑt ˌəndərˈstænd ðət, pliz traɪ əˈgɛn'");
+            lipsync("haɪ, ˈwɛlkəm tɪ blu, jʊr ˈpərsɪnəl læb əˈsɪstənt. haʊ meɪ aɪ hɛlp ju təˈdeɪ");
+            //lipsync("sɑri aɪ kʊd nɑt ˈrɛkəgˌnaɪz ðət ˈkəmpəˌni, pliz traɪ əˈgɛn");
+            //lipsync("kʊd");
+            //lipsync("ˈkəmpəˌni, pliz traɪ əˈgɛn");
+            //StartLipSync();
+            //GetComponent<OVRLipSyncContext>().audioSource = thisaudiosource;
+            //receivedAudio = true;
+        }
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            StartCoroutine(GetAlexaAudioSorry());
+            //lipsync("hɛˈloʊ"); //hello
+            //lipsync("'ˈjunɪti"); //unity
+            //lipsync("hɛˈloʊfʊt");
+            //lipsync("'ˈsɑri aɪ dɪd nɑt ˌəndərˈstænd ðət, pliz traɪ əˈgɛn'");
+            //lipsync("haɪ, ˈwɛlkəm tɪ blu, jʊr ˈpərsɪnəl læb əˈsɪstənt. haʊ meɪ aɪ hɛlp ju təˈdeɪ");
+            lipsync("sɑri aɪ kʊd nɑt ˈrɛkəgˌnaɪz ðət ˈkəmpəˌni, pliz traɪ əˈgɛn");
+            //lipsync("kʊd");
+            //lipsync("ˈkəmpəˌni, pliz traɪ əˈgɛn");
+            //StartLipSync();
+            //GetComponent<OVRLipSyncContext>().audioSource = thisaudiosource;
+            //receivedAudio = true;
+        }
     }
 
-    static float[] aeiou(float a, float e, float i, float o, float u)
+    void SetMouthShape(char c, float crossfade)
     {
-        return new float[] { a, e, i, o, u };
+        anim.SetBool("isTalking", true);
+        if (new List<char>() { 'a', 'e', 'i', 'o', 'u' }.Contains(c))
+        {
+            anim.CrossFade(("MTH_" + c).ToUpper(), crossfade);
+        }
+        else
+        {
+            if (c.Equals('\0'))
+            {
+                anim.CrossFade("MTH_none", crossfade);
+            }
+            else
+            {
+                anim.CrossFade("MTH_" + c, crossfade);
+            }
+
+        }
+    }
+
+    void SetMouthShape(string c, float crossfade)
+    {
+        anim.SetBool("isTalking", true);
+        anim.CrossFade("MTH_" + c, crossfade);
     }
 
     public IEnumerator GetAlexaAudio()
     {
-        UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort.ToString(), AudioType.WAV);
+        //UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort.ToString(), AudioType.MPEG);
+        UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("https:" + speechurl, AudioType.MPEG);
         yield return www.SendWebRequest();
-        thisaudiosource.clip = DownloadHandlerAudioClip.GetContent(www);
+        //#if UNITY_EDITOR
+        thisaudiosource.clip = NAudioPlayer.FromMp3Data(www.downloadHandler.data);
+        //#else
+        //        thisaudiosource.clip = DownloadHandlerAudioClip.GetContent(www);
+        //#endif
+        www.Abort();
         thisaudiosource.Play();
         receivedAudio = true;
     }
 
+    //for testing
+    public IEnumerator GetAlexaAudioHi()
+    {
+        UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort.ToString() + "/hi", AudioType.WAV);
+        yield return www.SendWebRequest();
+        thisaudiosource.clip = DownloadHandlerAudioClip.GetContent(www);
+        www.Abort();
+
+        thisaudiosource.Play();
+        receivedAudio = true;
+    }
+
+    //for testing
+    public IEnumerator GetAlexaAudioSorry()
+    {
+        UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort.ToString() + "/sorry", AudioType.WAV);
+        yield return www.SendWebRequest();
+        thisaudiosource.clip = DownloadHandlerAudioClip.GetContent(www);
+        www.Abort();
+
+        thisaudiosource.Play();
+        receivedAudio = true;
+    }
 }

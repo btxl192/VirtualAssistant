@@ -76,6 +76,7 @@ public class player : MonoBehaviour
 
         }
 
+        /*
         //This is the temporary toggle for the mouth animations to start
         if (isTalking)
         {
@@ -97,7 +98,7 @@ public class player : MonoBehaviour
 
         //fix this to default layer if you're not talking
         animator.SetLayerWeight(1, current);
-
+        */
     }
 
     void SetIdleTime()

@@ -60,8 +60,9 @@ public class WebsocketHandler : MonoBehaviour
 
     void HandleMsg(string msg)
     {
-        string control = msg.Split(':')[0].Trim();
-        string text = msg.Split(':')[1].Trim();
+        string[] msgsplit = msg.Split(':');
+        string control = msgsplit[0].Trim();
+        string text = msgsplit[1].Trim();
 
         switch (control)
         {
@@ -79,6 +80,15 @@ public class WebsocketHandler : MonoBehaviour
                 break;
             case "AlexaResponse":
                 print("GOT ALEXA RESPONSE: " + msg);
+                break;
+            case "UserInput":
+                print("user input: " + msg);
+                break;
+            case "Emotion":
+                GetComponent<Emotion>().SetEmotion(msg);
+                break;
+            case "SpeechUrl":
+                thislipsync.speechurl = msgsplit[2];
                 break;
             default:
                 Debug.LogWarning("Unhandled control message:    " + msg);
