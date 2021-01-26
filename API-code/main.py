@@ -14,7 +14,7 @@ import importlib
 import os
 import sys
 
-current_session_id = ""
+current_session_id = None
 
 #class to handle the launch intent
 class LaunchRequestHandler(AbstractRequestHandler):
@@ -24,7 +24,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         s = handler_input.request_envelope.session
-        if current_session_id == "":
+        if current_session_id == None:
             current_session_id = s["session_id"]
         else:
             s["session_id"] = current_session_id
