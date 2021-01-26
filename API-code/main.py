@@ -14,6 +14,8 @@ import importlib
 import os
 import sys
 
+current_session_id = None
+
 #class to handle the launch intent
 class LaunchRequestHandler(AbstractRequestHandler):
     """Handler for Skill Launch."""
@@ -21,6 +23,12 @@ class LaunchRequestHandler(AbstractRequestHandler):
         return is_request_type("LaunchRequest")(handler_input)
 
     def handle(self, handler_input):
+        s = handler_input.request_envelope.session
+        if current_session_id == None:
+            current_session_id = s["session_id"]
+        else:
+            s["session_id"] = current_session_id
+        print(handler_input.request_envelope.session)
         speech_text = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"
         socketio.emit("message", "Speech: " + ipa.convert(speech_text))
         socketio.emit("message", "AlexaResponse: " + speech_text)
