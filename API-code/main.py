@@ -13,6 +13,7 @@ import eventlet
 import importlib
 import os
 import sys
+import json
 
 #class to handle the launch intent
 class LaunchRequestHandler(AbstractRequestHandler):
@@ -24,8 +25,8 @@ class LaunchRequestHandler(AbstractRequestHandler):
         speech_text = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"
         t = {"Speech": ipa.convert(speech_text)}
         t2 = {"AlexaResponse": speech_text}
-        socketio.emit("message", str(t))
-        socketio.emit("message", str(t2))
+        socketio.emit("message", json.dumps(t))
+        socketio.emit("message", json.dumps(t2))
         return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
 #class to handle the session end intent
