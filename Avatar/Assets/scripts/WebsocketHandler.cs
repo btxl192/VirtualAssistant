@@ -59,41 +59,41 @@ public class WebsocketHandler : MonoBehaviour
         else { print("Unkown Error"); }
     }
 
-    void HandleMsg(string msg)
+    void HandleMsg(string jsonmsgfull)
     {
-        JObject msgjson = JObject.Parse(msg);
+        JObject msgjson = JObject.Parse(jsonmsgfull);
 
         string messageTitle = msgjson.Properties().Select(p => p.Name).ToList()[0];
-        string text = msgjson.Value<string>(messageTitle);
+        string messageText = msgjson.Value<string>(messageTitle);
 
         switch (messageTitle)
         {
             case "VidControl":
-                VidControl(text);
+                VidControl(messageText);
                 break;
             case "Speech":
-                thislipsync.lipsync(text);
+                thislipsync.lipsync(messageText);
                 break;
             case "SpeechControl":
-                if (text.ToLower().Equals("written"))
+                if (messageText.ToLower().Equals("written"))
                 {
                     thislipsync.getAudio = true;
                 }
                 break;
             case "AlexaResponse":
-                print("GOT ALEXA RESPONSE: " + msg);
+                print("GOT ALEXA RESPONSE: " + jsonmsgfull);
                 break;
             case "UserInput":
-                print("user input: " + msg);
+                print("user input: " + jsonmsgfull);
                 break;
             case "Emotion":
-                GetComponent<Emotion>().SetEmotion(msg);
+                GetComponent<Emotion>().SetEmotion(messageText);
                 break;
             case "SpeechUrl":
-                thislipsync.speechurl = msg;
+                thislipsync.speechurl = messageText;
                 break;
             default:
-                Debug.LogWarning("Unhandled control message:    " + msg);
+                Debug.LogWarning("Unhandled control message:    " + jsonmsgfull);
                 break;
         }
 
