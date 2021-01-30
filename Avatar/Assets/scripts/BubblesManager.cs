@@ -34,6 +34,8 @@ public class BubblesManager : MonoBehaviour
     private float bubbleAnimationDelay = 0.6f;
 
     private player thisplayer;
+    private Animator videoAnimator;
+
     private bool areDisplayed;
     DateTime timeLastSpoke;
 
@@ -114,7 +116,9 @@ public class BubblesManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        thisplayer = GetComponent<player>();
+        // thisplayer = GetComponent<player>();
+        thisplayer = GameObject.Find("unitychan").GetComponent<player>();
+        videoAnimator = GameObject.Find("Video Player").GetComponent<Animator>();
         timeLastSpoke = DateTime.Now;
         StartCoroutine(openBubbles());
         areDisplayed = true;
@@ -126,7 +130,13 @@ public class BubblesManager : MonoBehaviour
         DateTime now = DateTime.Now;
         double seconds = (now - timeLastSpoke).TotalSeconds;
         bool isTalking = thisplayer.isTalking;
-        if(isTalking){
+        if(videoAnimator.GetBool("stopped") == false){
+        	if(areDisplayed){
+        		StartCoroutine(closeBubbles());
+                areDisplayed = false;
+        	}
+        }
+        else if(isTalking){
             if(areDisplayed){
                 StartCoroutine(closeBubbles());
                 areDisplayed = false;
@@ -134,8 +144,10 @@ public class BubblesManager : MonoBehaviour
             timeLastSpoke = DateTime.Now;
         }
         else if (seconds > 30){
-            StartCoroutine(openBubbles());
-            areDisplayed = true;
+        	if(!areDisplayed){
+	            StartCoroutine(openBubbles());
+	            areDisplayed = true;
+	        }
         }
     }
 }
