@@ -5,6 +5,7 @@ using EngineIOSharp.Common.Enum;
 using SocketIOSharp.Client;
 using SocketIOSharp.Common;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 public class WebsocketHandler : MonoBehaviour
 {
@@ -30,7 +31,7 @@ public class WebsocketHandler : MonoBehaviour
         {
             if (Data != null && Data.Length > 0 && Data[0] != null)
             {
-                print(config.domainName + "ws Message : " + Data[0]);
+                //print(config.domainName + "ws Message : " + Data[0]); //debug message
                 HandleMsg(Data[0].ToString());
             }
         });
@@ -43,7 +44,7 @@ public class WebsocketHandler : MonoBehaviour
         {
             if (Data != null && Data.Length > 0 && Data[0] != null)
             {
-                print(config.alexaResponseIP + "ws Message : " + Data[0]);
+                //print(config.alexaResponseIP + "ws Message : " + Data[0]); //debug message
                 HandleMsg(Data[0].ToString());
             }
         });
@@ -60,11 +61,12 @@ public class WebsocketHandler : MonoBehaviour
 
     void HandleMsg(string msg)
     {
-        string[] msgsplit = msg.Split(':');
-        string control = msgsplit[0].Trim();
-        string text = msgsplit[1].Trim();
+        JObject msgjson = JObject.Parse(msg);
 
-        switch (control)
+        string messageTitle = msgjson.Properties().Select(p => p.Name).ToList()[0];
+        string text = msgjson.Value<string>(messageTitle);
+
+        switch (messageTitle)
         {
             case "VidControl":
                 VidControl(text);
@@ -88,7 +90,7 @@ public class WebsocketHandler : MonoBehaviour
                 GetComponent<Emotion>().SetEmotion(msg);
                 break;
             case "SpeechUrl":
-                thislipsync.speechurl = msgsplit[2];
+                thislipsync.speechurl = msg;
                 break;
             default:
                 Debug.LogWarning("Unhandled control message:    " + msg);
