@@ -26,7 +26,5 @@ class CompanyInfoIntent(intent_base):
         except (TypeError, AttributeError) as e:
             sector = None
     
-        output_speech = company_info_intent(company, sector)
-        self.push_to_notifier_speech(output_speech)
-        self.response = output_speech
+        self.response = company_info_intent(company, sector)
         self.user_input = "Asked for info about " + company

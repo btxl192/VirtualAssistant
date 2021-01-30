@@ -20,6 +20,5 @@ class NavigationIntent(intent_base):
 
         output_speech = navigation_intent(room)
         print(output_speech)
-        self.push_to_notifier_speech(output_speech)
         self.response = output_speech
         self.user_input = "Asked for navigation to " + room

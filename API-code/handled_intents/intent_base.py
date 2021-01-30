@@ -30,16 +30,13 @@ class intent_base(AbstractRequestHandler):
         self.action(handler_input.request_envelope.request.intent)
         self.push_to_notifier("AlexaResponse", self.response)
         self.push_to_notifier("UserInput", self.user_input)
+        
+        t = ipa.convert(self.response)
+        push_to_notifier("Speech", t)
         return handler_input.response_builder.speak(self.response).set_should_end_session(self.should_end_session).response
 
     #Sends a message through the websocket to the Unity client
     def push_to_notifier(self, message_title, message_text):
         t = json.dumps({message_title: message_text})
         print(f"Pushing [{t}] to notifier")       
-        self.notifier.emit("message", f"{t}")
-
-    def push_to_notifier_speech(self, text):
-        t = ipa.convert(text)
-        t2 = json.dumps({"Speech": t})
-        print(f"Pushing [{t2}] to notifier")
-        self.notifier.emit("message", f"{t2}")    
+        self.notifier.emit("message", f"{t}")  
