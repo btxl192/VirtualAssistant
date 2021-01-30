@@ -22,8 +22,10 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         speech_text = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"
-        socketio.emit("message", "Speech: " + ipa.convert(speech_text))
-        socketio.emit("message", "AlexaResponse: " + speech_text)
+        t = {"Speech": ipa.convert(speech_text)}
+        t2 = {"AlexaResponse": speech_text}
+        socketio.emit("message", str(t))
+        socketio.emit("message", str(t2))
         return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
 #class to handle the session end intent
