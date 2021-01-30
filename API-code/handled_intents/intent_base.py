@@ -32,7 +32,7 @@ class intent_base(AbstractRequestHandler):
         self.push_to_notifier("UserInput", self.user_input)
         
         t = ipa.convert(self.response)
-        push_to_notifier("Speech", t)
+        self.push_to_notifier("Speech", t)
         return handler_input.response_builder.speak(self.response).set_should_end_session(self.should_end_session).response
 
     #Sends a message through the websocket to the Unity client
