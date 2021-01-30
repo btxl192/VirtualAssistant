@@ -3,38 +3,35 @@ from selenium import webdriver
 import time
 import requests
 import os
-
+import time
 
 def get_alexa_output():
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--mute-audio")
-
+    chrome_options.add_argument('--no-sandbox')
     chrome_webdriver = webdriver.Chrome(chrome_options=chrome_options)
     chrome_webdriver.get("https://developer.amazon.com/alexa/console/ask/test/amzn1.ask.skill.fa7cfeb1-e524-4024-a258-5249bec81e5f/development/en_GB/")
 
-    listen_length = 0
-    delay = 0.5
+    listen_length = 3000
+    delay = 0.01
     current_time = 0
     prev_res = None
 
     js_to_run = 'return window.performance.getEntries().filter(n => n["name"].includes("mp3")).pop()'
 
-    while listen_length == 0 or current_time < listen_length:
+    while listen_length == 0 or current_time < listen_length:        
         resource_json = chrome_webdriver.execute_script(js_to_run)
         if resource_json != None and resource_json != prev_res:
             prev_res = resource_json
-            print("=============================================")
-            print(resource_json)
-            alexa_audio = requests.get(resource_json["name"])
-            mp3 = open("alexa_audio.mp3", "wb")
-            mp3.write(alexa_audio.content)
-            sound = AudioSegment.from_mp3(os.path.realpath(mp3.name))
-            sound.export("alexa_audio.wav", format="wav")
-            socketio.emit("message", "SpeechControl: written")
+            t = {"SpeechUrl": resource_json["name"]}
+            socketio.emit("message", str(t))
+            t2 = {"SpeechControl": "written"}
+            socketio.emit("message", str(t2))
+            print("Sent audio to Unity!")
         socketio.sleep(delay)
         if (listen_length > 0):
             current_time += delay
-    
+
 from flask import Flask, send_file
 from flask_socketio import SocketIO, emit
 from eventlet import wsgi
@@ -45,7 +42,17 @@ socketio = SocketIO(app, async_mode = "eventlet")
 
 @app.route("/")
 def myhome():
-    return send_file("alexa_audio.wav")
+    return send_file("alexa_audio.mp3")
+    
+#for testing
+@app.route("/sorry")
+def sorry():
+    return send_file("alexa_audio_sorry.wav")
+
+#for testing
+@app.route("/hi")
+def hi():
+    return send_file("alexa_audio_hi.wav")
 
 @socketio.on('connect')
 def test_connect():
@@ -57,5 +64,3 @@ def test_disconnect():
     
 socketio.start_background_task(target=get_alexa_output)
 wsgi.server(eventlet.listen(('', 5000)), app)
-    
-    
