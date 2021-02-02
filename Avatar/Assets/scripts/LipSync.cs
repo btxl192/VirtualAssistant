@@ -5,11 +5,11 @@ using UnityEngine.Networking;
 
 public class LipSync : MonoBehaviour
 {
-
-    public bool receivedText = false;
-    public bool receivedAudio = false;
-
+    [HideInInspector]
     public string speechurl = "";
+
+    private bool receivedText = false;
+    private bool receivedAudio = false;
 
     private Animator anim;
     private Queue<char> lipsyncQueue = new Queue<char>();
@@ -21,7 +21,7 @@ public class LipSync : MonoBehaviour
 
     private float timeoutTimer = 0;
     private float timeoutTime = 1f; //in seconds
-    public bool startTimeout = false;
+    private bool startTimeout = false;
 
     private float currentAverageVolume = 0;
     private float volumeThreshold = 0.0001f;
@@ -160,7 +160,7 @@ public class LipSync : MonoBehaviour
                 receivedAudio = false;
                 receivedText = false;
                 anim.SetBool("isTalking", false);
-                SetMouthShape("smile", crossfadetime);
+                SetMouthShape("default", crossfadetime);
             }
         }
         if (startTimeout)
@@ -171,6 +171,7 @@ public class LipSync : MonoBehaviour
             }
             else
             {
+                print("TIMEOUT ENDED");
                 startTimeout = false;
                 lipsyncQueue.Clear();
             }
