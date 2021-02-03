@@ -8,6 +8,7 @@ import json
     
 class intent_base(AbstractRequestHandler):
     response = None
+    emotion = None
     notifier = None
     user_input = None
     should_end_session = False
@@ -32,7 +33,11 @@ class intent_base(AbstractRequestHandler):
         self.push_to_notifier("UserInput", self.user_input)
         
         t = ipa.convert(self.response)
-        self.push_to_notifier("Speech", t)
+        unity_speech = {"Speech": t}
+        if self.emotion != None:
+            unity_speech["Emotion"] = self.emotion
+        self.push_to_notifier(unity_speech)
+        self.emotion = None
         return handler_input.response_builder.speak(self.response).set_should_end_session(self.should_end_session).response
 
     #Sends a message through the websocket to the Unity client
@@ -40,3 +45,9 @@ class intent_base(AbstractRequestHandler):
         t = json.dumps({message_title: message_text})
         print(f"Pushing [{t}] to notifier")       
         self.notifier.emit("message", f"{t}")  
+
+    #takes a dictionary as a parameter
+    def push_to_notifier(self, messages):
+        t = json.dumps(messages)
+        print(f"Pushing [{t}] to notifier")       
+        self.notifier.emit("message", f"{t}") 
