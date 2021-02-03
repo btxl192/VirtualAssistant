@@ -36,7 +36,7 @@ class intent_base(AbstractRequestHandler):
         unity_speech = {"Speech": t}
         if self.emotion != None:
             unity_speech["Emotion"] = self.emotion
-        self.push_to_notifier(unity_speech)
+        self.push_to_notifier_dict(unity_speech)
         self.emotion = None
         return handler_input.response_builder.speak(self.response).set_should_end_session(self.should_end_session).response
 
@@ -47,7 +47,7 @@ class intent_base(AbstractRequestHandler):
         self.notifier.emit("message", f"{t}")  
 
     #takes a dictionary as a parameter
-    def push_to_notifier(self, messages):
+    def push_to_notifier_dict(self, messages):
         t = json.dumps(messages)
         print(f"Pushing [{t}] to notifier")       
         self.notifier.emit("message", f"{t}") 
