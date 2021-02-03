@@ -9,6 +9,7 @@ def get_company_info(company):
 def company_info_intent(company, sector):
     company_info = get_company_info(company)
     if company_info is None:
+        self.emotion = "ASHAMED"
         return "Sorry I could not recognise that company, please try again"
     if sector is None:
         return company_info.get("about")[0]
