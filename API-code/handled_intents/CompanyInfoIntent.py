@@ -15,6 +15,7 @@ def company_info_intent(company, sector):
     elif sector in company_info.keys():
         return company_info.get(sector)[0]
     else:
+        self.emotion = "ASHAMED"
         return "Sorry I could not recognise that sector, please try again"
 
 class CompanyInfoIntent(intent_base):
