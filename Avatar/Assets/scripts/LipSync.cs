@@ -5,13 +5,17 @@ using UnityEngine.Networking;
 
 public class LipSync : MonoBehaviour
 {
+
+    [HideInInspector]
+    public bool hasEmotion = false;
+
     [HideInInspector]
     public string speechurl = "";
 
     private bool receivedText = false;
     private bool receivedAudio = false;
 
-    private Animator anim;
+    public Animator anim { get; private set; }
     private Queue<char> lipsyncQueue = new Queue<char>();
     private AudioSource thisaudiosource;
 
@@ -26,6 +30,8 @@ public class LipSync : MonoBehaviour
     private float currentAverageVolume = 0;
     private float volumeThreshold = 0.0001f;
     private bool isSilent { get => currentAverageVolume < volumeThreshold; }
+
+    private Emotion thisemotion;
 
     [HideInInspector]
     public bool getAudio;
@@ -82,6 +88,7 @@ public class LipSync : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         thisaudiosource = GetComponent<AudioSource>();
+        thisemotion = GetComponent<Emotion>();
         //StartCoroutine(GetAlexaAudio());
     }
     float GetTimeMod(char c)
@@ -129,6 +136,11 @@ public class LipSync : MonoBehaviour
             {
                 timeoutTimer = 0;
                 startTimeout = true;
+                if (hasEmotion)
+                {
+                    thisemotion.PlayEmotion();
+                }
+                
             }
 
             if (isSilent)
@@ -161,6 +173,7 @@ public class LipSync : MonoBehaviour
                 receivedText = false;
                 anim.SetBool("isTalking", false);
                 SetMouthShape("default", crossfadetime);
+                thisemotion.StopEmotion();
             }
         }
         if (startTimeout)
@@ -171,7 +184,6 @@ public class LipSync : MonoBehaviour
             }
             else
             {
-                print("TIMEOUT ENDED");
                 startTimeout = false;
                 lipsyncQueue.Clear();
             }

@@ -13,6 +13,7 @@ public class WebsocketHandler : MonoBehaviour
     private videoPlayerScript videoPlayer;
     private player thisplayer;
     private LipSync thislipsync;
+    private Emotion thisemotion;
     private SocketIOClient alexaWs;
     private SocketIOClient localWs;
 
@@ -20,6 +21,7 @@ public class WebsocketHandler : MonoBehaviour
     {
         thisplayer = GetComponent<player>();
         thislipsync = GetComponent<LipSync>();
+        thisemotion = GetComponent<Emotion>();
 
         videoPlayer = GameObject.Find("Video Player").GetComponent<videoPlayerScript>();
 
@@ -62,40 +64,46 @@ public class WebsocketHandler : MonoBehaviour
     void HandleMsg(string jsonmsgfull)
     {
         JObject msgjson = JObject.Parse(jsonmsgfull);
-
-        string messageTitle = msgjson.Properties().Select(p => p.Name).ToList()[0];
-        string messageText = msgjson.Value<string>(messageTitle);
-
-        switch (messageTitle)
+        List<string> jsonkeys = msgjson.Properties().Select(p => p.Name).ToList();
+        foreach (string messageTitle in jsonkeys)
         {
-            case "VidControl":
-                VidControl(messageText);
-                break;
-            case "Speech":
-                thislipsync.lipsync(messageText);
-                break;
-            case "SpeechControl":
-                if (messageText.ToLower().Equals("written"))
-                {
-                    thislipsync.getAudio = true;
-                }
-                break;
-            case "AlexaResponse":
-                print("GOT ALEXA RESPONSE: " + jsonmsgfull);
-                break;
-            case "UserInput":
-                print("user input: " + jsonmsgfull);
-                break;
-            case "Emotion":
-                GetComponent<Emotion>().SetEmotion(messageText);
-                break;
-            case "SpeechUrl":
-                thislipsync.speechurl = messageText;
-                break;
-            default:
-                Debug.LogWarning("Unhandled control message:    " + jsonmsgfull);
-                break;
-        }
+            string messageText = msgjson.Value<string>(messageTitle);
+
+            switch (messageTitle)
+            {
+                case "VidControl":
+                    VidControl(messageText);
+                    break;
+                case "Speech":
+                    thislipsync.hasEmotion = jsonkeys.Contains("Emotion");
+                    thislipsync.lipsync(messageText);
+                    break;
+                case "SpeechControl":
+                    if (messageText.ToLower().Equals("written"))
+                    {
+                        thislipsync.getAudio = true;
+                    }
+                    break;
+                case "AlexaResponse":
+                    print("GOT ALEXA RESPONSE: " + jsonmsgfull);
+                    break;
+                case "UserInput":
+                    print("user input: " + jsonmsgfull);
+                    break;
+                case "Emotion":
+                    if (thisemotion != null)
+                    {
+                        GetComponent<Emotion>().SetEmotion(messageText);
+                    }
+                    break;
+                case "SpeechUrl":
+                    thislipsync.speechurl = messageText;
+                    break;
+                default:
+                    Debug.LogWarning("Unhandled control message:    " + jsonmsgfull);
+                    break;
+            }
+        }     
 
     }
 
