@@ -34,7 +34,7 @@
 		processor.DataStabilizer.SamplesCount = 2;      // how many samples do we need to compute stable data
 
 		// performance data - some tricks to make it work faster
-		processor.Performance.Downscale = 256;          // processed image is pre-scaled down to N px by long side
+		processor.Performance.Downscale = 256;          // processed image is pre-scaled down to N px by long side ORIGINAL VALUE: 256
 		processor.Performance.SkipRate = 0;             // we actually process only each Nth frame (and every frame for skipRate = 0)
 	}
 
@@ -56,7 +56,9 @@
 
 		// split the screen into  7 segments
 		List<Double> segment = new List<Double>();
+		/*List<int> degrees = new List<int>(){15, 13, 10, 7, 5, 3, 0, -3, -5, -7, -10, -13, -15};*/
 		List<int> degrees = new List<int>(){15, 10, 5, 0, -5, -10, -15};
+		//List<int> degrees = new List<int>(){25, 15, 5, 0, -5, -15, -25};
 
 		for (int i = 0; i < 8; i++)
 		{

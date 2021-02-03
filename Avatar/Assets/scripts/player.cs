@@ -29,6 +29,7 @@ public class player : MonoBehaviour
         animator = GetComponent<Animator>();
         cameraFaceTracker = GameObject.Find("RawImage").GetComponent<FaceTracker>();
         unityChan = GameObject.Find("unitychan");
+        //neck = GameObject.Find("Character1_Head");
         SetIdleTime();
 
         GameObject main_camera = GameObject.Find("Main Camera");
@@ -43,22 +44,52 @@ public class player : MonoBehaviour
         y_rotation = cameraFaceTracker.rotation;
         //Debug.Log("Received: " + y_rotation);
 
-        //Rotate once
-        if (y_rotation != prev_rotation)
+        if (y_rotation != unityChan.transform.rotation.eulerAngles.y)
         {
-            float turning = y_rotation - unityChan.transform.rotation.eulerAngles.y;
-            unityChan.transform.Rotate(0.0f, turning, 0.0f, Space.Self);
-            prev_rotation = y_rotation;
+            Debug.Log("y rotation: " + y_rotation);
+
+            int unityAngle = System.Convert.ToInt32(unityChan.transform.rotation.eulerAngles.y);
+            if (unityAngle > 180)
+            {
+                unityAngle = unityAngle - 360;
+            }
+            //Debug.Log("after: " + unityAngle);
+            //Debug.Log("turning: " + turning);
+            //unityChan.transform.Rotate(new Vector3(0f, turning, 0f));
+            if (y_rotation > unityAngle)
+            {
+                unityChan.transform.Rotate(new Vector3(0f, 25f, 0f) * Time.deltaTime);
+                //neck.transform.Rotate(new Vector3(-25f, 0f, 0f) * Time.deltaTime);
+            }
+            else if (y_rotation < unityAngle)
+            {
+                unityChan.transform.Rotate(new Vector3(0f, -25f, 0f) * Time.deltaTime);
+                //neck.transform.Rotate(new Vector3(25f, 0f, 0f) * Time.deltaTime);
+            }
+
+
+/*            if (y_rotation != System.Convert.ToInt32(unityChan.transform.rotation.eulerAngles.y))
+            {
+                if (y_rotation > 0)
+                {
+                    unityChan.transform.Rotate(new Vector3(0f, 50f, 0f) * Time.deltaTime);
+                }
+                else if (y_rotation < 0)
+                {
+                    unityChan.transform.Rotate(new Vector3(0f, -50f, 0f) * Time.deltaTime);
+                }
+            }*/
+
         }
         
         //This cycles through the idle animations to be played after a certain amount of idle time
-        idleAnimation += Time.deltaTime;
+        //idleAnimation += Time.deltaTime;
         if (isTalking)
         {
             animator.Play("WAIT00", -1, 0f);
         }
 
-        if (idleAnimation > goneIdle)
+/*        if (idleAnimation > goneIdle)
         {
             idleAnimation = 0;
             SetIdleTime();
@@ -74,7 +105,7 @@ public class player : MonoBehaviour
                 idleAnimation = -7 - (this.animator.GetCurrentAnimatorClipInfo(0))[0].clip.length;
             }
 
-        }
+        }*/
 
         /*
         //This is the temporary toggle for the mouth animations to start
