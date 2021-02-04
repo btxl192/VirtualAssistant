@@ -130,7 +130,7 @@ public class LipSync : MonoBehaviour
             timer += Time.deltaTime;
         }
 
-        if (receivedText && receivedAudio && timer >= syllabletime)
+        if (receivedText && receivedAudio && (!hasEmotion || thisemotion.currentEmotion != null) && timer >= syllabletime)
         {
             if (!startTimeout)
             {

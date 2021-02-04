@@ -93,7 +93,7 @@ public class WebsocketHandler : MonoBehaviour
                 case "Emotion":
                     if (thisemotion != null)
                     {
-                        GetComponent<Emotion>().SetEmotion(messageText);
+                        thisemotion.SetEmotion(messageText);
                     }
                     break;
                 case "SpeechUrl":

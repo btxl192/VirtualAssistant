@@ -8,12 +8,13 @@ public class Emotion : MonoBehaviour
     public string emotionLayerName;
     private int emotionLayerIndex;
     private Animator anim;
-    private string currentEmotion = null;
+    public string currentEmotion { get; private set; }
 
     private void Start()
     {
         anim = GetComponent<LipSync>().anim;
         emotionLayerIndex = anim.GetLayerIndex(emotionLayerName);
+        currentEmotion = null;
     }
 
     public void SetEmotion(string s)
