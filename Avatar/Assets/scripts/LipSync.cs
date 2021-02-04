@@ -145,7 +145,7 @@ public class LipSync : MonoBehaviour
 
             if (isSilent)
             {
-                SetMouthShape('\0', crossfadetime / 2f);
+                SetMouthShape("none", crossfadetime / 2f);
             }
             else
             {
@@ -159,7 +159,7 @@ public class LipSync : MonoBehaviour
                     {
                         //print(c);
                         timer = 0;
-                        SetMouthShape(c, crossfadetime + GetTimeMod(c));
+                        SetMouthShape(c.ToString(), crossfadetime + GetTimeMod(c));
                     }
 
 
@@ -222,15 +222,16 @@ public class LipSync : MonoBehaviour
         }
     }
 
-    void SetMouthShape(char c, float crossfade)
+    void SetMouthShape(string c, float crossfade)
     {
         anim.SetBool("isTalking", true);
-        if (new List<char>() { 'a', 'e', 'i', 'o', 'u' }.Contains(c))
+        if (new List<string>() { "a", "e", "i", "o", "u" }.Contains(c))
         {
             anim.CrossFade(("MTH_" + c).ToUpper(), crossfade);
         }
         else
         {
+            /*
             if (c.Equals('\0'))
             {
                 anim.CrossFade("MTH_none", crossfade);
@@ -239,15 +240,18 @@ public class LipSync : MonoBehaviour
             {
                 anim.CrossFade("MTH_" + c, crossfade);
             }
-
+            */
+            anim.CrossFade("MTH_" + c, crossfade);
         }
     }
 
+    /*
     void SetMouthShape(string c, float crossfade)
     {
         anim.SetBool("isTalking", true);
         anim.CrossFade("MTH_" + c, crossfade);
     }
+    */
 
     public IEnumerator GetAlexaAudio()
     {
