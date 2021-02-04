@@ -1,9 +1,8 @@
 from pydub import AudioSegment
 from selenium import webdriver
-import time
+from datetime import datetime
 import requests
 import os
-import time
 
 def get_alexa_output():
     chrome_options = webdriver.ChromeOptions()
@@ -11,6 +10,13 @@ def get_alexa_output():
     chrome_options.add_argument('--no-sandbox')
     chrome_webdriver = webdriver.Chrome(chrome_options=chrome_options)
     chrome_webdriver.get("https://developer.amazon.com/alexa/console/ask/test/amzn1.ask.skill.fa7cfeb1-e524-4024-a258-5249bec81e5f/development/en_GB/")
+
+    username = chrome_webdriver.find_element_by_id("ap_email")
+    password = chrome_webdriver.find_element_by_id("ap_password")
+    
+    login_details = open("login.txt").read().splitlines()
+    username.send_keys(login_details[0])
+    password.send_keys(login_details[1])
 
     listen_length = 3000
     delay = 0.01
@@ -27,7 +33,7 @@ def get_alexa_output():
             socketio.emit("message", str(t))
             t2 = {"SpeechControl": "written"}
             socketio.emit("message", str(t2))
-            print("Sent audio to Unity!")
+            print(str(datetime.now()) + "; Sent audio to Unity!")
         socketio.sleep(delay)
         if (listen_length > 0):
             current_time += delay
