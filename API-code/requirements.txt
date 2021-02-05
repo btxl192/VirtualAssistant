@@ -9,4 +9,4 @@ flask_socketio
 ask_sdk_core
 flask_ask_sdk
 eventlet
-importlib
+eng_to_ipa
