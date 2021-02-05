@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class config
 {
-    public static string domainName { get => "blue-assistant-btxl.works"; }
+    public static string domainName { get => "blue-assistant-vhx.uksouth.cloudapp.azure.com"; }
     public static ushort vmPort { get => 4430; }
 
     public static string alexaResponseIP { get => "localhost"; }
