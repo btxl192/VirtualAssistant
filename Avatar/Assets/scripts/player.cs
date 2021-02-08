@@ -46,16 +46,14 @@ public class player : MonoBehaviour
 
         if (y_rotation != unityChan.transform.rotation.eulerAngles.y)
         {
-            Debug.Log("y rotation: " + y_rotation);
+            //Debug.Log("y rotation: " + y_rotation);
 
             int unityAngle = System.Convert.ToInt32(unityChan.transform.rotation.eulerAngles.y);
             if (unityAngle > 180)
             {
                 unityAngle = unityAngle - 360;
             }
-            //Debug.Log("after: " + unityAngle);
-            //Debug.Log("turning: " + turning);
-            //unityChan.transform.Rotate(new Vector3(0f, turning, 0f));
+
             if (y_rotation > unityAngle)
             {
                 unityChan.transform.Rotate(new Vector3(0f, 25f, 0f) * Time.deltaTime);
@@ -66,19 +64,6 @@ public class player : MonoBehaviour
                 unityChan.transform.Rotate(new Vector3(0f, -25f, 0f) * Time.deltaTime);
                 //neck.transform.Rotate(new Vector3(25f, 0f, 0f) * Time.deltaTime);
             }
-
-
-/*            if (y_rotation != System.Convert.ToInt32(unityChan.transform.rotation.eulerAngles.y))
-            {
-                if (y_rotation > 0)
-                {
-                    unityChan.transform.Rotate(new Vector3(0f, 50f, 0f) * Time.deltaTime);
-                }
-                else if (y_rotation < 0)
-                {
-                    unityChan.transform.Rotate(new Vector3(0f, -50f, 0f) * Time.deltaTime);
-                }
-            }*/
 
         }
         
