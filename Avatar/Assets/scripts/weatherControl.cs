@@ -48,7 +48,7 @@ public class weatherControl : MonoBehaviour
 
             var websiteJSON = JSON.Parse(www.downloadHandler.text);
             weather = websiteJSON["weather"][0]["main"].Value;
-            Debug.Log(weather);
+            //Debug.Log(weather);
             changeState(weather);
         }
     }

@@ -29,9 +29,7 @@ public class orientationControl : MonoBehaviour
             portraitCamera.SetActive(false);
             landscapeCamera.SetActive(true);*/
             setCamera("landscape");
-        }
-        Debug.Log(Screen.currentResolution);
-        
+        }        
     }
 
     // Update is called once per frame
@@ -59,13 +57,13 @@ public class orientationControl : MonoBehaviour
     {
         if (s == "portrait")
         {
-            Debug.Log("portrait");
+            //Debug.Log("portrait");
             landscapeCamera.SetActive(false);
             portraitCamera.SetActive(true);
         }
         else if (s == "landscape")
         {
-            Debug.Log("landscape");
+            //Debug.Log("landscape");
             portraitCamera.SetActive(false);
             landscapeCamera.SetActive(true);
         }
