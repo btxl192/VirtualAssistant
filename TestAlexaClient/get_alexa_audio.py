@@ -14,9 +14,12 @@ def get_alexa_output():
     username = chrome_webdriver.find_element_by_id("ap_email")
     password = chrome_webdriver.find_element_by_id("ap_password")
     
-    login_details = open("login.txt").read().splitlines()
-    username.send_keys(login_details[0])
-    password.send_keys(login_details[1])
+    try:
+        login_details = open("login.txt").read().splitlines()
+        username.send_keys(login_details[0])
+        password.send_keys(login_details[1])
+    except:
+        pass
 
     listen_length = 3000
     delay = 0.01
