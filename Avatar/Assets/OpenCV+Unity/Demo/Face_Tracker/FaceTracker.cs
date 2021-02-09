@@ -4,7 +4,6 @@
 	using UnityEngine;
 	using System.Collections.Generic;
 	using OpenCvSharp;
-	using System.Linq;
 
 	public class FaceTracker : WebCamera
 {
