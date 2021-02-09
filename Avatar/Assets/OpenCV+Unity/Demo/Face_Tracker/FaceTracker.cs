@@ -4,6 +4,7 @@
 	using UnityEngine;
 	using System.Collections.Generic;
 	using OpenCvSharp;
+	using System.Linq;
 
 	public class FaceTracker : WebCamera
 {
@@ -11,6 +12,7 @@
 	public TextAsset eyes;
 	public TextAsset shapes;
 	public int rotation = 0;
+	public bool faceDetected;
 
 	private FaceProcessorLive<WebCamTexture> processor;
 
@@ -54,6 +56,7 @@
 		// processor.Image now holds data we'd like to visualize
 		output = Unity.MatToTexture(processor.Image, output);   // if output is valid texture it's buffer will be re-used, otherwise it will be re-created
 
+		faceDetected = processor.Faces.Count >= 1 ? true : false;
 		// split the screen into  7 segments
 		List<Double> segment = new List<Double>();
 		/*List<int> degrees = new List<int>(){15, 13, 10, 7, 5, 3, 0, -3, -5, -7, -10, -13, -15};*/
