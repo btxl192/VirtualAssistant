@@ -47,8 +47,8 @@ class intent_base(AbstractRequestHandler):
 
     #takes a dictionary as a parameter
     def push_to_notifier_dict(self, messages):
-        t = json.dumps(messages)
-        t["id"] = round(time.time() * 1000)
+        messages["id"] = round(time.time() * 1000)
+        t = json.dumps(messages)       
         print(f"Pushing [{t}] to notifier")       
         #self.notifier.emit("message", f"{t}") 
         notifier.msg = t
