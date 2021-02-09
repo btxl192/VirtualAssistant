@@ -27,28 +27,27 @@ class intent_base(AbstractRequestHandler):
     def can_handle(self, handler_input):
         return is_intent_name(self.getIntentName())(handler_input)
 
-    async def handle(self, handler_input):
+    def handle(self, handler_input):
         self.action(handler_input.request_envelope.request.intent)
-        await self.push_to_notifier("AlexaResponse", self.response)
-        await self.push_to_notifier("UserInput", self.user_input)
+        self.push_to_notifier("AlexaResponse", self.response)
+        self.push_to_notifier("UserInput", self.user_input)
         
         t = ipa.convert(self.response)
         unity_speech = {"Speech": t}
         if self.emotion != None:
             unity_speech["Emotion"] = self.emotion
-        await self.push_to_notifier_dict(unity_speech)
+        self.push_to_notifier_dict(unity_speech)
         self.emotion = None
         return handler_input.response_builder.speak(self.response).set_should_end_session(self.should_end_session).response
 
     #Sends a message through the websocket to the Unity client
-    async def push_to_notifier(self, message_title, message_text):
-        await push_to_notifier_dict({message_title: message_text})
+    def push_to_notifier(self, message_title, message_text):
+        t = json.dumps({message_title: message_text})
+        print(f"Pushing [{t}] to notifier")       
+        self.notifier.emit("message", f"{t}")  
 
     #takes a dictionary as a parameter
-    async def push_to_notifier_dict(self, messages):
+    def push_to_notifier_dict(self, messages):
         t = json.dumps(messages)
-        print(f"Pushing [{t}] to notifier")   
-        if self.notifier.ws != None:
-            await self.notifier.ws.send(t) 
-        else:
-            print("ws is None")
+        print(f"Pushing [{t}] to notifier")       
+        self.notifier.emit("message", f"{t}") 
