@@ -14,6 +14,7 @@ import importlib
 import os
 import sys
 import json
+import time
 
 #class to handle the launch intent
 class LaunchRequestHandler(AbstractRequestHandler):
@@ -21,11 +22,14 @@ class LaunchRequestHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         return is_request_type("LaunchRequest")(handler_input)
 
-    def handle(self, handler_input):
+    async def handle(self, handler_input):
         speech_text = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"
         t = {"Speech": ipa.convert(speech_text), "AlexaResponse": speech_text}
         #socketio.emit("message", json.dumps(t))
-        ws.send(json.dumps(t))
+        if (current_ws.ws != None):
+            await current_ws.ws.send(json.dumps(t))
+        else:
+            print("ws is None")
         return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
 #class to handle the session end intent
@@ -38,16 +42,25 @@ class SessionEndedRequest(AbstractRequestHandler):
         speech_text = ""
         return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
-current_ws = None
+class ws_holder:
+    ws = None
+    
+    def __init__(self, ws):
+        self.ws = ws
+        
+current_ws = ws_holder(None)
 
 async def set_ws(ws, path):
     print("ws set")
     global current_ws
-    current_ws = ws
+    current_ws.ws = ws
+    while True:
+        print("client connected")
+        time.sleep(1)
 
 def start_thread():
     asyncio.set_event_loop(asyncio.new_event_loop())    
-    start_server = websockets.serve(get_audio, "localhost", 8080)
+    start_server = websockets.serve(set_ws, "localhost", 8080)
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
 
@@ -97,4 +110,8 @@ def speechlogs(text: str = ""):
     else:
         return "\n".join(logs)
 
-wsgi.server(eventlet.wrap_ssl(eventlet.listen(('', 4430)), certfile=cert, keyfile=key, server_side=True), app)
+def start_server():
+    wsgi.server(eventlet.wrap_ssl(eventlet.listen(('', 4430)), certfile=cert, keyfile=key, server_side=True), app)
+
+server_thread = threading.Thread(target=start_server) 
+server_thread.start()   
