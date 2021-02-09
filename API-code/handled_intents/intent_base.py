@@ -51,4 +51,4 @@ class intent_base(AbstractRequestHandler):
         t = json.dumps(messages)       
         print(f"Pushing [{t}] to notifier")       
         #self.notifier.emit("message", f"{t}") 
-        notifier.msg = t
+        self.notifier.msg = t
