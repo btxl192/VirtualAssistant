@@ -5,7 +5,8 @@ import sys, inspect
 import eng_to_ipa as ipa
 import asyncio
 import json
-    
+import time
+
 class intent_base(AbstractRequestHandler):
     response = None
     emotion = None
@@ -47,6 +48,7 @@ class intent_base(AbstractRequestHandler):
     #takes a dictionary as a parameter
     def push_to_notifier_dict(self, messages):
         t = json.dumps(messages)
+        t["id"] = round(time.time() * 1000)
         print(f"Pushing [{t}] to notifier")       
         #self.notifier.emit("message", f"{t}") 
         notifier.msg = t

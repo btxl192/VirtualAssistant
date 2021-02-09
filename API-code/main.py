@@ -14,6 +14,7 @@ import importlib
 import os
 import sys
 import json
+import time
 
 class msg_container:
     msg = ""
@@ -26,7 +27,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         speech_text = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"
-        t = {"Speech": ipa.convert(speech_text), "AlexaResponse": speech_text}
+        t = {"id": round(time.time() * 1000), "Speech": ipa.convert(speech_text), "AlexaResponse": speech_text}
         current_msg.msg = t
         return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
