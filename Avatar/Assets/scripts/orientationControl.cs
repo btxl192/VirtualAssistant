@@ -39,16 +39,10 @@ public class orientationControl : MonoBehaviour
         width = Screen.currentResolution.width;
         if (height > width) //portrait
         {
-            /*Debug.Log("portrait");
-            landscapeCamera.SetActive(false);
-            portraitCamera.SetActive(true);*/
             setCamera("portrait");
         }
         else //landscape
         {
-            /*            Debug.Log("landscape");
-                        portraitCamera.SetActive(false);
-                        landscapeCamera.SetActive(true);*/
             setCamera("landscape");
         }
     }

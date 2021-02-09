@@ -40,6 +40,7 @@ public class player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log(cameraFaceTracker.faceDetected);
         //Face tracking
         y_rotation = cameraFaceTracker.rotation;
         //Debug.Log("Received: " + y_rotation);
