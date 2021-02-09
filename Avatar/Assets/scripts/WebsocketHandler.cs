@@ -6,6 +6,7 @@ using SocketIOSharp.Client;
 using SocketIOSharp.Common;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using NativeWebSocket;
 
 public class WebsocketHandler : MonoBehaviour
 {
@@ -14,51 +15,37 @@ public class WebsocketHandler : MonoBehaviour
     private player thisplayer;
     private LipSync thislipsync;
     private Emotion thisemotion;
-    private SocketIOClient alexaWs;
-    private SocketIOClient localWs;
+    WebSocket localAlexaClientWs;
 
-    void Start()
+    async void Start()
     {
+        
         thisplayer = GetComponent<player>();
         thislipsync = GetComponent<LipSync>();
         thisemotion = GetComponent<Emotion>();
 
         videoPlayer = GameObject.Find("Video Player").GetComponent<videoPlayerScript>();
 
-        alexaWs = new SocketIOClient(new SocketIOClientOption(EngineIOScheme.https, config.domainName, config.vmPort));
-        alexaWs.On(SocketIOEvent.CONNECTION, () => { print(config.domainName + "ws Connected!"); });
-        alexaWs.On(SocketIOEvent.DISCONNECT, () => { print(config.domainName + "ws Disconnected!"); });
-        alexaWs.On(SocketIOEvent.ERROR, WsHandleError);
-        alexaWs.On("message", (Data) => // Argument can be used without type.
+        localAlexaClientWs = new WebSocket("ws://localhost:5000");
+        localAlexaClientWs.OnOpen += () => { Debug.Log("Connection open!"); };
+        localAlexaClientWs.OnError += (e) => { Debug.Log("Error! " + e); };
+        localAlexaClientWs.OnClose += (e) => { Debug.Log("Connection closed!"); };
+        localAlexaClientWs.OnMessage += (bytes) =>
         {
-            if (Data != null && Data.Length > 0 && Data[0] != null)
-            {
-                //print(config.domainName + "ws Message : " + Data[0]); //debug message
-                HandleMsg(Data[0].ToString());
-            }
-        });
-
-        localWs = new SocketIOClient(new SocketIOClientOption(EngineIOScheme.http, config.alexaResponseIP, config.alexaResponsePort));
-        localWs.On(SocketIOEvent.CONNECTION, () => { print(config.alexaResponseIP + "ws Connected!"); });
-        localWs.On(SocketIOEvent.DISCONNECT, () => { print(config.alexaResponseIP + "ws Disconnected!"); });
-        localWs.On(SocketIOEvent.ERROR, WsHandleError);
-        localWs.On("message", (Data) => // Argument can be used without type.
-        {
-            if (Data != null && Data.Length > 0 && Data[0] != null)
-            {
-                //print(config.alexaResponseIP + "ws Message : " + Data[0]); //debug message
-                HandleMsg(Data[0].ToString());
-            }
-        });
-
-        localWs.Connect();
-        alexaWs.Connect();
+            // getting the message as a string
+            var message = System.Text.Encoding.UTF8.GetString(bytes);
+            Debug.Log("OnMessage! " + message);
+            HandleMsg(message);
+        };
+        await localAlexaClientWs.Connect();
+        
     }
 
-    void WsHandleError(JToken[] Data)
+    void Update()
     {
-        if (Data != null && Data.Length > 0 && Data[0] != null) { print("Error : " + Data[0]); }
-        else { print("Unkown Error"); }
+#if !UNITY_WEBGL || UNITY_EDITOR
+        localAlexaClientWs.DispatchMessageQueue();
+#endif
     }
 
     void HandleMsg(string jsonmsgfull)
@@ -145,9 +132,8 @@ public class WebsocketHandler : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
+    private async void OnApplicationQuit()
     {
-        localWs.Dispose();
-        alexaWs.Dispose();
+        await localAlexaClientWs.Close();
     }
 }
