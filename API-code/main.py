@@ -15,6 +15,9 @@ import os
 import sys
 import json
 
+class msg_container:
+    msg = ""
+
 #class to handle the launch intent
 class LaunchRequestHandler(AbstractRequestHandler):
     """Handler for Skill Launch."""
@@ -23,10 +26,8 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         speech_text = "Hi, welcome to Blue, your personal lab assistant. How may I help you today?"
-        t = {"Speech": ipa.convert(speech_text)}
-        t2 = {"AlexaResponse": speech_text}
-        socketio.emit("message", json.dumps(t))
-        socketio.emit("message", json.dumps(t2))
+        t = {"Speech": ipa.convert(speech_text), "AlexaResponse": speech_text}
+        current_msg.msg = t
         return handler_input.response_builder.speak(speech_text).set_should_end_session(False).response
 
 #class to handle the session end intent
@@ -43,6 +44,7 @@ logs = ["start of logs"]
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode = "eventlet")
 skill_builder = SkillBuilder()
+current_msg = msg_container()
 
 #get path to ssl certificate and key from console
 cert = sys.argv[1]
@@ -59,7 +61,7 @@ for file in os.listdir("./handled_intents"):
         filename = file[:-3]
         intent_name = filename.replace("_",".")
         imported_intent = importlib.import_module("handled_intents." + filename)
-        intent_instance = getattr(imported_intent, filename)(socketio)
+        intent_instance = getattr(imported_intent, filename)(current_msg)
         skill_builder.add_request_handler(intent_instance)
 
 skill_adapter = SkillAdapter(skill=skill_builder.create(), skill_id="1", app=app)
@@ -89,5 +91,9 @@ def client_connect():
 @socketio.on('disconnect')
 def client_disconnect():
     print('Client disconnected')
+    
+@app.route("/msg")
+def get_msg():
+    return current_msg.msg
 
 wsgi.server(eventlet.wrap_ssl(eventlet.listen(('', 4430)), certfile=cert, keyfile=key, server_side=True), app)
