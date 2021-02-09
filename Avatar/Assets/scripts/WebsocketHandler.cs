@@ -26,6 +26,9 @@ public class WebsocketHandler : MonoBehaviour
 
         videoPlayer = GameObject.Find("Video Player").GetComponent<videoPlayerScript>();
 
+        HttpPoll h = new HttpPoll("https://" + config.domainName + "/msg", 0.1f, HandleMsg);
+        StartCoroutine(h.poll());
+
         localAlexaClientWs = new WebSocket("ws://localhost:5000");
         localAlexaClientWs.OnOpen += () => { Debug.Log("Connection open!"); };
         localAlexaClientWs.OnError += (e) => { Debug.Log("Error! " + e); };
@@ -48,9 +51,20 @@ public class WebsocketHandler : MonoBehaviour
 #endif
     }
 
+    void HandleMsg(JObject msgjson)
+    {
+        HandleMsgHelper(msgjson);
+    }
+
     void HandleMsg(string jsonmsgfull)
     {
         JObject msgjson = JObject.Parse(jsonmsgfull);
+        HandleMsgHelper(msgjson);
+
+    }
+
+    void HandleMsgHelper(JObject msgjson)
+    {
         List<string> jsonkeys = msgjson.Properties().Select(p => p.Name).ToList();
         foreach (string messageTitle in jsonkeys)
         {
@@ -72,10 +86,10 @@ public class WebsocketHandler : MonoBehaviour
                     }
                     break;
                 case "AlexaResponse":
-                    print("GOT ALEXA RESPONSE: " + jsonmsgfull);
+                    print("GOT ALEXA RESPONSE: " + msgjson);
                     break;
                 case "UserInput":
-                    print("user input: " + jsonmsgfull);
+                    print("user input: " + msgjson);
                     break;
                 case "Emotion":
                     if (thisemotion != null)
@@ -87,11 +101,10 @@ public class WebsocketHandler : MonoBehaviour
                     thislipsync.speechurl = messageText;
                     break;
                 default:
-                    Debug.LogWarning("Unhandled control message:    " + jsonmsgfull);
+                    Debug.LogWarning("Unhandled control message:    " + msgjson);
                     break;
             }
-        }     
-
+        }
     }
 
     void VidControl(string msg)

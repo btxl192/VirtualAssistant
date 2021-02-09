@@ -132,16 +132,7 @@ public class LipSync : MonoBehaviour
 
         if (receivedText && receivedAudio && (!hasEmotion || thisemotion.currentEmotion != null) && timer >= syllabletime)
         {
-            if (!startTimeout)
-            {
-                timeoutTimer = 0;
-                startTimeout = true;
-                if (hasEmotion)
-                {
-                    thisemotion.PlayEmotion();
-                }
-                
-            }
+            
 
             if (isSilent)
             {
@@ -167,13 +158,25 @@ public class LipSync : MonoBehaviour
             }
 
             if (lipsyncQueue.Count == 0)
-            {
-                startTimeout = false;
+            {               
                 receivedAudio = false;
                 receivedText = false;
                 anim.SetBool("isTalking", false);
                 SetMouthShape("default", crossfadetime);
                 thisemotion.StopEmotion();
+                startTimeout = false;
+                print("ENDED");
+            }
+            else if (!startTimeout)
+            {
+                print("PLAY");
+                timeoutTimer = 0;
+                startTimeout = true;
+                thisaudiosource.Play();
+                if (hasEmotion)
+                {
+                    thisemotion.PlayEmotion();
+                }
             }
         }
         if (startTimeout)
@@ -264,7 +267,7 @@ public class LipSync : MonoBehaviour
         //        thisaudiosource.clip = DownloadHandlerAudioClip.GetContent(www);
         //#endif
         www.Abort();
-        thisaudiosource.Play();
+        //thisaudiosource.Play();
         receivedAudio = true;
     }
 
