@@ -42,7 +42,7 @@ class intent_base(AbstractRequestHandler):
 
     #Sends a message through the websocket to the Unity client
     def push_to_notifier(self, message_title, message_text):
-        push_to_notifier_dict({message_title: message_text})          
+        self.push_to_notifier_dict({message_title: message_text})          
 
     #takes a dictionary as a parameter
     def push_to_notifier_dict(self, messages):
