@@ -18,11 +18,21 @@ public class HttpPoll
     {
         this.url = url;
         this.delaySeconds = delaySeconds;
-        this.handler = handler;
+        this.handler = handler;        
     }
 
     public IEnumerator poll()
-    {        
+    {
+        {
+            UnityEngine.Networking.UnityWebRequest r = UnityEngine.Networking.UnityWebRequest.Get(url);
+            yield return r.SendWebRequest();
+            JObject msgjson = JObject.Parse(r.downloadHandler.text);
+            if (msgjson.Properties().Select(p => p.Name).ToList().Contains("id"))
+            {
+                prevmsgid = msgjson.Value<long>("id");
+            }
+        }       
+
         while (true)
         {
             UnityEngine.Networking.UnityWebRequest r = UnityEngine.Networking.UnityWebRequest.Get(url);
