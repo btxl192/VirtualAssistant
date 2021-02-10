@@ -1,12 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using EngineIOSharp.Common.Enum;
-using SocketIOSharp.Client;
-using SocketIOSharp.Common;
 using Newtonsoft.Json.Linq;
 using System.Linq;
-using NativeWebSocket;
 
 public class WebsocketHandler : MonoBehaviour
 {
@@ -15,7 +11,6 @@ public class WebsocketHandler : MonoBehaviour
     private player thisplayer;
     private LipSync thislipsync;
     private Emotion thisemotion;
-    WebSocket localAlexaClientWs;
 
     async void Start()
     {
@@ -26,29 +21,12 @@ public class WebsocketHandler : MonoBehaviour
 
         videoPlayer = GameObject.Find("Video Player").GetComponent<videoPlayerScript>();
 
-        HttpPoll h = new HttpPoll("https://" + config.domainName + "/msg", 0.1f, HandleMsg);
-        StartCoroutine(h.poll());
+        HttpPoll pollAlexaSkill = new HttpPoll("https://" + config.domainName + "/msg", 0.1f, HandleMsg);
+        StartCoroutine(pollAlexaSkill.poll());
 
-        localAlexaClientWs = new WebSocket("ws://localhost:5000");
-        localAlexaClientWs.OnOpen += () => { Debug.Log("Connection open!"); };
-        localAlexaClientWs.OnError += (e) => { Debug.Log("Error! " + e); };
-        localAlexaClientWs.OnClose += (e) => { Debug.Log("Connection closed!"); };
-        localAlexaClientWs.OnMessage += (bytes) =>
-        {
-            // getting the message as a string
-            var message = System.Text.Encoding.UTF8.GetString(bytes);
-            Debug.Log("OnMessage! " + message);
-            HandleMsg(message);
-        };
-        await localAlexaClientWs.Connect();
+        HttpPoll pollAlexaLocalClient = new HttpPoll("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/msg", 0.1f, HandleMsg);
+        StartCoroutine(pollAlexaLocalClient.poll());
         
-    }
-
-    void Update()
-    {
-#if !UNITY_WEBGL || UNITY_EDITOR
-        localAlexaClientWs.DispatchMessageQueue();
-#endif
     }
 
     void HandleMsg(JObject msgjson)
@@ -143,10 +121,5 @@ public class WebsocketHandler : MonoBehaviour
                 thisplayer.stopTalking = false;
                 break;
         }
-    }
-
-    private async void OnApplicationQuit()
-    {
-        await localAlexaClientWs.Close();
     }
 }
