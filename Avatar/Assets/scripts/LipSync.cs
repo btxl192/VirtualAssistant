@@ -165,11 +165,9 @@ public class LipSync : MonoBehaviour
                 SetMouthShape("default", crossfadetime);
                 thisemotion.StopEmotion();
                 startTimeout = false;
-                print("ENDED");
             }
             else if (!startTimeout)
             {
-                print("PLAY");
                 timeoutTimer = 0;
                 startTimeout = true;
                 thisaudiosource.Play();
