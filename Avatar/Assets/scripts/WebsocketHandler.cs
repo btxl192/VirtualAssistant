@@ -12,7 +12,7 @@ public class WebsocketHandler : MonoBehaviour
     private LipSync thislipsync;
     private Emotion thisemotion;
 
-    async void Start()
+    void Start()
     {
         
         thisplayer = GetComponent<player>();
