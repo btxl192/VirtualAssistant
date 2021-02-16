@@ -26,10 +26,13 @@ public class HttpPoll
         {
             UnityEngine.Networking.UnityWebRequest r = UnityEngine.Networking.UnityWebRequest.Get(url);
             yield return r.SendWebRequest();
-            JObject msgjson = JObject.Parse(r.downloadHandler.text);
-            if (msgjson.Properties().Select(p => p.Name).ToList().Contains("id"))
+            if (r.downloadHandler.text != "")
             {
-                prevmsgid = msgjson.Value<long>("id");
+                JObject msgjson = JObject.Parse(r.downloadHandler.text);
+                if (msgjson.Properties().Select(p => p.Name).ToList().Contains("id"))
+                {
+                    prevmsgid = msgjson.Value<long>("id");
+                }
             }
         }       
 
