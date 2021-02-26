@@ -43,12 +43,12 @@ class intent_base(AbstractRequestHandler):
             unity_speech["Emotion"] = self.emotion
             self.emotion = None       
                
-        resp = handler_input.response_builder
-        resp.speak(self.response).set_should_end_session(self.should_end_session)
+        resp = handler_input.response_builder       
         if self.chained_intent_name != "":
-            resp.add_directive(DelegateDirective(Intent(name=self.chained_intent_name, slots=self.chained_intent_slots)))
+            resp.add_directive(DelegateDirective(Intent(name=self.chained_intent_name, slots=self.chained_intent_slots, confirmation_status = "NONE")))
             self.chained_intent_name = ""
             self.chained_intent_slots = {}
+        resp.speak(self.response).set_should_end_session(self.should_end_session)
             
         self.push_to_notifier_dict(unity_speech)
         return resp.response
