@@ -1,5 +1,4 @@
 from flask import Flask, send_file, request
-from flask_socketio import SocketIO, emit
 from ask_sdk_core.skill_builder import SkillBuilder
 from flask_ask_sdk.skill_adapter import SkillAdapter
 from copy import deepcopy
@@ -43,7 +42,6 @@ class SessionEndedRequest(AbstractRequestHandler):
 
 logs = ["start of logs"]
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode = "eventlet")
 skill_builder = SkillBuilder()
 current_msg = msg_container()
 
@@ -81,17 +79,8 @@ def video():
 def speechlogs(text: str = ""):
     if request.method == 'POST':
         logs.append(text)
-        socketio.emit("message", f"{text}")
     else:
         return "\n".join(logs)
-
-@socketio.on('connect')
-def client_connect():
-    print("Client connected")
-
-@socketio.on('disconnect')
-def client_disconnect():
-    print('Client disconnected')
     
 @app.route("/msg")
 def get_msg():

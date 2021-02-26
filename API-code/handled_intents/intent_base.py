@@ -13,6 +13,7 @@ class intent_base(AbstractRequestHandler):
     notifier = None
     user_input = None
     should_end_session = False
+    chained_intent_name = ""
 
     def __init__(self, notifier):
         self.response = "Warning: no speech output was set to this intent"
@@ -37,9 +38,15 @@ class intent_base(AbstractRequestHandler):
         unity_speech = {"Speech": t}
         if self.emotion != None:
             unity_speech["Emotion"] = self.emotion
+            self.emotion = None       
+               
+        resp = handler_input.response_builder.speak(self.response).set_should_end_session(self.should_end_session).response
+        if self.chained_intent_name != "":
+            resp.add_directive(DelegateDirective(self.chained_intent_name))
+            self.chained_intent_name = ""
+            
         self.push_to_notifier_dict(unity_speech)
-        self.emotion = None
-        return handler_input.response_builder.speak(self.response).set_should_end_session(self.should_end_session).response
+        return resp
 
     #Sends a message through the websocket to the Unity client
     def push_to_notifier(self, message_title, message_text):

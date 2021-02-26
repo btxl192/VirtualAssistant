@@ -30,3 +30,4 @@ class CompanyInfoIntent(intent_base):
     
         self.response = self.company_info_intent(company, sector)
         self.user_input = "Asked for info about " + company
+        self.chained_intent_name = "CompanyInfoMoreIntent"
