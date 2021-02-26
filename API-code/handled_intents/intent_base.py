@@ -40,13 +40,14 @@ class intent_base(AbstractRequestHandler):
             unity_speech["Emotion"] = self.emotion
             self.emotion = None       
                
-        resp = handler_input.response_builder.speak(self.response).set_should_end_session(self.should_end_session).response
+        resp = handler_input.response_builder
+        resp.speak(self.response).set_should_end_session(self.should_end_session)
         if self.chained_intent_name != "":
             resp.add_directive(DelegateDirective(self.chained_intent_name))
             self.chained_intent_name = ""
             
         self.push_to_notifier_dict(unity_speech)
-        return resp
+        return resp.response
 
     #Sends a message through the websocket to the Unity client
     def push_to_notifier(self, message_title, message_text):
