@@ -15,6 +15,7 @@ class intent_base(AbstractRequestHandler):
     user_input = None
     should_end_session = False
     chained_intent_name = ""
+    chained_intent_slots = {}
 
     def __init__(self, notifier):
         self.response = "Warning: no speech output was set to this intent"
@@ -44,8 +45,9 @@ class intent_base(AbstractRequestHandler):
         resp = handler_input.response_builder
         resp.speak(self.response).set_should_end_session(self.should_end_session)
         if self.chained_intent_name != "":
-            resp.add_directive(DelegateDirective(self.chained_intent_name))
+            resp.add_directive(DelegateDirective(Intent(name=self.chained_intent_name, slots=self.chained_intent_slots)))
             self.chained_intent_name = ""
+            self.chained_intent_slots = {}
             
         self.push_to_notifier_dict(unity_speech)
         return resp.response
