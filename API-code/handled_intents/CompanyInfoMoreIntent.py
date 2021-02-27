@@ -16,4 +16,4 @@ class CompanyInfoMoreIntent(intent_base):
             else:
                 self.response = "Sorry I could not recognise that company."
                 return
-        self.response = company_info.get("design")
+        self.response = company_info.get("design")[0]
