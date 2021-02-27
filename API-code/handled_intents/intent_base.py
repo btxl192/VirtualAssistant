@@ -55,7 +55,7 @@ class intent_base(AbstractRequestHandler):
     def handle(self, handler_input):
         dismissal_msg = ""
         if "answer_intents" in get_sess_attr(handler_input):
-            if self.getIntentName() not in get_sess_attr(handler_input)["answer_intents"]:
+            if len(get_sess_attr(handler_input)["answer_intents"]) > 0 and self.getIntentName() not in get_sess_attr(handler_input)["answer_intents"]:
                 dismissal_msg = get_sess_attr(handler_input)["dismissal_msg"]
                 set_sess_attr(handler_input, "answer_intents", [])
             
