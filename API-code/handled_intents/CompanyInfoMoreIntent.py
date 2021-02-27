@@ -12,9 +12,8 @@ class CompanyInfoMoreIntent(intent_base):
         company_info = self.get_company_info(company)
         if company_info is None:
             if "current_company" in get_sess_attr(handler_input):
-                company_info = self.get_company_info(get_sess_attr(handler_input)["current_company"]
-                self.response = company_info.get("design")
+                company_info = self.get_company_info(get_sess_attr(handler_input)["current_company"])
             else:
                 self.response = "Sorry I could not recognise that company."
-        else:
-            self.response = company_info.get("design")
+                return
+        self.response = company_info.get("design")
