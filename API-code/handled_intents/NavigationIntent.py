@@ -14,10 +14,10 @@ def navigation_intent(room):
         return route[0]
 
 class NavigationIntent(intent_base):
-    def action(self, intents):
-        slots = intents.to_dict().get("slots")
-        room = slots.get("Room").get("value").lower()
-
+    def action(self, handler_input):
+        #slots = intents.to_dict().get("slots")
+        #room = slots.get("Room").get("value").lower()
+        room = get_slot_value(handler_input, "Room").lower()
         output_speech = navigation_intent(room)
         print(output_speech)
         self.response = output_speech

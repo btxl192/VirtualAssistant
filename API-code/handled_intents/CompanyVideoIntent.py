@@ -36,11 +36,13 @@ class CompanyVideoIntent(intent_base):
             output_speech = "I couldn't recognise that company"
         return output_speech
 
-    def action(self, intents):
-        slots = intents.to_dict().get("slots")
-        company = slots.get("Company").get("value").lower().replace(" ", "")
+    def action(self, handler_input):
+        #slots = intents.to_dict().get("slots")
+        #company = slots.get("Company").get("value").lower().replace(" ", "")
+        company = get_slot_value(handler_input, "Company")
         try:
-            sector = slots.get("Sector").get("resolutions").get("resolutionsPerAuthority")[0].get("values")[0].get("value").get("name")
+            #sector = slots.get("Sector").get("resolutions").get("resolutionsPerAuthority")[0].get("values")[0].get("value").get("name")
+            sector = get_slot_value(handler_input, Sector)
         except (TypeError, AttributeError) as e:
             sector = None
 

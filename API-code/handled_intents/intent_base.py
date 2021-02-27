@@ -1,6 +1,6 @@
 from copy import deepcopy
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
-from ask_sdk_core.utils import is_intent_name
+from ask_sdk_core.utils import is_intent_name, get_slot_value
 from ask_sdk_model.dialog.delegate_directive import DelegateDirective
 from ask_sdk_model.intent import Intent
 import sys, inspect
@@ -8,6 +8,12 @@ import eng_to_ipa as ipa
 import asyncio
 import json
 import time
+
+def get_sess_attr(handler_input):
+    return handler_input.attributes_manager.session_attributes
+
+def get_slot_dict(handler_input):
+    return handler_input.request_envelope.request.intent.to_dict().get("slots")
 
 class intent_base(AbstractRequestHandler):
     response = None
@@ -26,14 +32,14 @@ class intent_base(AbstractRequestHandler):
     def getIntentName(self):
         return self.__class__.__name__.replace("_",".")
 
-    def action(self, intents):
+    def action(self, handler_input):
         pass
 
     def can_handle(self, handler_input):
         return is_intent_name(self.getIntentName())(handler_input)
 
     def handle(self, handler_input):
-        self.action(handler_input.request_envelope.request.intent)
+        self.action(handler_input)
         self.push_to_notifier("AlexaResponse", self.response)
         self.push_to_notifier("UserInput", self.user_input)
         

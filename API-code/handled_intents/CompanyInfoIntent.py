@@ -20,15 +20,17 @@ class CompanyInfoIntent(intent_base):
             self.emotion = "ASHAMED"
             return "Sorry I could not recognise that sector, please try again"
 
-    def action(self, intents):  
-        slots = intents.to_dict().get("slots")
-        company = slots.get("Company").get("value").lower().replace(" ", "")
+    def action(self, handler_input):  
+        #slots = handler_input.request_envelope.request.intent.to_dict().get("slots")        
+        #company = slots.get("Company").get("value").lower().replace(" ", "")
+        company = get_slot_value(handler_input, "Company").lower().replace(" ", "")
         try:
-            sector = slots.get("Sector").get("resolutions").get("resolutionsPerAuthority")[0].get("values")[0].get("value").get("name")
+            #sector = slots.get("Sector").get("resolutions").get("resolutionsPerAuthority")[0].get("values")[0].get("value").get("name")
+            sector = get_slot_value(handler_input, "Sector")
         except (TypeError, AttributeError) as e:
             sector = None
     
         self.response = self.company_info_intent(company, sector)
         self.user_input = "Asked for info about " + company
         self.chained_intent_name = "CompanyInfoMoreIntent"
-        self.chained_intent_slots = slots
+        self.chained_intent_slots = get_slot_dict(handler_input)
