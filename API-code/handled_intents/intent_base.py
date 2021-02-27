@@ -13,10 +13,9 @@ def set_dismissal_msg(handler_input, msg):
     get_sess_attr(handler_input)["dismissal_msg"] = msg
 
 def add_answer_intent(handler_input, intent_name):
-    answer_intents = get_sess_attr(handler_input)["answer_intents"]
-    if len(answer_intents) == 0:
-        answer_intents = {}
-    answer_intents.add(intent_name)   
+    if "answer_intents" not in get_sess_attr(handler_input):
+        get_sess_attr(handler_input)["answer_intents"] = {}
+    get_sess_attr(handler_input)["answer_intents"].add(intent_name)   
 
 def add_answer_intent_many(handler_input, intent_names):
     for i in intent_names:
