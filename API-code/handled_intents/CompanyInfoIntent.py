@@ -30,7 +30,7 @@ class CompanyInfoIntent(intent_base):
         except (TypeError, AttributeError) as e:
             sector = None
     
-        self.response = self.company_info_intent(company, sector) + "What else would you like to know about " + company + "?"
+        self.response = self.company_info_intent(company, sector) + ". What else would you like to know about " + company + "?"
         self.user_input = "Asked for info about " + company
         
         set_dismissal_msg(handler_input, "No more questions about " + company + " then.")

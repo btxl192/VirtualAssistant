@@ -61,7 +61,7 @@ class intent_base(AbstractRequestHandler):
             
         self.action(handler_input)
         
-        total_response = dismissal_msg + self.response
+        total_response = dismissal_msg + ". " + self.response
         
         self.push_to_notifier("AlexaResponse", total_response)
         self.push_to_notifier("UserInput", self.user_input)
