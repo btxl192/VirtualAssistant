@@ -30,7 +30,10 @@ class CompanyInfoIntent(intent_base):
         except (TypeError, AttributeError) as e:
             sector = None
     
-        self.response = self.company_info_intent(company, sector)
+        self.response = self.company_info_intent(company, sector) + "What else would you like to know about " + company + "?"
         self.user_input = "Asked for info about " + company
-        self.chained_intent_name = "CompanyInfoMoreIntent"
-        self.chained_intent_slots = get_slot_dict(handler_input)
+        
+        set_dismissal_msg(handler_input, "No more questions about " + company + " then.")
+        add_answer_intent(handler_input, "CompanyInfoMoreIntent")
+        #self.chained_intent_name = "CompanyInfoMoreIntent"
+        #self.chained_intent_slots = get_slot_dict(handler_input)
