@@ -35,5 +35,4 @@ class CompanyInfoIntent(intent_base):
         
         set_dismissal_msg(handler_input, "No more questions about " + company + " then.")
         add_answer_intent(handler_input, "CompanyInfoMoreIntent")
-        #self.chained_intent_name = "CompanyInfoMoreIntent"
-        #self.chained_intent_slots = get_slot_dict(handler_input)
+        set_sess_attr(handler_input, "current_company", company)

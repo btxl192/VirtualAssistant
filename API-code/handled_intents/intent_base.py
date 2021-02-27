@@ -10,17 +10,20 @@ import json
 import time
 
 def set_dismissal_msg(handler_input, msg):
-    get_sess_attr(handler_input)["dismissal_msg"] = msg
+    set_sess_attr(handler_input, "dismissal_msg", msg)
 
 def add_answer_intent(handler_input, intent_name):
     if "answer_intents" not in get_sess_attr(handler_input):
-        get_sess_attr(handler_input)["answer_intents"] = []
+        set_sess_attr(handler_input, "answer_intents", [])
     if intent_name not in get_sess_attr(handler_input)["answer_intents"]:
         get_sess_attr(handler_input)["answer_intents"].append(intent_name)   
 
 def add_answer_intent_many(handler_input, intent_names):
     for i in intent_names:
         add_answer_intent(handler_input, i)
+
+def set_sess_attr(handler_input, attr_name, val):
+    get_sess_attr(handler_input)[attr_name] = val
 
 def get_sess_attr(handler_input):
     return handler_input.attributes_manager.session_attributes
@@ -34,8 +37,6 @@ class intent_base(AbstractRequestHandler):
     notifier = None
     user_input = None
     should_end_session = False
-    #chained_intent_name = ""
-    #chained_intent_slots = {}
 
     def __init__(self, notifier):
         self.response = "Warning: no speech output was set to this intent"
@@ -54,10 +55,9 @@ class intent_base(AbstractRequestHandler):
     def handle(self, handler_input):
         dismissal_msg = ""
         if "answer_intents" in get_sess_attr(handler_input):
-            ans_intents = get_sess_attr(handler_input)["answer_intents"]
-            if self.getIntentName() not in ans_intents:
+            if self.getIntentName() not in get_sess_attr(handler_input)["answer_intents"]:
                 dismissal_msg = get_sess_attr(handler_input)["dismissal_msg"]
-                ans_intents = []
+                set_sess_attr(handler_input, "answer_intents", [])
             
         self.action(handler_input)
         
@@ -73,11 +73,6 @@ class intent_base(AbstractRequestHandler):
             self.emotion = None       
                
         resp = handler_input.response_builder       
-        
-        #if self.chained_intent_name != "":
-        #    resp.add_directive(DelegateDirective(Intent(name=self.chained_intent_name, slots=self.chained_intent_slots, confirmation_status = "NONE")))
-        #    self.chained_intent_name = ""
-        #    self.chained_intent_slots = {}
             
         resp.speak(total_response).set_should_end_session(self.should_end_session)
             
