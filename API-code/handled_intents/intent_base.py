@@ -14,7 +14,7 @@ def set_dismissal_msg(handler_input, msg):
 
 def add_answer_intent(handler_input, intent_name):
     if "answer_intents" not in get_sess_attr(handler_input):
-        get_sess_attr(handler_input)["answer_intents"] = {}
+        get_sess_attr(handler_input)["answer_intents"] = set([])
     get_sess_attr(handler_input)["answer_intents"].add(intent_name)   
 
 def add_answer_intent_many(handler_input, intent_names):
@@ -56,7 +56,7 @@ class intent_base(AbstractRequestHandler):
             ans_intents = get_sess_attr(handler_input)["answer_intents"]
             if self.getIntentName() not in ans_intents:
                 dismissal_msg = get_sess_attr(handler_input)["dismissal_msg"]
-                ans_intents = {}
+                ans_intents = set([])
             
         self.action(handler_input)
         
