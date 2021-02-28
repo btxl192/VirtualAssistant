@@ -7,15 +7,18 @@ using System.Linq;
 public class WebsocketHandler : MonoBehaviour
 {
 
+    public delegate void MessageReceivedDelegate(JObject msgJson, string msgTitle, string msgText);
+    public static event MessageReceivedDelegate MessageReceived;
+
     private videoPlayerScript videoPlayer;
-    private player thisplayer;
+    //private player thisplayer;
     private LipSync thislipsync;
     private Emotion thisemotion;
 
     void Start()
     {
         
-        thisplayer = GetComponent<player>();
+        //thisplayer = GetComponent<player>();
         thislipsync = GetComponent<LipSync>();
         thisemotion = GetComponent<Emotion>();
 
@@ -29,6 +32,7 @@ public class WebsocketHandler : MonoBehaviour
         
     }
 
+    /*
     void HandleMsg(JObject msgjson)
     {
         HandleMsgHelper(msgjson);
@@ -40,14 +44,20 @@ public class WebsocketHandler : MonoBehaviour
         HandleMsgHelper(msgjson);
 
     }
+    */
 
-    void HandleMsgHelper(JObject msgjson)
+    void HandleMsg(JObject msgjson)
     {
-        List<string> jsonkeys = msgjson.Properties().Select(p => p.Name).ToList();
+        List<string> jsonkeys = GetJsonKeys(msgjson);
         foreach (string messageTitle in jsonkeys)
         {
             string messageText = msgjson.Value<string>(messageTitle);
-
+            print("msg - " + messageTitle + ": " + messageText);
+            if (MessageReceived != null)
+            {
+                MessageReceived(msgjson, messageTitle, messageText);
+            }
+            /*
             switch (messageTitle)
             {
                 case "VidControl":
@@ -82,7 +92,13 @@ public class WebsocketHandler : MonoBehaviour
                     Debug.LogWarning("Unhandled control message:    " + msgjson);
                     break;
             }
+            */
         }
+    }
+
+    public static List<string> GetJsonKeys(JObject msgjson)
+    {
+        return msgjson.Properties().Select(p => p.Name).ToList();
     }
 
     void VidControl(string msg)
@@ -90,8 +106,8 @@ public class WebsocketHandler : MonoBehaviour
         switch (msg)
         {
             case "Speaking":
-                thisplayer.isTalking = true;
-                thisplayer.stopTalking = false;
+                //thisplayer.isTalking = true;
+                //thisplayer.stopTalking = false;
                 break;
             case "Play":
                 //Play video hosted on /companyVideo
@@ -113,12 +129,12 @@ public class WebsocketHandler : MonoBehaviour
                 videoPlayer.StopVideo();
                 break;
             case "Idle":
-                thisplayer.isTalking = false;
-                thisplayer.stopTalking = true;
+                //thisplayer.isTalking = false;
+                //thisplayer.stopTalking = true;
                 break;
             default:
-                thisplayer.isTalking = false;
-                thisplayer.stopTalking = false;
+                //thisplayer.isTalking = false;
+                //thisplayer.stopTalking = false;
                 break;
         }
     }

@@ -12,8 +12,8 @@ public class player : MonoBehaviour
     public GameObject unityChan;
     public FaceTracker cameraFaceTracker;
 
-    public bool isTalking = false;
-    public bool stopTalking = false;
+    //public bool isTalking = false;
+    //public bool stopTalking = false;
 
     private float idleAnimation = 0f;
     private float goneIdle = 5f;
@@ -34,8 +34,6 @@ public class player : MonoBehaviour
 
         GameObject main_camera = GameObject.Find("Main Camera");
     }
-
-
 
     // Update is called once per frame
     void Update()
@@ -68,13 +66,14 @@ public class player : MonoBehaviour
 
         }
         
+        /*
         //This cycles through the idle animations to be played after a certain amount of idle time
         //idleAnimation += Time.deltaTime;
         if (isTalking)
         {
             animator.Play("WAIT00", -1, 0f);
         }
-
+        */
 /*        if (idleAnimation > goneIdle)
         {
             idleAnimation = 0;

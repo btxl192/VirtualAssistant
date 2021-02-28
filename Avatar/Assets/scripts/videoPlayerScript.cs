@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json.Linq;
 
 public class videoPlayerScript : MonoBehaviour
 {
@@ -15,6 +16,11 @@ public class videoPlayerScript : MonoBehaviour
     public Animator avatorAnimator;
 
     public float slideInProg = 0.0f;
+
+    private void Awake()
+    {
+        WebsocketHandler.MessageReceived += HandleMsg;
+    }
 
     void Start()
     {
@@ -73,5 +79,44 @@ public class videoPlayerScript : MonoBehaviour
     private void OnApplicationQuit()
     {
         videoPlayer.Stop();
+        WebsocketHandler.MessageReceived -= HandleMsg;
+    }
+
+    private void HandleMsg(JObject msgjson, string msgtitle, string msgtext)
+    {
+        if (msgtitle.Equals("VidControl"))
+        {
+            switch (msgtext)
+            {
+                case "Play":
+                    //Play video hosted on /companyVideo
+                    //videoPlayer.PlayVideo(true);
+                    paused = false;
+                    break;
+                case "Pause":
+                    //Pause video
+                    //videoPlayer.PauseVideo(true);
+                    paused = true;
+                    break;
+                case "Resume":
+                    //Resume video
+                    //videoPlayer.ResumeVideo(true);
+                    break;
+                case "Stop":
+                    //Stop video
+                    //videoPlayer.StopVideo(true);
+                    StopVideo();
+                    break;
+                case "Idle":
+                    //thisplayer.isTalking = false;
+                    //thisplayer.stopTalking = true;
+                    break;
+                default:
+                    //thisplayer.isTalking = false;
+                    //thisplayer.stopTalking = false;
+                    break;
+            }
+        }
+        
     }
 }

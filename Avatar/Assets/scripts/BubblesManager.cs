@@ -33,7 +33,7 @@ public class BubblesManager : MonoBehaviour
 
     private float bubbleAnimationDelay = 0.6f;
 
-    private player thisplayer;
+    private LipSync thislipsync;
     private Animator videoAnimator;
 
     private bool areDisplayed;
@@ -117,7 +117,7 @@ public class BubblesManager : MonoBehaviour
     void Start()
     {
         // thisplayer = GetComponent<player>();
-        thisplayer = GameObject.Find("unitychan").GetComponent<player>();
+        thislipsync = GameObject.Find("unitychan").GetComponent<LipSync>();
         videoAnimator = GameObject.Find("Video Player").GetComponent<Animator>();
         timeLastSpoke = DateTime.Now;
         StartCoroutine(openBubbles());
@@ -129,7 +129,8 @@ public class BubblesManager : MonoBehaviour
     {
         DateTime now = DateTime.Now;
         double seconds = (now - timeLastSpoke).TotalSeconds;
-        bool isTalking = thisplayer.isTalking;
+        //bool isTalking = thisplayer.isTalking;
+        bool isTalking = !thislipsync.isSilent;
         if(videoAnimator.GetBool("stopped") == false){
         	if(areDisplayed){
         		StartCoroutine(closeBubbles());

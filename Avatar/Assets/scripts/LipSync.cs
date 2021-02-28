@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-
+using Newtonsoft.Json.Linq;
 public class LipSync : MonoBehaviour
 {
 
-    [HideInInspector]
-    public bool hasEmotion = false;
-
-    [HideInInspector]
-    public string speechurl = "";
+    private bool hasEmotion = false;
+    private string speechurl = "";
 
     private bool receivedText = false;
     private bool receivedAudio = false;
@@ -18,6 +15,7 @@ public class LipSync : MonoBehaviour
     public Animator anim { get; private set; }
     private Queue<char> lipsyncQueue = new Queue<char>();
     private AudioSource thisaudiosource;
+    private Emotion thisemotion;
 
     private float timer = 0;
     private float syllabletime = 0.05f;
@@ -29,12 +27,10 @@ public class LipSync : MonoBehaviour
 
     private float currentAverageVolume = 0;
     private float volumeThreshold = 0.0001f;
-    private bool isSilent { get => currentAverageVolume < volumeThreshold; }
+    public bool isSilent { get => currentAverageVolume < volumeThreshold; }
 
-    private Emotion thisemotion;
+    private bool getAudio;
 
-    [HideInInspector]
-    public bool getAudio;
     private List<char> supportedIPA = new List<char>()
     {   'j',
         'ɪ',
@@ -84,6 +80,11 @@ public class LipSync : MonoBehaviour
         print(s);
     }
 
+    private void Awake()
+    {
+        WebsocketHandler.MessageReceived += HandleMsg;
+    }
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -100,7 +101,7 @@ public class LipSync : MonoBehaviour
         return 0;
     }
 
-    public void lipsync(string IPA)
+    private void lipsync(string IPA)
     {
         foreach (char c in IPA)
         {
@@ -223,6 +224,30 @@ public class LipSync : MonoBehaviour
         }
     }
 
+    void HandleMsg(JObject msgjson, string msgtitle, string msgtext)
+    {
+        switch(msgtitle)
+        {
+            case "Speech":
+                hasEmotion = WebsocketHandler.GetJsonKeys(msgjson).Contains("Emotion");
+                if (hasEmotion)
+                {
+                    thisemotion.SetEmotion(msgjson.Value<string>("Emotion"));
+                }
+                lipsync(msgtext);
+                break;
+            case "SpeechControl":
+                if (msgtext.ToLower().Equals("written"))
+                {
+                    getAudio = true;
+                }
+                break;
+            case "SpeechUrl":
+                speechurl = msgtext;
+                break;
+        }
+    }
+
     void SetMouthShape(string c, float crossfade)
     {
         anim.SetBool("isTalking", true);
@@ -291,5 +316,10 @@ public class LipSync : MonoBehaviour
 
         thisaudiosource.Play();
         receivedAudio = true;
+    }
+
+    private void OnApplicationQuit()
+    {
+        WebsocketHandler.MessageReceived -= HandleMsg;
     }
 }
