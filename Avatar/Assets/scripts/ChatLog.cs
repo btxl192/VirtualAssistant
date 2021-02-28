@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
+using UnityEngine.UI;
 
 public class ChatLog : MonoBehaviour
 {
-
+    public Text chatlogobj;
     private List<string> chatlog;
 
     private void Awake()
@@ -29,6 +30,7 @@ public class ChatLog : MonoBehaviour
                 chatlog.Add("Alexa: " + msgtext);
                 break;
         }
+        chatlogobj.text = string.Join("\n", chatlog);
     }
 
     private void OnApplicationQuit()

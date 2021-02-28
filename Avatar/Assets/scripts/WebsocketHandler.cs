@@ -10,6 +10,11 @@ public class WebsocketHandler : MonoBehaviour
     public delegate void MessageReceivedDelegate(JObject msgJson, string msgTitle, string msgText);
     public static event MessageReceivedDelegate MessageReceived;
 
+    public static Dictionary<string, int> msgPriority = new Dictionary<string, int>()
+    {
+        { "UserInput", 1}
+    };
+
     void Start()
     {
 
@@ -24,10 +29,12 @@ public class WebsocketHandler : MonoBehaviour
     void HandleMsg(JObject msgjson)
     {
         List<string> jsonkeys = GetJsonKeys(msgjson);
+        //sort keys according to priority
+        jsonkeys.Sort(new MsgPriorityComparer());
         foreach (string messageTitle in jsonkeys)
         {
             string messageText = msgjson.Value<string>(messageTitle);
-            //print("msg - " + messageTitle + ": " + messageText);
+            print("msg - " + messageTitle + ": " + messageText);
             if (MessageReceived != null)
             {
                 //Call the MessageReceived event
@@ -41,5 +48,22 @@ public class WebsocketHandler : MonoBehaviour
     public static List<string> GetJsonKeys(JObject msgjson)
     {
         return msgjson.Properties().Select(p => p.Name).ToList();
+    }
+    public class MsgPriorityComparer : Comparer<string>
+    {
+        public override int Compare(string x, string y)
+        {
+            int xprior = -1;
+            int yprior = -1;
+            if (WebsocketHandler.msgPriority.ContainsKey(x))
+            {
+                xprior = msgPriority[x];
+            }
+            if (WebsocketHandler.msgPriority.ContainsKey(y))
+            {
+                yprior = msgPriority[y];
+            }
+            return yprior.CompareTo(xprior);
+        }
     }
 }
