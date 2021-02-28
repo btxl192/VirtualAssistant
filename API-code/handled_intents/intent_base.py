@@ -75,7 +75,7 @@ class intent_base(AbstractRequestHandler):
             
         self.add_unity_msg("AlexaResponse", total_response)
         self.add_unity_msg("UserInput", self.user_input)  
-        self.set_unity_msg(self.unity_msg)
+        self.set_unity_msg(self.unity_msg.msg)
         return resp.response
 
     def add_unity_msg(self, message_title, message_text):
@@ -84,6 +84,5 @@ class intent_base(AbstractRequestHandler):
     #takes a dictionary as a parameter
     def set_unity_msg(self, messages):
         messages["id"] = round(time.time() * 1000)
-        t = json.dumps(messages)       
-        print(f"Setting [{t}] as unity_msg")       
-        self.unity_msg.msg = t
+        print(f"Setting [{messages}] as unity_msg")       
+        self.unity_msg.msg = messages
