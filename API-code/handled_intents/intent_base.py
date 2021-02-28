@@ -86,4 +86,4 @@ class intent_base(AbstractRequestHandler):
         messages["id"] = round(time.time() * 1000)
         t = json.dumps(messages)       
         print(f"Setting [{t}] as unity_msg")       
-        self.unity_msg = t
+        self.unity_msg.msg = t
