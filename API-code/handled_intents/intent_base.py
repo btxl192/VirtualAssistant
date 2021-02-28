@@ -34,14 +34,14 @@ def get_slot_dict(handler_input):
 class intent_base(AbstractRequestHandler):
     response = None
     emotion = None
-    notifier = None
+    unity_msg = None
     user_input = None
     should_end_session = False
 
-    def __init__(self, notifier):
+    def __init__(self, unity_msg):
         self.response = "Warning: no speech output was set to this intent"
         self.user_input = "No user input was defined in this intent"
-        self.notifier = notifier
+        self.unity_msg = unity_msg
     
     def getIntentName(self):
         return self.__class__.__name__.replace("_",".")
@@ -63,30 +63,27 @@ class intent_base(AbstractRequestHandler):
         
         total_response = dismissal_msg + " " + self.response
         
-        self.push_to_notifier("AlexaResponse", total_response)
-        self.push_to_notifier("UserInput", self.user_input)
-        
         t = ipa.convert(total_response)
-        unity_speech = {"Speech": t}
+        self.unity_msg["Speech"] = t
         if self.emotion != None:
-            unity_speech["Emotion"] = self.emotion
+            self.unity_msg["Emotion"] = self.emotion
             self.emotion = None       
                
         resp = handler_input.response_builder       
             
         resp.speak(total_response).set_should_end_session(self.should_end_session)
             
-        self.push_to_notifier_dict(unity_speech)
+        self.unity_msg["AlexaResponse"] = total_response
+        self.unity_msg["UserInput"] = self.user_input    
+        self.set_unity_msg(self.unity_msg)
         return resp.response
 
-    #Sends a message through the websocket to the Unity client
-    def push_to_notifier(self, message_title, message_text):
-        self.push_to_notifier_dict({message_title: message_text})          
+    def add_unity_msg(self, message_title, message_text):
+        self.unity_msg[message_title] = message_text        
 
     #takes a dictionary as a parameter
-    def push_to_notifier_dict(self, messages):
+    def set_unity_msg(self, messages):
         messages["id"] = round(time.time() * 1000)
         t = json.dumps(messages)       
-        print(f"Pushing [{t}] to notifier")       
-        #self.notifier.emit("message", f"{t}") 
-        self.notifier.msg = t
+        print(f"Setting [{t}] as unity_msg")       
+        self.unity_msg = t

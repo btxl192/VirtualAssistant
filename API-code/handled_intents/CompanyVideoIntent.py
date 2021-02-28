@@ -50,6 +50,6 @@ class CompanyVideoIntent(intent_base):
         
         if "couldn't" not in self.response:
             uploadVideo(self.videoUrl)
-            self.push_to_notifier("VidControl", "Play")
+            self.add_unity_msg("VidControl", "Play")
             self.response = "Playing video"
         self.user_input = "Asked to play a video about " + company
