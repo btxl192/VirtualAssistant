@@ -106,6 +106,7 @@ public class LipSync : MonoBehaviour
 
     private void lipsync(string IPA)
     {
+        print("lipsync: " + IPA);
         foreach (char c in IPA)
         {
             lipsyncQueue.Enqueue(c);
@@ -147,7 +148,7 @@ public class LipSync : MonoBehaviour
                 {
 
                     char c = lipsyncQueue.Dequeue();
-                    //print(c);
+                    print(c);
                     if (supportedIPA.Contains(c))
                     {
                         //print(c);
@@ -160,7 +161,7 @@ public class LipSync : MonoBehaviour
             }
 
             if (lipsyncQueue.Count == 0)
-            { 
+            {
                 //lipsync ended
                 receivedAudio = false;
                 receivedText = false;

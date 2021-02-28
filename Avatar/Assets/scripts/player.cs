@@ -8,7 +8,6 @@ using OpenCvSharp.Demo;
 public class player : MonoBehaviour
 {
     public Animator animator;
-    public AnimationClip[] animations;
     public GameObject unityChan;
     public FaceTracker cameraFaceTracker;
 
@@ -29,7 +28,7 @@ public class player : MonoBehaviour
         //Debug.Log(cameraFaceTracker.faceDetected);
         //Face tracking
         y_rotation = cameraFaceTracker.rotation;
-        //Debug.Log("Received: " + y_rotation);
+        // Debug.Log("Received: " + y_rotation);
 
         if (y_rotation != unityChan.transform.rotation.eulerAngles.y)
         {
