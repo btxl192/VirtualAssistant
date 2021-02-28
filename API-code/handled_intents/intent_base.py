@@ -64,17 +64,17 @@ class intent_base(AbstractRequestHandler):
         total_response = dismissal_msg + " " + self.response
         
         t = ipa.convert(total_response)
-        self.unity_msg["Speech"] = t
+        self.add_unity_msg("Speech", t)
         if self.emotion != None:
-            self.unity_msg["Emotion"] = self.emotion
+            self.add_unity_msg("Emotion", self.emotion)
             self.emotion = None       
                
         resp = handler_input.response_builder       
             
         resp.speak(total_response).set_should_end_session(self.should_end_session)
             
-        self.unity_msg["AlexaResponse"] = total_response
-        self.unity_msg["UserInput"] = self.user_input    
+        self.add_unity_msg("AlexaResponse", total_response)
+        self.add_unity_msg("UserInput", self.user_input)  
         self.set_unity_msg(self.unity_msg)
         return resp.response
 
