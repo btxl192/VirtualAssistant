@@ -79,7 +79,7 @@ class intent_base(AbstractRequestHandler):
         return resp.response
 
     def add_unity_msg(self, message_title, message_text):
-        self.unity_msg[message_title] = message_text        
+        self.unity_msg.msg[message_title] = message_text        
 
     #takes a dictionary as a parameter
     def set_unity_msg(self, messages):
