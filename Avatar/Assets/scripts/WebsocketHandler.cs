@@ -30,6 +30,9 @@ public class WebsocketHandler : MonoBehaviour
             //print("msg - " + messageTitle + ": " + messageText);
             if (MessageReceived != null)
             {
+                //Call the MessageReceived event
+                //Event handlers should subscribe to WebsocketHandler.MessageReceived
+                //Event handlers must check message titles on their own
                 MessageReceived(msgjson, messageTitle, messageText);
             }
         }
