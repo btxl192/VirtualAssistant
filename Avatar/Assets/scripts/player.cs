@@ -19,7 +19,7 @@ public class player : MonoBehaviour
     private float goneIdle = 5f;
     private float current = 0;
     private float delayWeight = 0;
-    private string response = "";  
+    private string response = "";
     private int y_rotation = 0;
     private int prev_rotation = 0;
 
@@ -28,7 +28,6 @@ public class player : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         cameraFaceTracker = GameObject.Find("RawImage").GetComponent<FaceTracker>();
-        unityChan = GameObject.Find("unitychan");
         //neck = GameObject.Find("Character1_Head");
         SetIdleTime();
 
@@ -67,7 +66,7 @@ public class player : MonoBehaviour
             }
 
         }
-        
+
         //This cycles through the idle animations to be played after a certain amount of idle time
         //idleAnimation += Time.deltaTime;
         if (isTalking)
@@ -102,7 +101,7 @@ public class player : MonoBehaviour
             animator.CrossFade("MTH_A", 0);
             idleAnimation = -5;
             current = 1;
-            
+
 
         }
         //Stop talking when state is IDLE
