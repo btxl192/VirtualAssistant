@@ -51,11 +51,7 @@ public class player : MonoBehaviour
             {
                 neckAngle -= neckStartAngle;
             }
-            
 
-            Debug.Log("neckAngle: " + neckAngle);
-
-            Debug.Log("unityAngle: " + unityAngle);
 
             if (y_rotation > neckAngle)
             {
