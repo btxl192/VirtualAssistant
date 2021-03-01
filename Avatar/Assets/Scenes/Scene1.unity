@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 93525347}
   - component: {fileID: 93525346}
   - component: {fileID: 93525348}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleLeftDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -429,6 +429,7 @@ MonoBehaviour:
   animator: {fileID: 1690914369}
   unityChan: {fileID: 117053334}
   cameraFaceTracker: {fileID: 0}
+  faceDetected: 0
 --- !u!114 &117053338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -479,6 +480,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+      propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
@@ -2658,7 +2663,7 @@ GameObject:
   - component: {fileID: 335831423}
   - component: {fileID: 335831425}
   - component: {fileID: 335831424}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BubbleLeftUpText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2748,7 +2753,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 15
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -7866,7 +7871,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 504742273}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleLeftUpContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7881,7 +7886,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 504742272}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.326, y: 1.061, z: 0}
+  m_LocalPosition: {x: 0.093, y: 1.31, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children:
   - {fileID: 1092312244}
@@ -7936,7 +7941,7 @@ GameObject:
   - component: {fileID: 622116594}
   - component: {fileID: 622116593}
   - component: {fileID: 622116592}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleRightDownCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8034,7 +8039,7 @@ GameObject:
   - component: {fileID: 625451039}
   - component: {fileID: 625451038}
   - component: {fileID: 625451040}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleRightUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8310,7 +8315,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 708987132}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleRightUpContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8325,7 +8330,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 708987131}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -0.291, y: 1.192, z: 0}
+  m_LocalPosition: {x: -0.218, y: 1.463, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children:
   - {fileID: 625451039}
@@ -8435,7 +8440,7 @@ GameObject:
   - component: {fileID: 756145500}
   - component: {fileID: 756145499}
   - component: {fileID: 756145501}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleRightDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8657,7 +8662,7 @@ GameObject:
   m_Component:
   - component: {fileID: 878295902}
   - component: {fileID: 878295901}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BubblesController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8671,7 +8676,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 878295900}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2216709cbd7b99e5d8fbf74b5890668b, type: 3}
   m_Name: 
@@ -8685,10 +8690,11 @@ MonoBehaviour:
   bubbleLeftDownAnimator: {fileID: 93525348}
   bubbleRightUpAnimator: {fileID: 625451040}
   bubbleRightDownAnimator: {fileID: 756145501}
-  bubbleLeftUpText: I want to know more about Ntt Data!
-  bubbleLeftDownText: Change language.
+  bubbleLeftUpText: I want to know more about NttData!
+  bubbleLeftDownText: Change Language.
   bubbleRightUpText: Hi, I'm Blue!
-  bubbleRightDownText: I want to navigate to ...
+  bubbleRightDownText: How can I get to ...?
+  thisUnitychan: {fileID: 1014502339}
 --- !u!4 &878295902
 Transform:
   m_ObjectHideFlags: 0
@@ -8769,6 +8775,7 @@ MonoBehaviour:
   animator: {fileID: 1014502341}
   unityChan: {fileID: 1014502339}
   cameraFaceTracker: {fileID: 0}
+  faceDetected: 0
 --- !u!95 &1014502341 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 9500000, guid: 8f0565f23a2b58541a475bd3c1393052,
@@ -8964,7 +8971,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1046498115}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleLeftDownContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8979,7 +8986,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1046498114}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.355, y: 0.655, z: 0}
+  m_LocalPosition: {x: 0.333, y: 0.998, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children:
   - {fileID: 93525347}
@@ -8997,7 +9004,7 @@ GameObject:
   - component: {fileID: 1092312244}
   - component: {fileID: 1092312243}
   - component: {fileID: 1092312245}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleLeftUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9062,7 +9069,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1092312242}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.69, y: 0.62, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 2141719099}
@@ -13853,7 +13860,7 @@ GameObject:
   - component: {fileID: 1265004666}
   - component: {fileID: 1265004668}
   - component: {fileID: 1265004667}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleRightUpText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14178,7 +14185,7 @@ GameObject:
   - component: {fileID: 1383962695}
   - component: {fileID: 1383962697}
   - component: {fileID: 1383962696}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleRightDownText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14459,7 +14466,7 @@ GameObject:
   - component: {fileID: 1445755025}
   - component: {fileID: 1445755024}
   - component: {fileID: 1445755023}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleRightUpCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14557,7 +14564,7 @@ GameObject:
   - component: {fileID: 1641144198}
   - component: {fileID: 1641144200}
   - component: {fileID: 1641144199}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleLeftDownText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15955,7 +15962,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1802115150}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleRightDownContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15970,7 +15977,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1802115149}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -0.356, y: 0.832, z: 0}
+  m_LocalPosition: {x: -0.298, y: 1.066, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children:
   - {fileID: 756145500}
@@ -16228,7 +16235,7 @@ GameObject:
   - component: {fileID: 2036084463}
   - component: {fileID: 2036084462}
   - component: {fileID: 2036084461}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: bubbleLeftDownCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16410,7 +16417,7 @@ GameObject:
   - component: {fileID: 2141719102}
   - component: {fileID: 2141719101}
   - component: {fileID: 2141719100}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BubbleLeftUpCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

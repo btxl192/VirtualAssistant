@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+using System.IO;
+
 public class BubblesManager : MonoBehaviour
 {
     [SerializeField] private float typingSpeed = 0.01f;
@@ -33,9 +35,12 @@ public class BubblesManager : MonoBehaviour
 
     private float bubbleAnimationDelay = 0.6f;
 
+    [SerializeField] private GameObject thisUnitychan;
+    private player thisplayer;
     private LipSync thislipsync;
     private Animator videoAnimator;
 
+    private bool faceDetected;
     private bool areDisplayed;
     DateTime timeLastSpoke;
 
@@ -116,12 +121,12 @@ public class BubblesManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // thisplayer = GetComponent<player>();
-        thislipsync = GameObject.Find("unitychan").GetComponent<LipSync>();
+        thislipsync = thisUnitychan.GetComponent<LipSync>();
+        thisplayer = thisUnitychan.GetComponent<player>();
         videoAnimator = GameObject.Find("Video Player").GetComponent<Animator>();
         timeLastSpoke = DateTime.Now;
-        StartCoroutine(openBubbles());
-        areDisplayed = true;
+        // StartCoroutine(openBubbles());
+        // areDisplayed = true;
     }
 
      // Update is called once per frame
@@ -129,7 +134,7 @@ public class BubblesManager : MonoBehaviour
     {
         DateTime now = DateTime.Now;
         double seconds = (now - timeLastSpoke).TotalSeconds;
-        //bool isTalking = thisplayer.isTalking;
+        faceDetected = thisplayer.faceDetected;
         bool isTalking = !thislipsync.isSilent;
         if(videoAnimator.GetBool("stopped") == false){
         	if(areDisplayed){
@@ -137,18 +142,28 @@ public class BubblesManager : MonoBehaviour
                 areDisplayed = false;
         	}
         }
-        else if(isTalking){
-            if(areDisplayed){
-                StartCoroutine(closeBubbles());
-                areDisplayed = false;
+        else{
+            if(faceDetected){
+                if(isTalking){
+                    if(areDisplayed){
+                        StartCoroutine(closeBubbles());
+                        areDisplayed = false;
+                    }
+                    timeLastSpoke = DateTime.Now;
+                }
+                else if (seconds > 30){
+                    if(!areDisplayed){
+                        StartCoroutine(openBubbles());
+                        areDisplayed = true;
+                    }
+                }
             }
-            timeLastSpoke = DateTime.Now;
-        }
-        else if (seconds > 30){
-        	if(!areDisplayed){
-	            StartCoroutine(openBubbles());
-	            areDisplayed = true;
-	        }
+            else {
+                if(areDisplayed){
+                    StartCoroutine(closeBubbles());
+                    areDisplayed = false;
+                }
+            }
         }
     }
 }
