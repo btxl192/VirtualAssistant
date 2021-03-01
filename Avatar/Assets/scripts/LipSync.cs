@@ -18,15 +18,18 @@ public class LipSync : MonoBehaviour
     private Emotion thisemotion;
 
     private float timer = 0;
-    private float syllabletime = 0.05f;
-    private float crossfadetime = 0.25f;
+    private const float syllabletime = 0.05f;
+    private const float crossfadetime = 0.25f;
 
     private float timeoutTimer = 0;
-    private float timeoutTime = 1f; //in seconds
+    private const float timeoutTime = 1f; //in seconds
     private bool startTimeout = false;
 
+    private const float waitAnimTimer = 0.2f;
+    private float waitAnimTimerTime = 0f;
+
     private float currentAverageVolume = 0;
-    private float volumeThreshold = 0.0001f;
+    private const float volumeThreshold = 0.0001f;
     public bool isSilent { get => currentAverageVolume < volumeThreshold; }
 
     private bool getAudio;
@@ -134,6 +137,18 @@ public class LipSync : MonoBehaviour
             timer += Time.deltaTime;
         }
 
+        if (receivedText && !receivedAudio)
+        {
+            if (waitAnimTimerTime < waitAnimTimer)
+            {
+                waitAnimTimerTime += Time.deltaTime;
+            }
+            else
+            {
+                anim.SetBool("isWaiting", true);
+            }
+        }
+
         if (receivedText && receivedAudio && (!hasEmotion || thisemotion.currentEmotion != null) && timer >= syllabletime)
         {
             if (isSilent)
@@ -142,7 +157,7 @@ public class LipSync : MonoBehaviour
             }
             else
             {
-                timeoutTimer = 0;
+                timeoutTimer = 0;                                
                 if (lipsyncQueue.Count > 0)
                 {
 
@@ -171,6 +186,8 @@ public class LipSync : MonoBehaviour
             else if (!startTimeout)
             {
                 //lipsync started
+                anim.SetBool("isWaiting", false);
+                waitAnimTimerTime = 0;
                 timeoutTimer = 0;
                 startTimeout = true;
                 thisaudiosource.Play();
@@ -231,6 +248,7 @@ public class LipSync : MonoBehaviour
         switch(msgtitle)
         {
             case "Speech":
+                print("received text");
                 hasEmotion = WebsocketHandler.GetJsonKeys(msgjson).Contains("Emotion");
                 if (hasEmotion)
                 {
@@ -239,6 +257,7 @@ public class LipSync : MonoBehaviour
                 lipsync(msgtext);
                 break;
             case "SpeechControl":
+                print("received audio");
                 if (msgtext.ToLower().Equals("written"))
                 {
                     getAudio = true;
