@@ -9,10 +9,12 @@ public class player : MonoBehaviour
 {
     public Animator animator;
     public GameObject unityChan;
+    public GameObject neck;
     public FaceTracker cameraFaceTracker;
 
     private int y_rotation = 0;
     private int prev_rotation = 0;
+    private int neckStartAngle;
 
     public bool faceDetected = false;
 
@@ -22,40 +24,62 @@ public class player : MonoBehaviour
         animator = GetComponent<Animator>();
         cameraFaceTracker = GameObject.Find("RawImage").GetComponent<FaceTracker>();
         GameObject main_camera = GameObject.Find("Main Camera");
-
+        neckStartAngle = System.Convert.ToInt32(Rotator.Rotate(neck.transform, new Vector3(0f, 0f, 0f)).y * 50);
         faceDetected = cameraFaceTracker.faceDetected;
     }
-
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        //Debug.Log(cameraFaceTracker.faceDetected);
-        //Face tracking
         faceDetected = cameraFaceTracker.faceDetected;
+    }
+    // Update is called once per frame
+    void LateUpdate()
+    {
         y_rotation = cameraFaceTracker.rotation;
-        // Debug.Log("Received: " + y_rotation);
-
         if (y_rotation != unityChan.transform.rotation.eulerAngles.y)
         {
-            //Debug.Log("y rotation: " + y_rotation);
 
             int unityAngle = System.Convert.ToInt32(unityChan.transform.rotation.eulerAngles.y);
+            
+            int neckAngle = System.Convert.ToInt32(Rotator.Rotate(neck.transform, new Vector3(0f, 0f, 0f)).y * 50);
+
             if (unityAngle > 180)
             {
                 unityAngle = unityAngle - 360;
             }
 
-            if (y_rotation > unityAngle)
+            if (neckStartAngle != 0)
             {
-                unityChan.transform.Rotate(new Vector3(0f, 25f, 0f) * Time.deltaTime);
+                neckAngle -= neckStartAngle;
             }
-            else if (y_rotation < unityAngle)
+            
+
+            Debug.Log("neckAngle: " + neckAngle);
+
+            Debug.Log("unityAngle: " + unityAngle);
+
+            if (y_rotation > neckAngle)
             {
-                unityChan.transform.Rotate(new Vector3(0f, -25f, 0f) * Time.deltaTime);
+                Rotator.Rotate(neck.transform, new Vector3(0f, 25f, 0f));
+            }
+
+            else if (y_rotation < neckAngle)
+            {
+                if (neckAngle > -7)
+                {
+                    Rotator.Rotate(neck.transform, new Vector3(0f, -25f, 0f));
+                }
+            }
+
+            if ((y_rotation >= 6 || unityAngle != 0) && (unityAngle < y_rotation))
+            {
+                Rotator.Rotate(unityChan.transform, new Vector3(0f, 25f, 0f));
+            }
+
+            else if ((y_rotation <= -6 || unityAngle != 0) && (unityAngle > y_rotation))
+            {
+                Rotator.Rotate(unityChan.transform, new Vector3(0f, -25f, 0f));
             }
 
         }
     }
-
-
 }
