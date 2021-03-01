@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+using System.IO;
+
 public class BubblesManager : MonoBehaviour
 {
     [SerializeField] private float typingSpeed = 0.01f;
@@ -33,11 +35,15 @@ public class BubblesManager : MonoBehaviour
 
     private float bubbleAnimationDelay = 0.6f;
 
+    [SerializeField] private GameObject thisUnitychan;
+    private player thisplayer;
     private LipSync thislipsync;
     private Animator videoAnimator;
 
+    private bool faceDetected;
     private bool areDisplayed;
     DateTime timeLastSpoke;
+    DateTime faceLastDetected;
 
     private IEnumerator typeLeftUpText()
     {
@@ -116,39 +122,54 @@ public class BubblesManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // thisplayer = GetComponent<player>();
-        thislipsync = GameObject.Find("unitychan").GetComponent<LipSync>();
+        faceLastDetected = DateTime.Now.AddSeconds(-2);
+        thislipsync = thisUnitychan.GetComponent<LipSync>();
+        thisplayer = thisUnitychan.GetComponent<player>();
         videoAnimator = GameObject.Find("Video Player").GetComponent<Animator>();
         timeLastSpoke = DateTime.Now;
-        StartCoroutine(openBubbles());
-        areDisplayed = true;
+        // StartCoroutine(openBubbles());
+        // areDisplayed = true;
     }
 
      // Update is called once per frame
     void Update()
     {
         DateTime now = DateTime.Now;
-        double seconds = (now - timeLastSpoke).TotalSeconds;
-        //bool isTalking = thisplayer.isTalking;
+        double secondsSpeak = (now - timeLastSpoke).TotalSeconds;
+        faceDetected = thisplayer.faceDetected;
         bool isTalking = !thislipsync.isSilent;
+        double secondsFace = (now - faceLastDetected).TotalSeconds;
+        if(faceDetected){
+            faceLastDetected = DateTime.Now;
+        }
         if(videoAnimator.GetBool("stopped") == false){
         	if(areDisplayed){
         		StartCoroutine(closeBubbles());
                 areDisplayed = false;
         	}
         }
-        else if(isTalking){
-            if(areDisplayed){
-                StartCoroutine(closeBubbles());
-                areDisplayed = false;
+        else{
+            if(secondsFace < 5){
+                if(isTalking){
+                    if(areDisplayed){
+                        StartCoroutine(closeBubbles());
+                        areDisplayed = false;
+                    }
+                    timeLastSpoke = DateTime.Now;
+                }
+                else if (secondsSpeak > 30){
+                    if(!areDisplayed){
+                        StartCoroutine(openBubbles());
+                        areDisplayed = true;
+                    }
+                }
             }
-            timeLastSpoke = DateTime.Now;
-        }
-        else if (seconds > 30){
-        	if(!areDisplayed){
-	            StartCoroutine(openBubbles());
-	            areDisplayed = true;
-	        }
+            else {
+                if(areDisplayed){
+                    StartCoroutine(closeBubbles());
+                    areDisplayed = false;
+                }
+            }
         }
     }
 }

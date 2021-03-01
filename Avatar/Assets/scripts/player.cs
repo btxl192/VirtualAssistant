@@ -14,12 +14,16 @@ public class player : MonoBehaviour
     private int y_rotation = 0;
     private int prev_rotation = 0;
 
+    public bool faceDetected = false;
+
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
         cameraFaceTracker = GameObject.Find("RawImage").GetComponent<FaceTracker>();
         GameObject main_camera = GameObject.Find("Main Camera");
+
+        faceDetected = cameraFaceTracker.faceDetected;
     }
 
     // Update is called once per frame
@@ -27,6 +31,7 @@ public class player : MonoBehaviour
     {
         //Debug.Log(cameraFaceTracker.faceDetected);
         //Face tracking
+        faceDetected = cameraFaceTracker.faceDetected;
         y_rotation = cameraFaceTracker.rotation;
         // Debug.Log("Received: " + y_rotation);
 
