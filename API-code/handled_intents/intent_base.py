@@ -9,6 +9,12 @@ import asyncio
 import json
 import time
 
+def get_previous_intent(handler_input):
+    s = get_sess_attr(handler_input)
+    if "previous_intent" in s:
+        return s["previous_intent"]
+    return None
+
 def set_dismissal_msg(handler_input, msg):
     set_sess_attr(handler_input, "dismissal_msg", msg)
 
@@ -76,6 +82,9 @@ class intent_base(AbstractRequestHandler):
         self.add_unity_msg("AlexaResponse", total_response)
         self.add_unity_msg("UserInput", self.user_input)  
         self.set_unity_msg(self.unity_msg.msg)
+        
+        set_sess_attr(handler_input, "previous_intent", self.getIntentName())
+        
         return resp.response
 
     def add_unity_msg(self, message_title, message_text):

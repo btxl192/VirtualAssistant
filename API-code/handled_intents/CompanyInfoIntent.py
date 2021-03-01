@@ -31,13 +31,12 @@ class CompanyInfoIntent(intent_base):
             sector = None
     
         self.response = self.company_info_intent(company, sector)
-        self.user_input = "Asked for info about " + company
-        
+        self.user_input = "Asked for info about " + company      
         
         if "Sorry" not in self.response:
             self.response += " What else would you like to know about " + company + "?"
             set_dismissal_msg(handler_input, "No more questions about " + company + " then.")
-            add_answer_intent(handler_input, "CompanyInfoMoreIntent")
+            add_answer_intent_many(handler_input, ["CompanyInfoIntent", "CompanyInfoMoreIntent"])
             set_sess_attr(handler_input, "current_company", company)
         
         

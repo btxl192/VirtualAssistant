@@ -16,7 +16,7 @@ import json
 import time
 
 class msg_container:
-    msg = ""
+    msg = {}
 
 #class to handle the launch intent
 class LaunchRequestHandler(AbstractRequestHandler):
