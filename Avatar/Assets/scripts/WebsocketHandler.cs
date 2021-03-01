@@ -10,6 +10,9 @@ public class WebsocketHandler : MonoBehaviour
     public delegate void MessageReceivedDelegate(JObject msgJson, string msgTitle, string msgText);
     public static event MessageReceivedDelegate MessageReceived;
 
+    private MsgPriorityComparer msgcomp = new MsgPriorityComparer();
+
+    //higher priority is processed first
     public static Dictionary<string, int> msgPriority = new Dictionary<string, int>()
     {
         { "UserInput", 1}
@@ -30,11 +33,11 @@ public class WebsocketHandler : MonoBehaviour
     {
         List<string> jsonkeys = GetJsonKeys(msgjson);
         //sort keys according to priority
-        jsonkeys.Sort(new MsgPriorityComparer());
+        jsonkeys.Sort(msgcomp);
         foreach (string messageTitle in jsonkeys)
         {
             string messageText = msgjson.Value<string>(messageTitle);
-            print("msg - " + messageTitle + ": " + messageText);
+            //print("msg - " + messageTitle + ": " + messageText);
             if (MessageReceived != null)
             {
                 //Call the MessageReceived event
