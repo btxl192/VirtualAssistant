@@ -162,7 +162,6 @@ public class LipSync : MonoBehaviour
                 {
 
                     char c = lipsyncQueue.Dequeue();
-                    //print(c);
                     if (supportedIPA.Contains(c))
                     {
                         //print(c);
@@ -175,7 +174,7 @@ public class LipSync : MonoBehaviour
             }
 
             if (lipsyncQueue.Count == 0)
-            { 
+            {
                 //lipsync ended
                 receivedAudio = false;
                 receivedText = false;
