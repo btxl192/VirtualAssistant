@@ -43,6 +43,7 @@ public class BubblesManager : MonoBehaviour
     private bool faceDetected;
     private bool areDisplayed;
     DateTime timeLastSpoke;
+    DateTime faceLastDetected;
 
     private IEnumerator typeLeftUpText()
     {
@@ -121,6 +122,7 @@ public class BubblesManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        faceLastDetected = DateTime.Now.AddSeconds(-2);
         thislipsync = thisUnitychan.GetComponent<LipSync>();
         thisplayer = thisUnitychan.GetComponent<player>();
         videoAnimator = GameObject.Find("Video Player").GetComponent<Animator>();
@@ -133,9 +135,13 @@ public class BubblesManager : MonoBehaviour
     void Update()
     {
         DateTime now = DateTime.Now;
-        double seconds = (now - timeLastSpoke).TotalSeconds;
+        double secondsSpeak = (now - timeLastSpoke).TotalSeconds;
         faceDetected = thisplayer.faceDetected;
         bool isTalking = !thislipsync.isSilent;
+        double secondsFace = (now - faceLastDetected).TotalSeconds;
+        if(faceDetected){
+            faceLastDetected = DateTime.Now;
+        }
         if(videoAnimator.GetBool("stopped") == false){
         	if(areDisplayed){
         		StartCoroutine(closeBubbles());
@@ -143,7 +149,7 @@ public class BubblesManager : MonoBehaviour
         	}
         }
         else{
-            if(faceDetected){
+            if(secondsFace < 5){
                 if(isTalking){
                     if(areDisplayed){
                         StartCoroutine(closeBubbles());
@@ -151,7 +157,7 @@ public class BubblesManager : MonoBehaviour
                     }
                     timeLastSpoke = DateTime.Now;
                 }
-                else if (seconds > 30){
+                else if (secondsSpeak > 30){
                     if(!areDisplayed){
                         StartCoroutine(openBubbles());
                         areDisplayed = true;
