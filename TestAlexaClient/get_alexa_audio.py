@@ -23,7 +23,7 @@ def get_alexa_output():
     
     clear_resource_timer = 10 #10 seconds
     clear_resource_timer_current = 0
-    js_clear_resource = 'window.performance.clcearResourceTimings()'
+    js_clear_resource = 'window.performance.clearResourceTimings()'
     
     js_to_run = 'return window.performance.getEntries().filter(n => n["name"].includes("mp3")).pop()'
 
