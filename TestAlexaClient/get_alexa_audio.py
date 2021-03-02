@@ -62,7 +62,7 @@ def get_alexa_output():
                 chrome_webdriver.execute_script(js_clear_resource)
                 clear_resource_timer_current = 0
             except:
-                pass
+                print("error in clearing resource timings")
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode = "eventlet")
