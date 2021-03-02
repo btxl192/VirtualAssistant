@@ -42,7 +42,7 @@ class CompanyVideoIntent(intent_base):
         company = get_slot_value(handler_input, "Company")
         try:
             #sector = slots.get("Sector").get("resolutions").get("resolutionsPerAuthority")[0].get("values")[0].get("value").get("name")
-            sector = get_slot_value(handler_input, Sector)
+            sector = get_slot_value(handler_input, "Sector")
         except (TypeError, AttributeError) as e:
             sector = None
 
