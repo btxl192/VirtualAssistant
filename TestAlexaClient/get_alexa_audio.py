@@ -20,7 +20,11 @@ def get_alexa_output():
     delay = 0.1
     current_time = 0
     prev_res = None
-
+    
+    clear_resource_timer = 10 #10 seconds
+    clear_resource_timer_current = 0
+    js_clear_resource = 'window.performance.clcearResourceTimings()'
+    
     js_to_run = 'return window.performance.getEntries().filter(n => n["name"].includes("mp3")).pop()'
 
     chrome_options = webdriver.ChromeOptions()
@@ -48,8 +52,17 @@ def get_alexa_output():
             current_msg = json.dumps(t)
             print(str(datetime.now()) + "; Sent audio to Unity!")
         time.sleep(delay)
-        if (listen_length > 0):
+        if listen_length > 0:
             current_time += delay
+        if clear_resource_timer_current < clear_resource_timer:
+            clear_resource_timer_current += delay
+        else:
+            try:
+                print("clearing resource timings")
+                chrome_webdriver.execute_script(js_clear_resource)
+                clear_resource_timer_current = 0
+            except:
+                pass
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode = "eventlet")
