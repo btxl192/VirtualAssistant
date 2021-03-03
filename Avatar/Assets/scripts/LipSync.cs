@@ -25,7 +25,7 @@ public class LipSync : MonoBehaviour
     private const float timeoutTime = 1f; //in seconds
     private bool startTimeout = false;
 
-    private const float waitAnimTimer = 0.2f;
+    private const float waitAnimTimer = 0.75f; //how long to wait before wait animation starts, in seconds
     private float waitAnimTimerTime = 0f;
 
     private float currentAverageVolume = 0;
@@ -33,6 +33,7 @@ public class LipSync : MonoBehaviour
     public bool isSilent { get => currentAverageVolume < volumeThreshold; }
 
     private bool getAudio;
+    private bool queueingLipsync;
 
     private List<char> supportedIPA = new List<char>()
     {   'j',
@@ -94,7 +95,6 @@ public class LipSync : MonoBehaviour
         anim = GetComponent<Animator>();
         thisaudiosource = GetComponent<AudioSource>();
         thisemotion = GetComponent<Emotion>();
-        //StartCoroutine(GetAlexaAudio());
     }
 
     //if a character has a time modifier
@@ -107,13 +107,46 @@ public class LipSync : MonoBehaviour
         return 0;
     }
 
+    void OnLipsyncStart()
+    {
+        anim.SetBool("isWaiting", false);
+        waitAnimTimerTime = 0;
+        timeoutTimer = 0;
+        startTimeout = true;
+        thisaudiosource.Play();
+        if (hasEmotion)
+        {
+            thisemotion.PlayEmotion();
+        }
+    }
+
+    void OnLipsyncEnd()
+    {
+        receivedAudio = false;
+        receivedText = false;
+        anim.SetBool("isTalking", false);
+        SetMouthShape("default", crossfadetime);
+        thisemotion.StopEmotion();
+        startTimeout = false;
+    }
+
     private void lipsync(string IPA)
     {
+        queueingLipsync = true;
+        if (receivedText)
+        {
+            lipsyncQueue.Clear();
+            receivedAudio = false;
+            thisaudiosource.Stop();
+            startTimeout = false;
+        }
+        
         foreach (char c in IPA)
         {
             lipsyncQueue.Enqueue(c);
         }
         receivedText = true;
+        queueingLipsync = false;
     }
 
     float getAverageVolume()
@@ -176,25 +209,15 @@ public class LipSync : MonoBehaviour
             if (lipsyncQueue.Count == 0)
             {
                 //lipsync ended
-                receivedAudio = false;
-                receivedText = false;
-                anim.SetBool("isTalking", false);
-                SetMouthShape("default", crossfadetime);
-                thisemotion.StopEmotion();
-                startTimeout = false;
+                if (!queueingLipsync)
+                {
+                    OnLipsyncEnd();
+                }               
             }
             else if (!startTimeout)
             {
                 //lipsync started
-                anim.SetBool("isWaiting", false);
-                waitAnimTimerTime = 0;
-                timeoutTimer = 0;
-                startTimeout = true;
-                thisaudiosource.Play();
-                if (hasEmotion)
-                {
-                    thisemotion.PlayEmotion();
-                }
+                OnLipsyncStart();
             }
         }
         if (startTimeout)
@@ -209,38 +232,6 @@ public class LipSync : MonoBehaviour
                 lipsyncQueue.Clear();
             }
         }
-
-        //for testing
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            StartCoroutine(GetAlexaAudioHi());
-            //lipsync("hɛˈloʊ"); //hello
-            //lipsync("'ˈjunɪti"); //unity
-            //lipsync("hɛˈloʊfʊt");
-            //lipsync("'ˈsɑri aɪ dɪd nɑt ˌəndərˈstænd ðət, pliz traɪ əˈgɛn'");
-            lipsync("haɪ, ˈwɛlkəm tɪ blu, jʊr ˈpərsɪnəl læb əˈsɪstənt. haʊ meɪ aɪ hɛlp ju təˈdeɪ");
-            //lipsync("sɑri aɪ kʊd nɑt ˈrɛkəgˌnaɪz ðət ˈkəmpəˌni, pliz traɪ əˈgɛn");
-            //lipsync("kʊd");
-            //lipsync("ˈkəmpəˌni, pliz traɪ əˈgɛn");
-            //StartLipSync();
-            //GetComponent<OVRLipSyncContext>().audioSource = thisaudiosource;
-            //receivedAudio = true;
-        }
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            StartCoroutine(GetAlexaAudioSorry());
-            //lipsync("hɛˈloʊ"); //hello
-            //lipsync("'ˈjunɪti"); //unity
-            //lipsync("hɛˈloʊfʊt");
-            //lipsync("'ˈsɑri aɪ dɪd nɑt ˌəndərˈstænd ðət, pliz traɪ əˈgɛn'");
-            //lipsync("haɪ, ˈwɛlkəm tɪ blu, jʊr ˈpərsɪnəl læb əˈsɪstənt. haʊ meɪ aɪ hɛlp ju təˈdeɪ");
-            lipsync("sɑri aɪ kʊd nɑt ˈrɛkəgˌnaɪz ðət ˈkəmpəˌni, pliz traɪ əˈgɛn");
-            //lipsync("kʊd");
-            //lipsync("ˈkəmpəˌni, pliz traɪ əˈgɛn");
-            //StartLipSync();
-            //GetComponent<OVRLipSyncContext>().audioSource = thisaudiosource;
-            //receivedAudio = true;
-        }
     }
 
     void HandleMsg(JObject msgjson, string msgtitle, string msgtext)
@@ -248,7 +239,7 @@ public class LipSync : MonoBehaviour
         switch(msgtitle)
         {
             case "Speech":
-                print("received text");
+                //print("received text");
                 hasEmotion = WebsocketHandler.GetJsonKeys(msgjson).Contains("Emotion");
                 if (hasEmotion)
                 {
@@ -257,7 +248,7 @@ public class LipSync : MonoBehaviour
                 lipsync(msgtext);
                 break;
             case "SpeechControl":
-                print("received audio");
+                //print("received audio");
                 if (msgtext.ToLower().Equals("written"))
                 {
                     getAudio = true;
@@ -284,40 +275,10 @@ public class LipSync : MonoBehaviour
 
     public IEnumerator GetAlexaAudio()
     {
-        //UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort.ToString(), AudioType.MPEG);
         UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(speechurl, AudioType.MPEG);
         yield return www.SendWebRequest();
-        //#if UNITY_EDITOR
         thisaudiosource.clip = NAudioPlayer.FromMp3Data(www.downloadHandler.data);
-        //#else
-        //        thisaudiosource.clip = DownloadHandlerAudioClip.GetContent(www);
-        //#endif
         www.Abort();
-        //thisaudiosource.Play();
-        receivedAudio = true;
-    }
-
-    //for testing
-    public IEnumerator GetAlexaAudioHi()
-    {
-        UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort.ToString() + "/hi", AudioType.WAV);
-        yield return www.SendWebRequest();
-        thisaudiosource.clip = DownloadHandlerAudioClip.GetContent(www);
-        www.Abort();
-
-        thisaudiosource.Play();
-        receivedAudio = true;
-    }
-
-    //for testing
-    public IEnumerator GetAlexaAudioSorry()
-    {
-        UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort.ToString() + "/sorry", AudioType.WAV);
-        yield return www.SendWebRequest();
-        thisaudiosource.clip = DownloadHandlerAudioClip.GetContent(www);
-        www.Abort();
-
-        thisaudiosource.Play();
         receivedAudio = true;
     }
 
