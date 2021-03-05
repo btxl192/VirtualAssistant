@@ -7,7 +7,7 @@ public class LipSync : MonoBehaviour
 {
 
     private bool hasEmotion = false;
-    private string speechurl = "";
+    private string speechurl = "http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/audio";
 
     private bool receivedText = false;
     private bool receivedAudio = false;
@@ -33,7 +33,7 @@ public class LipSync : MonoBehaviour
     public bool isSilent { get => currentAverageVolume < volumeThreshold; }
 
     private bool getAudio;
-    private bool queueingLipsync;
+    private bool queueingLipsync = false;
 
     private List<char> supportedIPA = new List<char>()
     {   'j',
@@ -232,6 +232,11 @@ public class LipSync : MonoBehaviour
                 lipsyncQueue.Clear();
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            thisaudiosource.Play();
+        }
     }
 
     void HandleMsg(JObject msgjson, string msgtitle, string msgtext)
@@ -254,9 +259,6 @@ public class LipSync : MonoBehaviour
                     getAudio = true;
                 }
                 break;
-            case "SpeechUrl":
-                speechurl = msgtext;
-                break;
         }
     }
 
@@ -276,10 +278,20 @@ public class LipSync : MonoBehaviour
     public IEnumerator GetAlexaAudio()
     {
         UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(speechurl, AudioType.MPEG);
+        ((DownloadHandlerAudioClip)www.downloadHandler).streamAudio = true;
         yield return www.SendWebRequest();
-        thisaudiosource.clip = NAudioPlayer.FromMp3Data(www.downloadHandler.data);
-        www.Abort();
-        receivedAudio = true;
+
+        DownloadHandlerAudioClip dha = (DownloadHandlerAudioClip)www.downloadHandler;
+
+        if(dha.isDone)
+        {
+            AudioClip c = dha.audioClip;
+            if (c != null)
+            {
+                thisaudiosource.clip = DownloadHandlerAudioClip.GetContent(www);
+                receivedAudio = true;
+            }
+        }
     }
 
     private void OnApplicationQuit()
