@@ -14,7 +14,7 @@ echo I will now build the target container
 sudo docker build . -t alexaskill
 echo I will now install certbot with apt.
 sudo apt update -y
-sudo apt install python3 python3-pip -y
+sudo apt install python3 python3-pip certbot -y
 echo I will now ask certbot for a certificate.
 CERTBOT_DIR=/tmp/certbot
 sudo mkdir $CERTBOT_DIR || true
