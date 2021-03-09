@@ -9,7 +9,7 @@ To get the system ready, two separate set-ups need to be done.
 1. Create a debian cloud server.
 2. Copy API-code into the server. e.g.:
 ```sh
-scp -r API-code skill.comp0016.mww.moe:/home/mao/API-code
+scp -r API-code skill.comp0016.mww.moe:/home/azureuser/API-code
 ```
 3. Run `./configure.sh DOMAIN_NAME` on the server with `DOMAIN_NAME` replaced with the domain name that you want to use. e.g.:
 ```sh
