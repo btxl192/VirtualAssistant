@@ -10,6 +10,12 @@ HOW TO USE:
 
    with the MediaPlayer.cpp in this folder (AVSClientFiles)
 
+3) Replace the UserInputManager.cpp in
+
+   \avs-device-sdk\SampleApp\src
+
+   with the UserInputManager.cpp in this folder (AVSClientFiles)
+
 3) Run make again to build the new media player
 
 4) Copy the following files to your MINGW home directory 
