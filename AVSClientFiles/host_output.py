@@ -67,7 +67,7 @@ def get_alexa_input():
         input=True,
         frames_per_buffer=porcupine.frame_length)    
 
-    print("listening")
+    print("Listening for 'Alexa'")
     while not stop_threads:
         pcm = audio_stream.read(porcupine.frame_length)
         pcm = struct.unpack_from("h" * porcupine.frame_length, pcm)
