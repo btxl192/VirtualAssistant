@@ -45,10 +45,6 @@ app = Flask(__name__)
 skill_builder = SkillBuilder()
 current_msg = msg_container()
 
-#get path to ssl certificate and key from console
-cert = sys.argv[1]
-key = sys.argv[2]
-
 # Register your intent handlers to the skill_builder object
 skill_builder.add_request_handler(LaunchRequestHandler())
 skill_builder.add_request_handler(SessionEndedRequest())
@@ -81,9 +77,20 @@ def speechlogs(text: str = ""):
         logs.append(text)
     else:
         return "\n".join(logs)
-    
+
 @app.route("/msg")
 def get_msg():
     return current_msg.msg
 
-wsgi.server(eventlet.wrap_ssl(eventlet.listen(('', 4430)), certfile=cert, keyfile=key, server_side=True), app)
+if "USE_SSL" in os.environ and os.environ["USE_SSL"] == "1":
+    certfile = os.environ["SSL_CERT"]
+    keyfile = os.environ["SSL_KEY"]
+    port = 443
+    if "PORT" in os.environ:
+        port = int(os.environ["PORT"])
+    wsgi.server(eventlet.wrap_ssl(eventlet.listen(('', port)), certfile=certfile, keyfile=keyfile, server_side=True), app)
+else:
+    port = 80
+    if "PORT" in os.environ:
+        port = int(os.environ["PORT"])
+    wsgi.server(eventlet.listen(('', port)), app)
