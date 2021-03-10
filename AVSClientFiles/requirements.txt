@@ -1,3 +1,4 @@
 flask
 eventlet
 pvporcupine
+pyaudio
