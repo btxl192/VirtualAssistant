@@ -24,7 +24,7 @@ public class WebsocketHandler : MonoBehaviour
         HttpPoll pollAlexaSkill = new HttpPoll("https://" + config.domainName + "/msg", 0.1f, HandleMsg);
         StartCoroutine(pollAlexaSkill.poll());
 
-        HttpPoll pollAlexaLocalClient = new HttpPoll("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/msg", 0.1f, HandleMsg);
+        HttpPoll pollAlexaLocalClient = new HttpPoll("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/", 0.1f, HandleMsg);
         StartCoroutine(pollAlexaLocalClient.poll());
 
     }
