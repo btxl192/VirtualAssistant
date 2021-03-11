@@ -7,6 +7,7 @@ public class LipSync : MonoBehaviour
 {
 
     private bool hasEmotion = false;
+    private string defaultSpeechUrl = "http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/audio";
     private string speechurl = "http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/audio";
 
     private bool receivedText = false;
@@ -128,6 +129,7 @@ public class LipSync : MonoBehaviour
         SetMouthShape("default", crossfadetime);
         thisemotion.StopEmotion();
         startTimeout = false;
+        speechurl = defaultSpeechUrl;
     }
 
     private void lipsync(string IPA)
@@ -170,7 +172,7 @@ public class LipSync : MonoBehaviour
             timer += Time.deltaTime;
         }
 
-        if (receivedText && !receivedAudio)
+        if (receivedText && !receivedAudio || !receivedText && receivedAudio)
         {
             if (waitAnimTimerTime < waitAnimTimer)
             {
@@ -178,7 +180,15 @@ public class LipSync : MonoBehaviour
             }
             else
             {
-                anim.SetBool("isWaiting", true);
+                if (!receivedText)
+                {
+                    receivedText = true;
+                }
+                else
+                {
+                    anim.SetBool("isWaiting", true);
+                }
+                
             }
         }
 
@@ -258,6 +268,9 @@ public class LipSync : MonoBehaviour
                 {
                     getAudio = true;
                 }
+                break;
+            case "SpeechUrl":
+                speechurl = msgtext;
                 break;
         }
     }

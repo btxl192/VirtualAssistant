@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class config
 {
-    public static string domainName { get => "skill.comp0016.mww.moe"; }
-    public static ushort vmPort { get => 4430; }
+    public const string domainName = "skill.comp0016.mww.moe";
+    public const ushort vmPort = 4430;
 
-    public static string alexaResponseIP { get => "localhost"; }
-    public static ushort alexaResponsePort { get => 5000; }
+    public const string alexaResponseIP = "localhost";
+    public const ushort alexaResponsePort = 5000;
 }

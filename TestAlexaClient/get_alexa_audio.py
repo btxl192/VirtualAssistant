@@ -68,20 +68,6 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode = "eventlet")
 
 @app.route("/")
-def myhome():
-    return send_file("alexa_audio.mp3")
-
-#for testing
-@app.route("/sorry")
-def sorry():
-    return send_file("alexa_audio_sorry.wav")
-
-#for testing
-@app.route("/hi")
-def hi():
-    return send_file("alexa_audio_hi.wav")
-
-@app.route("/msg")
 def message():
     global current_msg
     return current_msg
