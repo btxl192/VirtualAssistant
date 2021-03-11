@@ -6,12 +6,16 @@ import threading
 import pvporcupine
 import pyaudio
 import struct
+import eng_to_ipa as ipa 
 
 def get_id():
     return round(time.time() * 1000)
 
 #where the server looks for audio files    
 audio_output_dir = "./build/bin/audioOutput"
+
+#where the server looks for caption files    
+text_output_dir = "./build/bin/textOutput"
 
 #write to this file when "Alexa" is detected
 alexa_input_dir = "./build/bin/alexaInput.txt"
@@ -34,6 +38,14 @@ def get_audio():
     global current_result
     if current_result > 0:
         return send_file(audio_output_dir + "/result-" + str(current_result) + ".mp3")
+    return ""
+
+#returns the current caption file
+@app.route("/caption")
+def get_caption():
+    global current_result
+    if current_result > 0:
+        return ipa.convert(open(text_output_dir + "/caption-" + str(current_result) + ".txt").readline())
     return ""
 
 #continuously loops. updates current_id when latestResult.txt is updated
