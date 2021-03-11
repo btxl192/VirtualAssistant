@@ -12,10 +12,15 @@ from flask import Flask, send_file
 from flask_socketio import SocketIO, emit
 from eventlet import wsgi
 import eventlet
+import pvporcupine
+import pyaudio
+import struct
 
 current_msg = {}
+chrome_webdriver = None
 
-def get_alexa_output():   
+def get_alexa_output():  
+    global chrome_webdriver
     listen_length = 0
     delay = 0.1
     current_time = 0
@@ -32,7 +37,7 @@ def get_alexa_output():
     chrome_options.add_argument('--no-sandbox')
     chrome_webdriver = webdriver.Chrome(chrome_options=chrome_options)
     chrome_webdriver.get("https://developer.amazon.com/alexa/console/ask/test/amzn1.ask.skill.fa7cfeb1-e524-4024-a258-5249bec81e5f/development/en_GB/")
-
+        
     username = chrome_webdriver.find_element_by_id("ap_email")
     password = chrome_webdriver.find_element_by_id("ap_password")
 
@@ -64,6 +69,46 @@ def get_alexa_output():
             except:
                 print("error in clearing resource timings")
 
+detected = False
+silence_timeout = 1
+silence_timeout_counter = 0
+
+#continuously loops. hotword detection
+def hotword():      
+    global detected
+    global silence_timeout_counter
+    global silence_timeout
+    global chrome_webdriver
+    porcupine = pvporcupine.create(keywords=['alexa']) 
+    pa = pyaudio.PyAudio()
+    audio_stream = pa.open(
+        rate=porcupine.sample_rate,
+        channels=1,
+        format=pyaudio.paInt16,
+        input=True,
+        frames_per_buffer=porcupine.frame_length)
+
+    print("Listening for 'Alexa'")
+    while True:
+        pcm = audio_stream.read(porcupine.frame_length)
+        pcm = struct.unpack_from("h" * porcupine.frame_length, pcm)
+            
+        keyword_index = porcupine.process(pcm)
+        if keyword_index >= 0:
+            print("DETECTED")
+            detected = True
+            c = chrome_webdriver.find_element_by_class_name("icon-mic")
+            webdriver.ActionChains(chrome_webdriver).click_and_hold(c).perform()
+        
+        if detected and max(pcm) < 500:
+            if silence_timeout_counter >= silence_timeout:               
+                print("SILENT")
+                detected = False
+                silence_timeout_counter = 0
+                webdriver.ActionChains(chrome_webdriver).release().perform()
+            silence_timeout_counter += 0.05
+            time.sleep(0.05)
+
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode = "eventlet")
 
@@ -77,3 +122,4 @@ def start_server():
 
 threading.Thread(target=start_server).start()
 threading.Thread(target=get_alexa_output).start()
+threading.Thread(target=hotword).start()
