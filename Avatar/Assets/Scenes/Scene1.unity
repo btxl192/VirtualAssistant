@@ -14451,8 +14451,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2147341122}
   m_HandleRect: {fileID: 2147341121}
   m_Direction: 2
-  m_Value: 0.9999998
-  m_Size: 0
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -14775,7 +14775,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: fa65d8a9ffd71fd4b8c3a03c03833c10, type: 2}
+      objectReference: {fileID: 9100000, guid: 11b5564bac107ea45a0023e7136e8971, type: 2}
     - target: {fileID: 1694388104868514731, guid: 678bf8bc91771fa498236de892b83d1d,
         type: 3}
       propertyPath: m_BlendShapeWeights.Array.size
