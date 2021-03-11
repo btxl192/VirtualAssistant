@@ -182,7 +182,8 @@ public class LipSync : MonoBehaviour
             {
                 if (!receivedText)
                 {
-                    receivedText = true;
+                    thisaudiosource.Play();
+                    OnLipsyncEnd();
                 }
                 else
                 {
