@@ -278,20 +278,9 @@ public class LipSync : MonoBehaviour
     public IEnumerator GetAlexaAudio()
     {
         UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(speechurl, AudioType.MPEG);
-        ((DownloadHandlerAudioClip)www.downloadHandler).streamAudio = true;
         yield return www.SendWebRequest();
-
-        DownloadHandlerAudioClip dha = (DownloadHandlerAudioClip)www.downloadHandler;
-
-        if(dha.isDone)
-        {
-            AudioClip c = dha.audioClip;
-            if (c != null)
-            {
-                thisaudiosource.clip = DownloadHandlerAudioClip.GetContent(www);
-                receivedAudio = true;
-            }
-        }
+        thisaudiosource.clip = NAudioPlayer.FromMp3Data(www.downloadHandler.data);
+        receivedAudio = true;
     }
 
     private void OnApplicationQuit()
