@@ -6,6 +6,8 @@ using Newtonsoft.Json.Linq;
 public class LipSync : MonoBehaviour
 {
 
+    public bool testClient;
+
     private bool hasEmotion = false;
     private string defaultSpeechUrl = "http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/audio";
     private string speechurl = "http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/audio";
@@ -256,19 +258,28 @@ public class LipSync : MonoBehaviour
         {
             case "Speech":
                 //print("received text");
+                
                 hasEmotion = WebsocketHandler.GetJsonKeys(msgjson).Contains("Emotion");
                 if (hasEmotion)
                 {
                     thisemotion.SetEmotion(msgjson.Value<string>("Emotion"));
                 }
-                lipsync(msgtext);
+                if (testClient)
+                {
+                    lipsync(msgtext);
+                }               
                 break;
             case "SpeechControl":
                 //print("received audio");
+                if (!testClient)
+                {
+                    StartCoroutine(GetAlexaText());
+                }
+                
                 if (msgtext.ToLower().Equals("written"))
                 {
                     getAudio = true;
-                }
+                }               
                 break;
             case "SpeechUrl":
                 speechurl = msgtext;
@@ -295,6 +306,13 @@ public class LipSync : MonoBehaviour
         yield return www.SendWebRequest();
         thisaudiosource.clip = NAudioPlayer.FromMp3Data(www.downloadHandler.data);
         receivedAudio = true;
+    }
+
+    public IEnumerator GetAlexaText()
+    {
+        UnityWebRequest www = UnityWebRequest.Get("http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/caption");
+        yield return www.SendWebRequest();
+        lipsync(www.downloadHandler.text);
     }
 
     private void OnApplicationQuit()
