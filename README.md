@@ -20,6 +20,11 @@ This will take a while as it will install certbot, get HTTPS certificate from Le
 
 After the setup finishes, the skill server can be started by running `./start.sh`. To keep the certificate renewed, just run `./configure.sh DOMAIN_NAME` every 3 months.
 
-## Client setup
+## Setting up development client
+
+// TODO
+// remember to mention `liblibwebvtt.dll.a` fix.
+
+## Packaging the client
 
 // TODO
