@@ -7,17 +7,13 @@ public class videoPlayerScript : MonoBehaviour
 {
 
 	public string vidUrl {get; set;}
-	public bool paused;
 
     private UnityEngine.Video.VideoPlayer videoPlayer;
-    private UnityEngine.UI.RawImage rawimage;
 
     public Animator animator;
     public Animator avatorAnimator;
 
     public float slideInProg = 0.0f;
-
-    private bool videoPlayerStarted = false;
 
     private void Awake()
     {
@@ -26,12 +22,10 @@ public class videoPlayerScript : MonoBehaviour
 
     void Start()
     {
-        paused = true;
         videoPlayer = GetComponent<UnityEngine.Video.VideoPlayer>();
         // videoPlayer.url = "https://" + config.domainName + "/companyVideo";
         // videoPlayer.url = "https://mw-public-data.s3.eu-west-2.amazonaws.com/e2cac2b3c9d4be3abac3be760b7b9c5e44330f66f9e2d902ef13dc7ea71369e2.webm";
         videoPlayer.url = "https://mw-public-data.s3.eu-west-2.amazonaws.com/93cc49bdf8bc759864e2c64be16e3938b205424fb9490e1814a91211440da690.mp4";
-        rawimage = GetComponent<UnityEngine.UI.RawImage>();
 
         videoPlayer.loopPointReached += EndReached;
 
@@ -46,43 +40,45 @@ public class videoPlayerScript : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            paused = !paused;
+            if (videoPlayer.isPlaying)
+            {
+                PauseVideo();
+            }
+            else
+            {
+                ResumeVideo();
+            }
         }
         if (Input.GetKeyDown(KeyCode.S)) {
             StopVideo();
         }
-        if (paused) {
-            videoPlayerStarted = false;
-            animator.SetBool("stopped", true);
-            avatorAnimator.SetBool("videoPlaying", false);
-        } else {
-            animator.SetBool("stopped", false);
-            avatorAnimator.SetBool("videoPlaying", true);
-        }
+
         RectTransform rt = GetComponent<RectTransform>();
         float ratio = 16.0f / 9.0f;
         float vid_width = Screen.width * 0.8f;
         rt.sizeDelta = new Vector2(vid_width, vid_width / ratio);
         rt.anchoredPosition = new Vector2((1-slideInProg)*Screen.width + Screen.width * 0.08f, 0);
-        if (!paused && !videoPlayerStarted)
-        {
-            videoPlayer.enabled = true;
-            videoPlayer.Play();
-            videoPlayerStarted = true;
-            Debug.Log("Started");
-        }
-        if (paused && videoPlayer.isPlaying)
-        {
-            videoPlayer.Pause();
-        }
+    }
 
+    public void ResumeVideo()
+    {
+        videoPlayer.Play();
+        animator.SetBool("stopped", false);
+        avatorAnimator.SetBool("videoPlaying", true);
+    }
+
+    public void PauseVideo()
+    {
+        videoPlayer.Pause();
+        animator.SetBool("stopped", true);
+        avatorAnimator.SetBool("videoPlaying", false);
     }
 
     public void StopVideo()
     {
-        Debug.Log("Stopped");
         videoPlayer.Stop();
-        paused = true;
+        animator.SetBool("stopped", true);
+        avatorAnimator.SetBool("videoPlaying", false);
     }
 
     private void OnApplicationQuit()
@@ -98,22 +94,16 @@ public class videoPlayerScript : MonoBehaviour
             switch (msgtext)
             {
                 case "Play":
-                    //Play video hosted on /companyVideo
-                    //videoPlayer.PlayVideo(true);
-                    paused = false;
+                    videoPlayer.enabled = true;
+                    ResumeVideo();
                     break;
                 case "Pause":
-                    //Pause video
-                    //videoPlayer.PauseVideo(true);
-                    paused = true;
+                    PauseVideo();
                     break;
                 case "Resume":
-                    //Resume video
-                    //videoPlayer.ResumeVideo(true);
+                    ResumeVideo();
                     break;
                 case "Stop":
-                    //Stop video
-                    //videoPlayer.StopVideo(true);
                     StopVideo();
                     break;
                 case "Idle":
@@ -125,8 +115,14 @@ public class videoPlayerScript : MonoBehaviour
                     //thisplayer.stopTalking = false;
                     break;
             }
-        } else if (msgtitle.Equals("VidUrl")) {
-            videoPlayer.url = msgtext;
+        } 
+        else if (msgtitle.Equals("VidUrl")) 
+        {
+            if (videoPlayer.url != msgtext)
+            {
+                videoPlayer.url = msgtext;
+            }
+            
             // videoPlayer.url = "file://" + Application.dataPath + "/video/nttdata-about.mp4";
         }
 
