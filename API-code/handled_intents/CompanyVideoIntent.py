@@ -2,6 +2,8 @@ from .intent_base import *
 import json
 
 def get_company_info(company):
+    if company is None:
+        return None
     if company.lower() == "ntt data":
       company = "nttdata"
     with open("companyInfo.json", "r") as file:
