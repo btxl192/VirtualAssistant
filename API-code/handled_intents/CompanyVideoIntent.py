@@ -52,4 +52,8 @@ class CompanyVideoIntent(intent_base):
             self.add_unity_msg("VidUrl", self.videoUrl)
             self.add_unity_msg("VidControl", "Play")
             self.response = "Playing video"
-        self.user_input = "Asked to play a video about " + company
+            
+        if company is None:
+            self.user_input = "Asked to play a video about unknown company"
+        else:
+            self.user_input = "Asked to play a video about " + company
