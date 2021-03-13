@@ -2,8 +2,6 @@ from .intent_base import *
 import json
 
 def get_company_info(company):
-    if company is None:
-        return None
     if company.lower() == "ntt data":
       company = "nttdata"
     with open("companyInfo.json", "r") as file:
@@ -13,13 +11,11 @@ def get_company_info(company):
 class CompanyVideoIntent(intent_base):
     videoUrl = ""
     
-    def company_video_intent(self, company, sector, handler_input):
+    def company_video_intent(self, company, sector):
         self.videoUrl = ""
         company_videos = None
         company_info = get_company_info(company)
         output_speech = ""
-        if company_info is None:
-            company_info = get_company_info(get_sess_attr(handler_input)["CurrentVideoCompany"])
         if company_info != None:
             company_videos = company_info.get("videos")
             output_speech = "Playing "
@@ -48,15 +44,10 @@ class CompanyVideoIntent(intent_base):
         except (TypeError, AttributeError) as e:
             sector = None
 
-        self.response = self.company_video_intent(company, sector, handler_input)
+        self.response = self.company_video_intent(company, sector)
         
         if self.videoUrl != "":
             self.add_unity_msg("VidUrl", self.videoUrl)
             self.add_unity_msg("VidControl", "Play")
             self.response = "Playing video"
-            
-        if company is None:
-            self.user_input = "Asked to play a video about unknown company"
-        else:
-            self.user_input = "Asked to play a video about " + company
-            set_sess_attr(handler_input, "CurrentVideoCompany", company)
+        self.user_input = "Asked to play a video about " + company
