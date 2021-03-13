@@ -47,6 +47,8 @@ class intent_base(AbstractRequestHandler):
     unity_msg = None
     user_input = None
     should_end_session = False
+    override_speech = ""
+    ignore_dismissal_msg = False
 
     def __init__(self, unity_msg):
         self.response = "Warning: no speech output was set to this intent"
@@ -66,7 +68,7 @@ class intent_base(AbstractRequestHandler):
         dismissal_msg = ""
         
         #prepend the dismissal message if the intent is not an answer intent
-        if "answer_intents" in get_sess_attr(handler_input):
+        if not self.ignore_dismissal_msg and "answer_intents" in get_sess_attr(handler_input):
             if len(get_sess_attr(handler_input)["answer_intents"]) > 0 and self.getIntentName() not in get_sess_attr(handler_input)["answer_intents"]:
                 dismissal_msg = get_sess_attr(handler_input)["dismissal_msg"]
                 set_sess_attr(handler_input, "answer_intents", [])
@@ -77,22 +79,25 @@ class intent_base(AbstractRequestHandler):
         total_response = dismissal_msg + " " + self.response
         
         #add speech and emotion to unity message
-        t = ipa.convert(total_response)
-        self.add_unity_msg("Speech", t)
-        if self.emotion != None:
+        if self.override_speech == "":
+            t = ipa.convert(total_response)
+            self.add_unity_msg("Speech", t)
+        else:
+            self.add_unity_msg("Speech", self.override_speech)
+            self.override_speech = ""
+        if self.emotion is not None:
             self.add_unity_msg("Emotion", self.emotion)
             self.emotion = None       
                
-        resp = handler_input.response_builder       
-            
-        resp.speak(total_response).set_should_end_session(self.should_end_session)
-            
+        resp = handler_input.response_builder                 
+        resp.speak(total_response)          
+        resp.set_should_end_session(self.should_end_session)           
         self.add_unity_msg("AlexaResponse", total_response)
         self.add_unity_msg("UserInput", self.user_input)  
         self.set_unity_msg(self.unity_msg.msg)
         
         set_sess_attr(handler_input, "previous_intent", self.getIntentName())
-        
+    
         return resp.response
 
     def add_unity_msg(self, message_title, message_text):

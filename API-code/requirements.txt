@@ -9,3 +9,5 @@ ask_sdk_core
 flask_ask_sdk
 eventlet
 eng_to_ipa
+googletrans==3.1.0a0
+epitran
