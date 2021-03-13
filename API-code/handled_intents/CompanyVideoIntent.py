@@ -59,4 +59,4 @@ class CompanyVideoIntent(intent_base):
             self.user_input = "Asked to play a video about unknown company"
         else:
             self.user_input = "Asked to play a video about " + company
-            self.set_sess_attr(handler_input, "CurrentVideoCompany", company)
+            set_sess_attr(handler_input, "CurrentVideoCompany", company)
