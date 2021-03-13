@@ -13,7 +13,7 @@ def get_company_info(company):
 class CompanyVideoIntent(intent_base):
     videoUrl = ""
     
-    def company_video_intent(self, company, sector):
+    def company_video_intent(self, company, sector, handler_input):
         self.videoUrl = ""
         company_videos = None
         company_info = get_company_info(company)
@@ -48,7 +48,7 @@ class CompanyVideoIntent(intent_base):
         except (TypeError, AttributeError) as e:
             sector = None
 
-        self.response = self.company_video_intent(company, sector)
+        self.response = self.company_video_intent(company, sector, handler_input)
         
         if self.videoUrl != "":
             self.add_unity_msg("VidUrl", self.videoUrl)
