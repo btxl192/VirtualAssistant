@@ -15,7 +15,8 @@ public class WebsocketHandler : MonoBehaviour
     //higher priority is processed first
     public static Dictionary<string, int> msgPriority = new Dictionary<string, int>()
     {
-        { "UserInput", 1}
+        { "UserInput", 1},
+        { "VidUrl", 1}
     };
 
     void Start()
@@ -37,7 +38,7 @@ public class WebsocketHandler : MonoBehaviour
         foreach (string messageTitle in jsonkeys)
         {
             string messageText = msgjson.Value<string>(messageTitle);
-            //print("msg - " + messageTitle + ": " + messageText);
+            print("msg - " + messageTitle + ": " + messageText);
             if (MessageReceived != null)
             {
                 //Call the MessageReceived event

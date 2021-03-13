@@ -7,7 +7,7 @@ public class videoPlayerScript : MonoBehaviour
 {
 
 	public string vidUrl {get; set;}
-	public bool paused { get; set; }
+	public bool paused;
 
     private UnityEngine.Video.VideoPlayer videoPlayer;
     private UnityEngine.UI.RawImage rawimage;
@@ -16,6 +16,8 @@ public class videoPlayerScript : MonoBehaviour
     public Animator avatorAnimator;
 
     public float slideInProg = 0.0f;
+
+    private bool videoPlayerStarted = false;
 
     private void Awake()
     {
@@ -30,11 +32,18 @@ public class videoPlayerScript : MonoBehaviour
         // videoPlayer.url = "https://mw-public-data.s3.eu-west-2.amazonaws.com/e2cac2b3c9d4be3abac3be760b7b9c5e44330f66f9e2d902ef13dc7ea71369e2.webm";
         videoPlayer.url = "https://mw-public-data.s3.eu-west-2.amazonaws.com/93cc49bdf8bc759864e2c64be16e3938b205424fb9490e1814a91211440da690.mp4";
         rawimage = GetComponent<UnityEngine.UI.RawImage>();
+
+        videoPlayer.loopPointReached += EndReached;
+
+        void EndReached(UnityEngine.Video.VideoPlayer vp)
+        {
+            Debug.Log("end reached.");
+            StopVideo();
+        }
     }
 
-    private void Update()
+    void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.P))
         {
             paused = !paused;
@@ -42,38 +51,38 @@ public class videoPlayerScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S)) {
             StopVideo();
         }
-        if (!paused && !videoPlayer.isPlaying)
-        {
-            videoPlayer.enabled = true;
-            videoPlayer.Play();
+        if (paused) {
+            videoPlayerStarted = false;
+            animator.SetBool("stopped", true);
+            avatorAnimator.SetBool("videoPlaying", false);
+        } else {
             animator.SetBool("stopped", false);
             avatorAnimator.SetBool("videoPlaying", true);
         }
-        else if (paused && videoPlayer.isPlaying)
-        {
-            videoPlayer.Pause();
-        }
-
-        videoPlayer.loopPointReached += EndReached;
-
-        void EndReached(UnityEngine.Video.VideoPlayer vp)
-        {
-            StopVideo();
-        }
-
         RectTransform rt = GetComponent<RectTransform>();
         float ratio = 16.0f / 9.0f;
         float vid_width = Screen.width * 0.8f;
         rt.sizeDelta = new Vector2(vid_width, vid_width / ratio);
         rt.anchoredPosition = new Vector2((1-slideInProg)*Screen.width + Screen.width * 0.08f, 0);
+        if (!paused && !videoPlayerStarted)
+        {
+            videoPlayer.enabled = true;
+            videoPlayer.Play();
+            videoPlayerStarted = true;
+            Debug.Log("Started");
+        }
+        if (paused && videoPlayer.isPlaying)
+        {
+            videoPlayer.Pause();
+        }
+
     }
 
     public void StopVideo()
     {
+        Debug.Log("Stopped");
         videoPlayer.Stop();
         paused = true;
-        animator.SetBool("stopped", true);
-        avatorAnimator.SetBool("videoPlaying", false);
     }
 
     private void OnApplicationQuit()
@@ -116,7 +125,10 @@ public class videoPlayerScript : MonoBehaviour
                     //thisplayer.stopTalking = false;
                     break;
             }
+        } else if (msgtitle.Equals("VidUrl")) {
+            videoPlayer.url = msgtext;
+            // videoPlayer.url = "file://" + Application.dataPath + "/video/nttdata-about.mp4";
         }
-        
+
     }
 }

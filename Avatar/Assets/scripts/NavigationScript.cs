@@ -50,23 +50,23 @@ public class NavigationScript : MonoBehaviour
 
     private void Update()
     {
-        if (!paused && !videoPlayer.isPlaying)
-        {
-            videoPlayer.enabled = true;
-            videoPlayer.Play();
-            animator.SetBool("stopped", false);
-            avatorAnimator.SetBool("videoPlaying", true);
-        }
-        else if (paused && videoPlayer.isPlaying)
-        {
-            videoPlayer.Pause();
-        }
+        // if (!paused && !videoPlayer.isPlaying)
+        // {
+        //     videoPlayer.enabled = true;
+        //     videoPlayer.Play();
+        //     animator.SetBool("stopped", false);
+        //     avatorAnimator.SetBool("videoPlaying", true);
+        // }
+        // else if (paused && videoPlayer.isPlaying)
+        // {
+        //     videoPlayer.Pause();
+        // }
 
-        DateTime now = DateTime.Now;
-        double seconds = (now - timeLastPlayed).TotalSeconds;
-        if (seconds >= 7) {
-            StopVideo();
-        }
+        // DateTime now = DateTime.Now;
+        // double seconds = (now - timeLastPlayed).TotalSeconds;
+        // if (seconds >= 7) {
+        //     StopVideo();
+        // }
 
         // RectTransform rt = GetComponent<RectTransform>();
         // float ratio = 16.0f / 9.0f;
@@ -94,8 +94,8 @@ public class NavigationScript : MonoBehaviour
         if (msgtitle.Equals("NavRoom"))
         {
             string room = msgtext;
-            
+
         }
-        
+
     }
 }
