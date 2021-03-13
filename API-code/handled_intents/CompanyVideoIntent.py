@@ -18,6 +18,8 @@ class CompanyVideoIntent(intent_base):
         company_videos = None
         company_info = get_company_info(company)
         output_speech = ""
+        if company_info is None:
+            company_info = get_company_info(get_sess_attr(handler_input)["CurrentVideoCompany"]))
         if company_info != None:
             company_videos = company_info.get("videos")
             output_speech = "Playing "
@@ -57,3 +59,4 @@ class CompanyVideoIntent(intent_base):
             self.user_input = "Asked to play a video about unknown company"
         else:
             self.user_input = "Asked to play a video about " + company
+            self.set_sess_attr("CurrentVideoCompany", company)
