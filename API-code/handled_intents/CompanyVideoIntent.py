@@ -1,12 +1,9 @@
 from .intent_base import *
 import json
-from pytube import YouTube
-
-def uploadVideo(url):
-    yt = YouTube(url)
-    yt.streams.filter(mime_type="video/mp4", res="720p", progressive=True)[0].download(output_path="./static", filename="video")
 
 def get_company_info(company):
+    if company.lower() == "ntt data":
+      company = "nttdata"
     with open("companyInfo.json", "r") as file:
         f = json.load(file)
         return f.get(company)
@@ -15,6 +12,7 @@ class CompanyVideoIntent(intent_base):
     videoUrl = ""
     
     def company_video_intent(self, company, sector):
+        self.videoUrl = ""
         company_videos = None
         company_info = get_company_info(company)
         output_speech = ""
@@ -28,7 +26,7 @@ class CompanyVideoIntent(intent_base):
                     self.videoUrl = company_videos.get("about").get("url")
                 else:
                     if sector in company_videos.keys():
-                        #outputSpeech = outputSpeech + companyVideos.get(sector).get("title")
+                        # outputSpeech = outputSpeech + companyVideos.get(sector).get("title")
                         self.videoUrl = company_videos.get(sector).get("url")
                     else:
                         output_speech = "I couldn't find a video for that"
@@ -48,8 +46,8 @@ class CompanyVideoIntent(intent_base):
 
         self.response = self.company_video_intent(company, sector)
         
-        if "couldn't" not in self.response:
-            uploadVideo(self.videoUrl)
+        if self.videoUrl != "":
+            self.add_unity_msg("VidUrl", self.videoUrl)
             self.add_unity_msg("VidControl", "Play")
             self.response = "Playing video"
         self.user_input = "Asked to play a video about " + company

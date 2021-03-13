@@ -27,11 +27,11 @@
         "videos": {
             "about":{
                 "title": "NTT DATA Impact - Guiding leaders from challenge to change",
-                "url": "https://www.youtube.com/watch?v=ICu9rSOp7dY"
+                "url": "https://mw-public-data.s3.eu-west-2.amazonaws.com/613ad8d53cc7695cf01e74ebdb813d4879fb37e55290186e2175440841df21e2/nttdata-about.mp4"
             },
             "telecommunications":{
                 "title": "NTT DATA UK: Delivering innovation to Telecoms Operators",
-                "url": "https://www.youtube.com/watch?v=b2DuX7OJ63U"
+                "url": "https://mw-public-data.s3.eu-west-2.amazonaws.com/613ad8d53cc7695cf01e74ebdb813d4879fb37e55290186e2175440841df21e2/nttdata-telecom.mp4"
             },
             "insurance":{
                 "title": "",
@@ -47,7 +47,7 @@
             },
             "automotive":{
                 "title": "MOVE - Trailer Automotive Industry",
-                "url": "https://www.youtube.com/watch?v=LMyU_gfvsdM"
+                "url": "https://mw-public-data.s3.eu-west-2.amazonaws.com/613ad8d53cc7695cf01e74ebdb813d4879fb37e55290186e2175440841df21e2/nttdata-automotive.mp4"
             }
             
         }

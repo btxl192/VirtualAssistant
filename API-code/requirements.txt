@@ -3,7 +3,6 @@ fastapi
 uvicorn
 aiofiles
 Jinja2
-pytube3
 flask
 flask_socketio
 ask_sdk_core
