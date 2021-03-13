@@ -19,7 +19,7 @@ class CompanyVideoIntent(intent_base):
         company_info = get_company_info(company)
         output_speech = ""
         if company_info is None:
-            company_info = get_company_info(get_sess_attr(handler_input)["CurrentVideoCompany"]))
+            company_info = get_company_info(get_sess_attr(handler_input)["CurrentVideoCompany"])
         if company_info != None:
             company_videos = company_info.get("videos")
             output_speech = "Playing "
