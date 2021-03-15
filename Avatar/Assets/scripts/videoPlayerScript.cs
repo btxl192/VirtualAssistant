@@ -94,6 +94,7 @@ public class videoPlayerScript : MonoBehaviour
             switch (msgtext)
             {
                 case "Play":
+                    videoPlayer.url = "https://mw-public-data.s3.eu-west-2.amazonaws.com/93cc49bdf8bc759864e2c64be16e3938b205424fb9490e1814a91211440da690.mp4";
                     videoPlayer.enabled = true;
                     ResumeVideo();
                     break;
