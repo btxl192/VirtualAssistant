@@ -22,7 +22,7 @@ After the setup finishes, the skill server can be started by running `./start.sh
 
 ## Setting up AVS client with pre-packaged zip
 
-You can [download a zip of the compiled AVS client](https://mw-public-data.s3.eu-west-2.amazonaws.com/upload-space/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855/avs.zip). It contains only compiled files but they are already patched for use by the assistant.
+You can [download a zip of the compiled AVS client](https://mw-public-data.s3.eu-west-2.amazonaws.com/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855/avs.zip). It contains only compiled files but they are already patched for use by the assistant.
 
 You would still need to install [Python 3](https://www.python.org/downloads/windows/) and [msys2](https://www.msys2.org/) manually. **You should install msys2 into the default location `C:\msys64`**, otherwise you would have to change the hard-coded path in `startsample.bat`. After installing msys, open a msys terminal and enter:
 
