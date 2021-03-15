@@ -3,5 +3,5 @@
 	"alexaResponseIP": "localhost",
 	"alexaResponsePort": 5000,
 	"avatar": 1,
-	"testClient": true
+	"testClient": false
 }
