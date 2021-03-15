@@ -11,6 +11,7 @@ public class player : MonoBehaviour
     public GameObject unityChan;
     public GameObject neck;
     public FaceTracker cameraFaceTracker;
+    private UnityEngine.Video.VideoPlayer videoPlayer;
 
     private int y_rotation = 0;
     private int prev_rotation = 0;
@@ -21,6 +22,7 @@ public class player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        videoPlayer = GameObject.Find("Video Player").GetComponent<UnityEngine.Video.VideoPlayer > ();
         animator = GetComponent<Animator>();
         cameraFaceTracker = GameObject.Find("RawImage").GetComponent<FaceTracker>();
         GameObject main_camera = GameObject.Find("Main Camera");
@@ -34,48 +36,60 @@ public class player : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        y_rotation = cameraFaceTracker.rotation;
-        if (y_rotation != unityChan.transform.rotation.eulerAngles.y)
+        int unityAngle = System.Convert.ToInt32(unityChan.transform.rotation.eulerAngles.y);
+
+        if (unityAngle > 180)
         {
+            unityAngle = unityAngle - 360;
+        }
 
-            int unityAngle = System.Convert.ToInt32(unityChan.transform.rotation.eulerAngles.y);
-            
-            int neckAngle = System.Convert.ToInt32(Rotator.Rotate(neck.transform, new Vector3(0f, 0f, 0f)).y * 50);
-
-            if (unityAngle > 180)
-            {
-                unityAngle = unityAngle - 360;
-            }
-
-            if (neckStartAngle != 0)
-            {
-                neckAngle -= neckStartAngle;
-            }
-
-
-            if (y_rotation > neckAngle)
-            {
-                Rotator.Rotate(neck.transform, new Vector3(0f, 25f, 0f));
-            }
-
-            else if (y_rotation < neckAngle)
-            {
-                if (neckAngle > -7)
-                {
-                    Rotator.Rotate(neck.transform, new Vector3(0f, -25f, 0f));
-                }
-            }
-
-            if ((y_rotation >= 6 || unityAngle != 0) && (unityAngle < y_rotation))
-            {
-                Rotator.Rotate(unityChan.transform, new Vector3(0f, 25f, 0f));
-            }
-
-            else if ((y_rotation <= -6 || unityAngle != 0) && (unityAngle > y_rotation))
+        if (videoPlayer.isPlaying)
+        {
+            if (unityAngle > -40)
             {
                 Rotator.Rotate(unityChan.transform, new Vector3(0f, -25f, 0f));
             }
-
         }
+        else
+        {
+            y_rotation = cameraFaceTracker.rotation;
+            if (y_rotation != unityChan.transform.rotation.eulerAngles.y)
+            {
+                int neckAngle = System.Convert.ToInt32(Rotator.Rotate(neck.transform, new Vector3(0f, 0f, 0f)).y * 50);
+
+                
+
+                if (neckStartAngle != 0)
+                {
+                    neckAngle -= neckStartAngle;
+                }
+
+                if (y_rotation > neckAngle)
+                {
+                    Rotator.Rotate(neck.transform, new Vector3(0f, 25f, 0f));
+                }
+
+                else if (y_rotation < neckAngle)
+                {
+                    if (neckAngle > -7)
+                    {
+                        Rotator.Rotate(neck.transform, new Vector3(0f, -25f, 0f));
+                    }
+                }
+            
+
+                if ((y_rotation >= 6 || unityAngle != 0) && (unityAngle < y_rotation))
+                {
+                    Rotator.Rotate(unityChan.transform, new Vector3(0f, 25f, 0f));
+                }
+
+                else if ((y_rotation <= -6 || unityAngle != 0) && (unityAngle > y_rotation))
+                {
+                    Rotator.Rotate(unityChan.transform, new Vector3(0f, -25f, 0f));
+                }
+
+            }
+        }
+
     }
 }
