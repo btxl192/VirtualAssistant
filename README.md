@@ -20,11 +20,15 @@ This will take a while as it will install certbot, get HTTPS certificate from Le
 
 After the setup finishes, the skill server can be started by running `./start.sh`. To keep the certificate renewed, just run `./configure.sh DOMAIN_NAME` every 3 months.
 
-## Setting up development client
+## Setting up AVS client with pre-packaged zip
 
-// TODO
-// remember to mention `liblibwebvtt.dll.a` fix.
+You can [download a zip of the compiled AVS client](https://mw-public-data.s3.eu-west-2.amazonaws.com/upload-space/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855/avs.zip). It contains only compiled files but they are already patched for use by the assistant.
 
-## Packaging the client
+You would still need to install [Python 3](https://www.python.org/downloads/windows/) and [msys2](https://www.msys2.org/) manually. **You should install msys2 into the default location `C:\msys64`**, otherwise you would have to change the hard-coded path in `startsample.bat`. You would also need to install python dependencies by:
 
-// TODO
+1. Running `pip install flask eventlet pvporcupine eng_to_ipa`.
+2. Install pyaudio: you can try `pip install pyaudio`, but this failed when we tried it. Instead, you could [download third-party compiled packages here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio). Just download `PyAudio‑0.2.11‑cp39‑cp39‑win_amd64.whl` and run <code>pip install <b>&lt;path to downloaded file&gt;</b></code>.
+
+## Setting up AVS client manually
+
+See [AVSClientFiles/readme.txt](AVSClientFiles/readme.txt)
