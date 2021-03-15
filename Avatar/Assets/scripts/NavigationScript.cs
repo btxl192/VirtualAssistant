@@ -26,6 +26,7 @@ public class NavigationScript : MonoBehaviour
     private char sep;
     private bool onCurrentFloor;
     private int secondFloor;
+    private bool isDisplayed;
 
     private void Awake()
     {
@@ -34,6 +35,7 @@ public class NavigationScript : MonoBehaviour
 
     void Start()
     {
+        isDisplayed = false;
         secondFloor = -100;
         onCurrentFloor = true;
         paused = true;
@@ -56,13 +58,14 @@ public class NavigationScript : MonoBehaviour
 
     private void Update()
     {
-        if (videoPlayer.isPlaying) {
+        if (videoPlayer.isPlaying && isDisplayed) {
             DateTime now = DateTime.Now;
             double seconds = (now - timeLastPlayed).TotalSeconds;
             if (seconds >= 5) {
                 if (onCurrentFloor) {
                     StopVideo();
                     room = "-";
+                    isDisplayed = false;
                 } else {
                     videoPlayer.Stop();
                     string url = navigationDir + sep + secondFloor.ToString() + sep + room + ".webm";
@@ -85,6 +88,7 @@ public class NavigationScript : MonoBehaviour
                         ResumeVideo();
                         timeLastPlayed = DateTime.Now;
                         onCurrentFloor = false;
+                        isDisplayed = true;
                     }
                 }
             }
@@ -97,6 +101,7 @@ public class NavigationScript : MonoBehaviour
                         ResumeVideo();
                         timeLastPlayed = DateTime.Now;
                         onCurrentFloor = true;
+                        isDisplayed = true;
                     }
                 }
             }

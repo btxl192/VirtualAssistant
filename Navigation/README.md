@@ -1,0 +1,1 @@
+Running the jar file will create the folders with the videos, used for the navigation feature.
