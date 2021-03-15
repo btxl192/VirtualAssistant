@@ -83,7 +83,11 @@ public class Main {
         File f = new File(System.getProperty("user.dir"));
         String[] pathNames = f.list();
         for (String pathname : pathNames) {
-            if (pathname.contains(".json") || pathname.contains(".jpg")) {
+            if (pathname.contains(".json") && !pathname.equals("Blue.json")) {
+                File file = new File(pathname);
+                file.delete();
+            }
+            if (pathname.contains(".jpg") && pathname.contains("floor")) {
                 File file = new File(pathname);
                 file.delete();
             }

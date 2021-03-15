@@ -59,8 +59,6 @@
 		// split the screen into  7 segments
 		List<Double> segment = new List<Double>();
 		List<int> degrees = new List<int>(){9, 6, 3, 0, -3, -6, -9};
-		//List<int> degrees = new List<int>(){15, 10, 5, 0, -5, -10, -15};
-		//List<int> degrees = new List<int>(){25, 15, 5, 0, -5, -15, -25};
 
 		for (int i = 0; i < 8; i++)
 		{
