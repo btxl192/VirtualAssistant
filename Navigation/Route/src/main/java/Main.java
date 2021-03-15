@@ -14,6 +14,21 @@ public class Main {
 
     private static CountDownLatch latch;
 
+    private static int getBlueFloor(){
+        JSONParser jsonParser = new JSONParser();
+        Object obj = null;
+        try (FileReader reader = new FileReader("Blue.json"))
+        {
+            obj = jsonParser.parse(reader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        JSONArray array = new JSONArray();
+        array.add(obj);
+        JSONObject da = new JSONObject((Map) array.get(0));
+        return Integer.parseInt(String.valueOf(da.keySet().toArray()[0]));
+    }
+
     private static ArrayList<Integer> floorNums(){
         ArrayList<Integer> result = new ArrayList<>();
 
@@ -63,11 +78,12 @@ public class Main {
             Set<String> rooms = listFloorRooms(floor);
             totalRooms += rooms.size() - 2;
         }
+        int blueFloor = getBlueFloor();
         latch = new CountDownLatch(totalRooms);
         for (int floor : floors) {
             Set<String> rooms = listFloorRooms(floor);
             for (String room : rooms) {
-                if (!room.equals("hall") && !room.equals("lift")) {
+                if (!room.equals("hall") && (!room.equals("lift") || (floor == blueFloor && room.equals("lift")))) {
                     String image = "floor" + floor + ".jpg";
                     String file = "floor" + floor + ".json";
                     Thread thread = new Thread(new MakePictures(image, file, floor, room, latch));
