@@ -89,7 +89,7 @@ public class BubblesManager : MonoBehaviour
         bubbleLeftUp.text = string.Empty;
     }
 
-    private IEnumerator closeBubbles()
+    private void closeBubbles()
     {
         bubbleRightUpAnimator.SetTrigger("Close");
         bubbleLeftUpAnimator.SetTrigger("Close");
@@ -101,24 +101,24 @@ public class BubblesManager : MonoBehaviour
         bubbleRightUp.text = string.Empty;
         bubbleRightDown.text = string.Empty;
 
-        yield return new WaitForSeconds(bubbleAnimationDelay);
+        // yield return new WaitForSeconds(bubbleAnimationDelay);
     }
 
-    private IEnumerator openBubbles()
+    private void openBubbles()
     {
         bubbleLeftUp.text = string.Empty;
         bubbleLeftDown.text = string.Empty;
         bubbleRightUp.text = string.Empty;
         bubbleRightDown.text = string.Empty;
 
-        yield return new WaitForSeconds(1);
+        // yield return new WaitForSeconds(1);
 
         bubbleRightUpAnimator.SetTrigger("Open");
         bubbleLeftUpAnimator.SetTrigger("Open");
         bubbleRightDownAnimator.SetTrigger("Open");
         bubbleLeftDownAnimator.SetTrigger("Open");
 
-        yield return new WaitForSeconds(bubbleAnimationDelay);
+        // yield return new WaitForSeconds(bubbleAnimationDelay);
 
         // StartCoroutine(typeRightUpText());
         // StartCoroutine(typeLeftUpText());
@@ -140,49 +140,50 @@ public class BubblesManager : MonoBehaviour
         thisplayer = thisCurrentModel.GetComponent<player>();
         videoAnimator = GameObject.Find("Video Player").GetComponent<Animator>();
         timeLastSpoke = DateTime.Now;
-        StartCoroutine(openBubbles());
+        // StartCoroutine(openBubbles());
+        // openBubbles();
         // areDisplayed = true;
     }
 
      // Update is called once per frame
     void Update()
     {
-        // DateTime now = DateTime.Now;
-        // double secondsSpeak = (now - timeLastSpoke).TotalSeconds;
-        // faceDetected = thisplayer.faceDetected;
-        // bool isTalking = !thislipsync.isSilent;
-        // double secondsFace = (now - faceLastDetected).TotalSeconds;
-        // if(faceDetected){
-        //     faceLastDetected = DateTime.Now;
-        // }
-        // if(videoAnimator.GetBool("stopped") == false){
-        // 	if(areDisplayed){
-        // 		StartCoroutine(closeBubbles());
-        //         areDisplayed = false;
-        // 	}
-        // }
-        // else{
-        //     if(secondsFace < 5){
-        //         if(isTalking){
-        //             if(areDisplayed){
-        //                 StartCoroutine(closeBubbles());
-        //                 areDisplayed = false;
-        //             }
-        //             timeLastSpoke = DateTime.Now;
-        //         }
-        //         else if (secondsSpeak > 30){
-        //             if(!areDisplayed){
-        //                 StartCoroutine(openBubbles());
-        //                 areDisplayed = true;
-        //             }
-        //         }
-        //     }
-        //     else {
-        //         if(areDisplayed){
-        //             StartCoroutine(closeBubbles());
-        //             areDisplayed = false;
-        //         }
-        //     }
-        // }
+        DateTime now = DateTime.Now;
+        double secondsSpeak = (now - timeLastSpoke).TotalSeconds;
+        faceDetected = thisplayer.faceDetected;
+        bool isTalking = !thislipsync.isSilent;
+        double secondsFace = (now - faceLastDetected).TotalSeconds;
+        if(faceDetected){
+            faceLastDetected = DateTime.Now;
+        }
+        if(videoAnimator.GetBool("stopped") == false){
+        	if(areDisplayed){
+        		StartCoroutine(closeBubbles());
+                areDisplayed = false;
+        	}
+        }
+        else{
+            if(secondsFace < 5){
+                if(isTalking){
+                    if(areDisplayed){
+                        StartCoroutine(closeBubbles());
+                        areDisplayed = false;
+                    }
+                    timeLastSpoke = DateTime.Now;
+                }
+                else if (secondsSpeak > 30){
+                    if(!areDisplayed){
+                        StartCoroutine(openBubbles());
+                        areDisplayed = true;
+                    }
+                }
+            }
+            else {
+                if(areDisplayed){
+                    StartCoroutine(closeBubbles());
+                    areDisplayed = false;
+                }
+            }
+        }
     }
 }
