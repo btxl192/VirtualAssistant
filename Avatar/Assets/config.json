@@ -1,0 +1,7 @@
+{
+	"domainName": "skill.comp0016.mww.moe",
+	"alexaResponseIP": "localhost",
+	"alexaResponsePort": 5000,
+	"avatar": 1,
+	"testClient": true
+}

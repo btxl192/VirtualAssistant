@@ -433,7 +433,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1690914369}
-  unityChan: {fileID: 117053334}
   neck: {fileID: 17909777}
   cameraFaceTracker: {fileID: 0}
   faceDetected: 0
@@ -449,6 +448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a05eb14bb1c2591499c92f8d80a5122b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  config: {fileID: 389980586}
 --- !u!114 &117053339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6efde96616500f48a6d0b525ae71546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testClient: 0
+  config: {fileID: 389980586}
 --- !u!114 &117053340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2859,6 +2859,7 @@ GameObject:
   - component: {fileID: 389980583}
   - component: {fileID: 389980584}
   - component: {fileID: 389980585}
+  - component: {fileID: 389980586}
   m_Layer: 0
   m_Name: playermover
   m_TagString: Untagged
@@ -2914,6 +2915,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveToSideProg: 0
+--- !u!114 &389980586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389980582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bba4b16b5e43b540bcc8ab871a964d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  avatars:
+  - {fileID: 1014502339}
+  - {fileID: 117053334}
+  activeAvatar: {fileID: 0}
 --- !u!1 &454567816
 GameObject:
   m_ObjectHideFlags: 0
@@ -8750,7 +8767,6 @@ MonoBehaviour:
   bubbleLeftDownText: Change Language.
   bubbleRightUpText: Hi, I'm Blue!
   bubbleRightDownText: How can I get to ...?
-  thisUnitychan: {fileID: 1014502339}
 --- !u!4 &878295902
 Transform:
   m_ObjectHideFlags: 0
@@ -8829,7 +8845,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1014502341}
-  unityChan: {fileID: 1014502339}
   neck: {fileID: 1827583218}
   cameraFaceTracker: {fileID: 0}
   faceDetected: 0
@@ -8851,6 +8866,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a05eb14bb1c2591499c92f8d80a5122b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  config: {fileID: 389980586}
 --- !u!114 &1014502343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9000,7 +9016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6efde96616500f48a6d0b525ae71546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testClient: 0
+  config: {fileID: 389980586}
 --- !u!4 &1014502347 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052,
@@ -14469,7 +14485,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2147341122}
   m_HandleRect: {fileID: 2147341121}
   m_Direction: 2
-  m_Value: 0.99999976
+  m_Value: 0.9999997
   m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -15967,7 +15983,7 @@ PrefabInstance:
     - target: {fileID: 1694388104871626409, guid: 678bf8bc91771fa498236de892b83d1d,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 678bf8bc91771fa498236de892b83d1d, type: 3}

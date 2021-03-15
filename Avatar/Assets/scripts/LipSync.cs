@@ -6,11 +6,11 @@ using Newtonsoft.Json.Linq;
 public class LipSync : MonoBehaviour
 {
 
-    public bool testClient;
+    public Config config;
 
     private bool hasEmotion = false;
-    private string defaultSpeechUrl = "http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/audio";
-    private string speechurl = "http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/audio";
+    private string defaultSpeechUrl;
+    private string speechurl;
 
     private bool receivedText = false;
     private bool receivedAudio = false;
@@ -91,11 +91,13 @@ public class LipSync : MonoBehaviour
     private void Awake()
     {
         WebsocketHandler.MessageReceived += HandleMsg;
+        anim = GetComponent<Animator>();
     }
 
     void Start()
     {
-        anim = GetComponent<Animator>();
+        this.defaultSpeechUrl = "http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/audio";
+        this.speechurl = "http://" + config.alexaResponseIP + ":" + config.alexaResponsePort + "/audio";
         thisaudiosource = GetComponent<AudioSource>();
         thisemotion = GetComponent<Emotion>();
     }
@@ -144,7 +146,7 @@ public class LipSync : MonoBehaviour
             thisaudiosource.Stop();
             startTimeout = false;
         }
-        
+
         foreach (char c in IPA)
         {
             lipsyncQueue.Enqueue(c);
@@ -191,7 +193,7 @@ public class LipSync : MonoBehaviour
                 {
                     anim.SetBool("isWaiting", true);
                 }
-                
+
             }
         }
 
@@ -203,7 +205,7 @@ public class LipSync : MonoBehaviour
             }
             else
             {
-                timeoutTimer = 0;                                
+                timeoutTimer = 0;
                 if (lipsyncQueue.Count > 0)
                 {
 
@@ -225,7 +227,7 @@ public class LipSync : MonoBehaviour
                 if (!queueingLipsync)
                 {
                     OnLipsyncEnd();
-                }               
+                }
             }
             else if (!startTimeout)
             {
@@ -258,28 +260,28 @@ public class LipSync : MonoBehaviour
         {
             case "Speech":
                 //print("received text");
-                
+
                 hasEmotion = WebsocketHandler.GetJsonKeys(msgjson).Contains("Emotion");
                 if (hasEmotion)
                 {
                     thisemotion.SetEmotion(msgjson.Value<string>("Emotion"));
                 }
-                if (testClient)
+                if (config.testClient)
                 {
                     lipsync(msgtext);
-                }               
+                }
                 break;
             case "SpeechControl":
                 //print("received audio");
-                if (!testClient)
+                if (!config.testClient)
                 {
                     StartCoroutine(GetAlexaText());
                 }
-                
+
                 if (msgtext.ToLower().Equals("written"))
                 {
                     getAudio = true;
-                }               
+                }
                 break;
             case "SpeechUrl":
                 speechurl = msgtext;

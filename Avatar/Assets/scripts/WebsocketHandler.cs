@@ -19,6 +19,8 @@ public class WebsocketHandler : MonoBehaviour
         { "VidUrl", 1}
     };
 
+    public Config config;
+
     void Start()
     {
 
