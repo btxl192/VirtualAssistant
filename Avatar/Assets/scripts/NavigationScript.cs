@@ -8,8 +8,8 @@ using Newtonsoft.Json.Linq;
 public class NavigationScript : MonoBehaviour
 {
 
-	public string vidPath {get; set;}
-	public bool paused { get; set; }
+    public string vidPath {get; set;}
+    public bool paused { get; set; }
 
     private UnityEngine.Video.VideoPlayer videoPlayer;
     private UnityEngine.UI.RawImage rawimage;
@@ -21,6 +21,11 @@ public class NavigationScript : MonoBehaviour
 
     private DateTime timeLastPlayed;
     private string navigationDir;
+    private string room;
+    private int blueFloor;
+    private char sep;
+    private bool onCurrentFloor;
+    private int secondFloor;
 
     private void Awake()
     {
@@ -29,50 +34,87 @@ public class NavigationScript : MonoBehaviour
 
     void Start()
     {
+        secondFloor = -100;
+        onCurrentFloor = true;
         paused = true;
         videoPlayer = GetComponent<UnityEngine.Video.VideoPlayer>();
-        videoPlayer.url = "file:///home/kalcho100/Documents/UCL/Year2/COMP0016_20-21/VirtualAssistant/Navigation/1/ff.webm";
         rawimage = GetComponent<UnityEngine.UI.RawImage>();
-        // videoPlayer.enabled = true;
-        // videoPlayer.Play();
-        // animator.SetBool("stopped", false);
-        // avatorAnimator.SetBool("videoPlaying", true);
-        // timeLastPlayed = DateTime.Now;
+
         string path = Directory.GetCurrentDirectory();
-        char sep = Path.DirectorySeparatorChar;
+        sep = Path.DirectorySeparatorChar;
         navigationDir = path + sep + ".." + sep + "Navigation";
-        if (Directory.Exists(navigationDir)) {
-            string [] subdirectoryEntries = Directory.GetDirectories(navigationDir);
-            foreach(string subdirectory in subdirectoryEntries)
-                Debug.Log(subdirectory);
+        room = "-";
+        string text = System.IO.File.ReadAllText(navigationDir + sep + "Blue.json");
+        char[] chars = text.ToCharArray();
+        foreach (char ch in chars) {
+            if (Char.IsDigit(ch)){
+                blueFloor = int.Parse(ch.ToString());
+                break;
+            }
         }
     }
 
     private void Update()
     {
-        // if (!paused && !videoPlayer.isPlaying)
-        // {
-        //     videoPlayer.enabled = true;
-        //     videoPlayer.Play();
-        //     animator.SetBool("stopped", false);
-        //     avatorAnimator.SetBool("videoPlaying", true);
-        // }
-        // else if (paused && videoPlayer.isPlaying)
-        // {
-        //     videoPlayer.Pause();
-        // }
+        if (videoPlayer.isPlaying) {
+            DateTime now = DateTime.Now;
+            double seconds = (now - timeLastPlayed).TotalSeconds;
+            if (seconds >= 5) {
+                if (onCurrentFloor) {
+                    StopVideo();
+                    room = "-";
+                } else {
+                    videoPlayer.Stop();
+                    string url = navigationDir + sep + secondFloor.ToString() + sep + room + ".webm";
+                    videoPlayer.url = "file://" + url;
+                    videoPlayer.enabled = true;
+                    videoPlayer.Play();
+                    timeLastPlayed = DateTime.Now;
+                    onCurrentFloor = true;
+                    secondFloor = -100;
+                }
+            }
+        }
+        else {
+            if (secondFloor != -100) {
+                if (!room.Equals("-")){
+                    string url = navigationDir + sep + blueFloor.ToString() + sep + "lift.webm";
+                    if(File.Exists(url)) {
+                        videoPlayer.url = "file://" + url;
+                        videoPlayer.enabled = true;
+                        ResumeVideo();
+                        timeLastPlayed = DateTime.Now;
+                        onCurrentFloor = false;
+                    }
+                }
+            }
+            else {
+                if (!room.Equals("-")){
+                    string url = navigationDir + sep + blueFloor.ToString() + sep + room + ".webm";
+                    if(File.Exists(url)) {
+                        videoPlayer.url = "file://" + url;
+                        videoPlayer.enabled = true;
+                        ResumeVideo();
+                        timeLastPlayed = DateTime.Now;
+                        onCurrentFloor = true;
+                    }
+                }
+            }
+        }
+    }
 
-        // DateTime now = DateTime.Now;
-        // double seconds = (now - timeLastPlayed).TotalSeconds;
-        // if (seconds >= 7) {
-        //     StopVideo();
-        // }
+    public void ResumeVideo()
+    {
+        videoPlayer.Play();
+        animator.SetBool("stopped", false);
+        avatorAnimator.SetBool("videoPlaying", true);
+    }
 
-        // RectTransform rt = GetComponent<RectTransform>();
-        // float ratio = 16.0f / 9.0f;
-        // float vid_width = Screen.width * 0.8f;
-        // rt.sizeDelta = new Vector2(vid_width, vid_width / ratio);
-        // rt.anchoredPosition = new Vector2((1-slideInProg)*Screen.width + Screen.width * 0.08f, 0);
+    public void PauseVideo()
+    {
+        videoPlayer.Pause();
+        animator.SetBool("stopped", true);
+        avatorAnimator.SetBool("videoPlaying", false);
     }
 
     public void StopVideo()
@@ -93,9 +135,12 @@ public class NavigationScript : MonoBehaviour
     {
         if (msgtitle.Equals("NavRoom"))
         {
-            string room = msgtext;
-
+            room = msgtext;
         }
-
+        if (msgtitle.Equals("NavFloor"))
+        {
+            secondFloor = Int32.Parse(msgtext);
+            onCurrentFloor = false;
+        }    
     }
 }
