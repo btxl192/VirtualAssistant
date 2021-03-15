@@ -35,7 +35,7 @@ public class BubblesManager : MonoBehaviour
 
     private float bubbleAnimationDelay = 0.6f;
 
-    [SerializeField] private GameObject thisUnitychan;
+    private GameObject thisCurrentModel;
     private player thisplayer;
     private LipSync thislipsync;
     private Animator videoAnimator;
@@ -123,8 +123,9 @@ public class BubblesManager : MonoBehaviour
     void Start()
     {
         faceLastDetected = DateTime.Now.AddSeconds(-2);
-        thislipsync = thisUnitychan.GetComponent<LipSync>();
-        thisplayer = thisUnitychan.GetComponent<player>();
+        thisCurrentModel = player.activeModel;
+        thislipsync = thisCurrentModel.GetComponent<LipSync>();
+        thisplayer = thisCurrentModel.GetComponent<player>();
         videoAnimator = GameObject.Find("Video Player").GetComponent<Animator>();
         timeLastSpoke = DateTime.Now;
         // StartCoroutine(openBubbles());

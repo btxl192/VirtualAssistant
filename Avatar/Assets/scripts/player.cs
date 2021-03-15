@@ -8,7 +8,7 @@ using OpenCvSharp.Demo;
 public class player : MonoBehaviour
 {
     public Animator animator;
-    public GameObject unityChan;
+    public static GameObject activeModel { get; private set; }
     public GameObject neck;
     public FaceTracker cameraFaceTracker;
 
@@ -18,6 +18,11 @@ public class player : MonoBehaviour
 
     public bool faceDetected = false;
 
+    private void OnEnable()
+    {
+        activeModel = gameObject;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +31,7 @@ public class player : MonoBehaviour
         GameObject main_camera = GameObject.Find("Main Camera");
         neckStartAngle = System.Convert.ToInt32(Rotator.Rotate(neck.transform, new Vector3(0f, 0f, 0f)).y * 50);
         faceDetected = cameraFaceTracker.faceDetected;
+        activeModel = gameObject;
     }
     private void Update()
     {
@@ -35,10 +41,10 @@ public class player : MonoBehaviour
     void LateUpdate()
     {
         y_rotation = cameraFaceTracker.rotation;
-        if (y_rotation != unityChan.transform.rotation.eulerAngles.y)
+        if (y_rotation != activeModel.transform.rotation.eulerAngles.y)
         {
 
-            int unityAngle = System.Convert.ToInt32(unityChan.transform.rotation.eulerAngles.y);
+            int unityAngle = System.Convert.ToInt32(activeModel.transform.rotation.eulerAngles.y);
             
             int neckAngle = System.Convert.ToInt32(Rotator.Rotate(neck.transform, new Vector3(0f, 0f, 0f)).y * 50);
 
@@ -68,12 +74,12 @@ public class player : MonoBehaviour
 
             if ((y_rotation >= 6 || unityAngle != 0) && (unityAngle < y_rotation))
             {
-                Rotator.Rotate(unityChan.transform, new Vector3(0f, 25f, 0f));
+                Rotator.Rotate(activeModel.transform, new Vector3(0f, 25f, 0f));
             }
 
             else if ((y_rotation <= -6 || unityAngle != 0) && (unityAngle > y_rotation))
             {
-                Rotator.Rotate(unityChan.transform, new Vector3(0f, -25f, 0f));
+                Rotator.Rotate(activeModel.transform, new Vector3(0f, -25f, 0f));
             }
 
         }

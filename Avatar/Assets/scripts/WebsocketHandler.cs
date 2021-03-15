@@ -38,7 +38,7 @@ public class WebsocketHandler : MonoBehaviour
         foreach (string messageTitle in jsonkeys)
         {
             string messageText = msgjson.Value<string>(messageTitle);
-            print("msg - " + messageTitle + ": " + messageText);
+            //print("msg - " + messageTitle + ": " + messageText);
             if (MessageReceived != null)
             {
                 //Call the MessageReceived event
