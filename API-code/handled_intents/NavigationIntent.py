@@ -35,7 +35,7 @@ class NavigationIntent(intent_base):
     for i in range (1, len(floors) - 1):
         if (blueFloor + i) in floors:
             if room in get_rooms(blueFloor + i):
-                output_speech = "Take the lift to " str(blueFloor + i) +"th floor. "
+                output_speech = "Take the lift to " + str(blueFloor + i) + "th floor. "
                 otput_speech += f.get(str(blueFLoor)).get("lift")[0] + " then "
                 output_speech += f.get(str(blueFloor) + i).get(room)[0]
                 self.response = output_speech
@@ -45,7 +45,7 @@ class NavigationIntent(intent_base):
                 return
         if (blueFloor - i) in floors:
             if room in get_rooms(blueFloor - i):
-                output_speech = "Take the lift to " str(blueFloor - i) +"th floor. "
+                output_speech = "Take the lift to " + str(blueFloor - i) +"th floor. "
                 otput_speech += f.get(str(blueFLoor)).get("lift")[0] + " then "
                 output_speech += f.get(str(blueFloor) + i).get(room)[0]
                 self.response = output_speech
