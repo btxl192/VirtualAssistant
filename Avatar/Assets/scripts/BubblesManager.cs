@@ -158,7 +158,8 @@ public class BubblesManager : MonoBehaviour
         }
         if(videoAnimator.GetBool("stopped") == false){
         	if(areDisplayed){
-        		StartCoroutine(closeBubbles());
+        		// StartCoroutine(closeBubbles());
+                closeBubbles();
                 areDisplayed = false;
         	}
         }
@@ -166,21 +167,24 @@ public class BubblesManager : MonoBehaviour
             if(secondsFace < 5){
                 if(isTalking){
                     if(areDisplayed){
-                        StartCoroutine(closeBubbles());
+                        // StartCoroutine(closeBubbles());
+                        closeBubbles();
                         areDisplayed = false;
                     }
                     timeLastSpoke = DateTime.Now;
                 }
                 else if (secondsSpeak > 30){
                     if(!areDisplayed){
-                        StartCoroutine(openBubbles());
+                        // StartCoroutine(openBubbles());
+                        openBubbles();
                         areDisplayed = true;
                     }
                 }
             }
             else {
                 if(areDisplayed){
-                    StartCoroutine(closeBubbles());
+                    // StartCoroutine(closeBubbles());
+                    closeBubbles();
                     areDisplayed = false;
                 }
             }
