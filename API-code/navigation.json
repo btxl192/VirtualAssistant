@@ -1,11 +1,157 @@
 {
-	"bathroom": [
-		"Take the corridor to youe left. It is the second door on your right."
-	],
-	"conference room": [
-		"Take the lift behind you to the third floor. When you get there it is right in front of you."
-	],
-	"lab": [
-		"It is right behind you"
-	]
+	"Blue": 1,
+	"1": {
+		"a": [
+			"Take the first corridor to your right. It will be right in front of you."
+		],
+		"b": [
+			"Take the first corridor to your left. It will be right in front of you."
+		],
+		"c": [
+			"Take the second corridor to your right. It is the seventh room on your left."
+		],
+		"d": [
+			"Take the second corridor to your right. It is the last corner room on your right."
+		],
+		"e": [
+			"Take the first corridor to your right. It is the first room on your left."
+		],
+		"f": [
+			"Take the second corridor to your right. It is the sixth room on your left."
+		],
+		"g": [
+			"Take the first corridor to your left. It is the second room on your right."
+		],
+		"h": [
+			"It is right in front of you."
+		],
+		"i": [
+			"Take the second corridor to your right. It is the fifth room on your left."
+		],
+		"j": [
+			"It is right in front of you."
+		],
+		"k": [
+			"It is right on your right."
+		],
+		"l": [
+			"It is the first room on the first corridor to your right."
+		],
+		"m": [
+			"Take the second corridor to your right. It is the fourth room on your left."
+		],
+		"n": [
+			"Take the second corridor to your right. It is the second room on your left."
+		],
+		"o": [
+			"It is right to your right."
+		],
+		"p": [
+			"Take the first corridor to your left. It is the first room on your right."
+		],
+		"q": [
+			"Take the second corridor to your right. In the end turn right and it will be right in front of you."
+		],
+		"r": [
+			"Take the second corridor to your right. It is the third room on your left."
+		],
+		"s": [
+			"It is right to your left."
+		],
+		"t": [
+			"Take the first corridor to your left. It is the third room on your left."
+		],
+		"u": [
+			"Take the second corridor to your right, then turn right. It is the fourth room on your right."
+		],
+		"v": [
+			"Take the second corridor to your right, then turn right. It is the last room on your right."
+		],
+		"w": [
+			"It is right to your left."
+		],
+		"x": [
+			"Take the second corridor to your right, then turn left. It is the third room on your right."
+		],
+		"y": [
+			"Take the first corridor to your left. It is the second room on your left."
+		],
+		"z": [
+			"Take the second corridor to your right, then turn right. It is the second room on your right."
+		],
+		"aa": [
+			"Take the corridor behid you. It is the room on your left."
+		],
+		"bb": [
+			"Take the first corridor to your left. It is the first room on your left."
+		],
+		"cc": [
+			"Take the second corridor to your right. It is the second room on your right."
+		],
+		"dd": [
+			"Take the seond corridor to your right, then turn left. It is the first room on your right."
+		],
+		"ee": [
+			"Take the corridor behind you. It is the first room on your right."
+		],
+		"ff": [
+			"Take the second corridor to your left. It is the second room on your right."
+		],
+		"gg": [
+			"Take the second corridor to your right. It is the third room on your right."
+		],
+		"hh": [
+			"Take the second corridor to your right, then turn right. It will be right in front of you."
+		],
+		"ii": [
+			"Take the second corridor to your left. It is the second room on your left."
+		],
+		"jj": [
+			"Take the second corridor to your left. It is the third room on your right."
+		],
+		"kk": [
+			"Take the second corridor to your left. It is the fourth room on your right."
+		],
+		"ll": [
+			"Take the second corridor to your left. It is the one right at the end."
+		],
+		"mm": [
+			"Take the second corridor to your left. It is the third room on your left."
+		],
+		"lift": [
+			"Take the second corridor to your left. It is the fourth room on your left."
+		]
+	},
+	"2": {
+		"a": [
+			"Turn right. At the end of the corridor, it will be right in front of you."
+		],
+		"b": [
+			"Turn right. It is the first room on your right."
+		],
+		"c": [
+			"Turn left. At the end of the corridor, it will be right in front of you."
+		],
+		"d": [
+			"Turn right. At the end of the corridor, turn right again. It is the second room on your left.."
+		],
+		"e": [
+			"Turn right. At the end of the corridor, turn left. It is the first room on your left."
+		],
+		"f": [
+			"Turn left. At the end of the corridor, turn right. It is the first room on your left."
+		],
+		"g": [
+			"Turn right. At the end of the corridor, turn left. It is the second room on your right."
+		],
+		"h": [
+			"Turn left. At the end of the corridor, turn right. It is the third room on your left."
+		],
+		"i": [
+			"Turn right. At the end of the corridor, turn left. It is the second room on your left."
+		],
+		"j": [
+			"Turn left. At the end of the corridor, turn right. It is the second room on your right."
+		]
+	}
 }
