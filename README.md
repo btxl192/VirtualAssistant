@@ -29,6 +29,10 @@ You would still need to install [Python 3](https://www.python.org/downloads/wind
 1. Running `pip install flask eventlet pvporcupine eng_to_ipa`.
 2. Install pyaudio: you can try `pip install pyaudio`, but this failed when we tried it. Instead, you could [download third-party compiled packages here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio). Just download `PyAudio‑0.2.11‑cp39‑cp39‑win_amd64.whl` and run <code>pip install <b>&lt;path to downloaded file&gt;</b></code>.
 
+After installing these dependencies, unzip the avs zip to any folder, then run `startapp.bat` inside. This will open two terminal windows and both needs to be kept open before and while running the unity app.
+
+The client in the packaged zip is authenticated to my temproary account, but in the future you might need to re-authenticate. Keep an eye on the terminal window with the title "startsample.bat" for an auth link.
+
 ## Setting up AVS client manually
 
 See [AVSClientFiles/readme.txt](AVSClientFiles/readme.txt)
