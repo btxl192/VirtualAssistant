@@ -22,34 +22,34 @@ def navigation_intent(room):
 
 class NavigationIntent(intent_base):
     def action(self, handler_input):
-        #slots = intents.to_dict().get("slots")
-        #room = slots.get("Room").get("value").lower()
-        room = get_slot_value(handler_input, "Room").lower()
-        blueFloor = get_blue_floor()
-    if room in get_rooms(str(blueFloor)):
-        self.response = f.get(str(blueFloor)).get(room)[0]
-        self.user_input = "Asked for navigation to " + room
-        self.add_unity_msg("NavRoom", room)
-        return
-    floors = get_floors()
-    for i in range (1, len(floors) - 1):
-        if (blueFloor + i) in floors:
-            if room in get_rooms(blueFloor + i):
-                output_speech = "Take the lift to " + str(blueFloor + i) + "th floor. "
-                otput_speech += f.get(str(blueFLoor)).get("lift")[0] + " then "
-                output_speech += f.get(str(blueFloor) + i).get(room)[0]
-                self.response = output_speech
-                self.user_input = "Asked for navigation to " + room
-                self.add_unity_msg("NavRoom", room)
-                self.add_unity_msg("NavFloor", blueFloor + i)
-                return
-        if (blueFloor - i) in floors:
-            if room in get_rooms(blueFloor - i):
-                output_speech = "Take the lift to " + str(blueFloor - i) +"th floor. "
-                otput_speech += f.get(str(blueFLoor)).get("lift")[0] + " then "
-                output_speech += f.get(str(blueFloor) + i).get(room)[0]
-                self.response = output_speech
-                self.user_input = "Asked for navigation to " + room
-                self.add_unity_msg("NavRoom", room)
-                self.add_unity_msg("NavFloor", blueFloor - i)
+            #slots = intents.to_dict().get("slots")
+            #room = slots.get("Room").get("value").lower()
+            room = get_slot_value(handler_input, "Room").lower()
+            blueFloor = get_blue_floor()
+        if room in get_rooms(str(blueFloor)):
+            self.response = f.get(str(blueFloor)).get(room)[0]
+            self.user_input = "Asked for navigation to " + room
+            self.add_unity_msg("NavRoom", room)
+            return
+        floors = get_floors()
+        for i in range (1, len(floors) - 1):
+            if (blueFloor + i) in floors:
+                if room in get_rooms(blueFloor + i):
+                    output_speech = "Take the lift to " + str(blueFloor + i) + "th floor. "
+                    otput_speech += f.get(str(blueFLoor)).get("lift")[0] + " then "
+                    output_speech += f.get(str(blueFloor) + i).get(room)[0]
+                    self.response = output_speech
+                    self.user_input = "Asked for navigation to " + room
+                    self.add_unity_msg("NavRoom", room)
+                    self.add_unity_msg("NavFloor", blueFloor + i)
+                    return
+            if (blueFloor - i) in floors:
+                if room in get_rooms(blueFloor - i):
+                    output_speech = "Take the lift to " + str(blueFloor - i) +"th floor. "
+                    otput_speech += f.get(str(blueFLoor)).get("lift")[0] + " then "
+                    output_speech += f.get(str(blueFloor) + i).get(room)[0]
+                    self.response = output_speech
+                    self.user_input = "Asked for navigation to " + room
+                    self.add_unity_msg("NavRoom", room)
+                    self.add_unity_msg("NavFloor", blueFloor - i)
                 
