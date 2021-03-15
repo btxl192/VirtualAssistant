@@ -45,40 +45,44 @@ public class BubblesManager : MonoBehaviour
     DateTime timeLastSpoke;
     DateTime faceLastDetected;
 
-    private IEnumerator typeLeftUpText()
+    private void typeLeftUpText()
     {
-        foreach (char letter in bubbleLeftUpText.ToCharArray())
-        {
-            bubbleLeftUp.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
-        }
+        // foreach (char letter in bubbleLeftUpText.ToCharArray())
+        // {
+        //     bubbleLeftUp.text += letter;
+        //     yield return new WaitForSeconds(typingSpeed);
+        // }
+        bubbleLeftUp.text = bubbleLeftUpText;
     }
 
-    private IEnumerator typeLeftDownText()
+    private void typeLeftDownText()
     {
-        foreach (char letter in bubbleLeftDownText.ToCharArray())
-        {
-            bubbleLeftDown.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
-        }
+        // foreach (char letter in bubbleLeftDownText.ToCharArray())
+        // {
+        //     bubbleLeftDown.text += letter;
+        //     yield return new WaitForSeconds(typingSpeed);
+        // }
+        bubbleLeftDown.text = bubbleLeftDownText;
     }
 
-    private IEnumerator typeRightUpText()
+    private void typeRightUpText()
     {
-        foreach (char letter in bubbleRightUpText.ToCharArray())
-        {
-            bubbleRightUp.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
-        }
+        // foreach (char letter in bubbleRightUpText.ToCharArray())
+        // {
+        //     bubbleRightUp.text += letter;
+        //     yield return new WaitForSeconds(typingSpeed);
+        // }
+        bubbleRightUp.text = bubbleRightUpText;
     }
 
-    private IEnumerator typeRightDownText()
+    private void typeRightDownText()
     {
-        foreach (char letter in bubbleRightDownText.ToCharArray())
-        {
-            bubbleRightDown.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
-        }
+        // foreach (char letter in bubbleRightDownText.ToCharArray())
+        // {
+        //     bubbleRightDown.text += letter;
+        //     yield return new WaitForSeconds(typingSpeed);
+        // }
+        bubbleRightDown.text = bubbleRightDownText;
     }
 
     private void empty(){
@@ -106,7 +110,7 @@ public class BubblesManager : MonoBehaviour
         bubbleLeftDown.text = string.Empty;
         bubbleRightUp.text = string.Empty;
         bubbleRightDown.text = string.Empty;
-        
+
         yield return new WaitForSeconds(1);
 
         bubbleRightUpAnimator.SetTrigger("Open");
@@ -116,10 +120,14 @@ public class BubblesManager : MonoBehaviour
 
         yield return new WaitForSeconds(bubbleAnimationDelay);
 
-        StartCoroutine(typeRightUpText());
-        StartCoroutine(typeLeftUpText());
-        StartCoroutine(typeRightDownText());
-        StartCoroutine(typeLeftDownText());
+        // StartCoroutine(typeRightUpText());
+        // StartCoroutine(typeLeftUpText());
+        // StartCoroutine(typeRightDownText());
+        // StartCoroutine(typeLeftDownText());
+        typeRightUpText();
+        typeLeftUpText();
+        typeRightDownText();
+        typeLeftDownText();
 
     }
 
@@ -132,49 +140,49 @@ public class BubblesManager : MonoBehaviour
         thisplayer = thisCurrentModel.GetComponent<player>();
         videoAnimator = GameObject.Find("Video Player").GetComponent<Animator>();
         timeLastSpoke = DateTime.Now;
-        // StartCoroutine(openBubbles());
+        StartCoroutine(openBubbles());
         // areDisplayed = true;
     }
 
      // Update is called once per frame
     void Update()
     {
-        DateTime now = DateTime.Now;
-        double secondsSpeak = (now - timeLastSpoke).TotalSeconds;
-        faceDetected = thisplayer.faceDetected;
-        bool isTalking = !thislipsync.isSilent;
-        double secondsFace = (now - faceLastDetected).TotalSeconds;
-        if(faceDetected){
-            faceLastDetected = DateTime.Now;
-        }
-        if(videoAnimator.GetBool("stopped") == false){
-        	if(areDisplayed){
-        		StartCoroutine(closeBubbles());
-                areDisplayed = false;
-        	}
-        }
-        else{
-            if(secondsFace < 5){
-                if(isTalking){
-                    if(areDisplayed){
-                        StartCoroutine(closeBubbles());
-                        areDisplayed = false;
-                    }
-                    timeLastSpoke = DateTime.Now;
-                }
-                else if (secondsSpeak > 30){
-                    if(!areDisplayed){
-                        StartCoroutine(openBubbles());
-                        areDisplayed = true;
-                    }
-                }
-            }
-            else {
-                if(areDisplayed){
-                    StartCoroutine(closeBubbles());
-                    areDisplayed = false;
-                }
-            }
-        }
+        // DateTime now = DateTime.Now;
+        // double secondsSpeak = (now - timeLastSpoke).TotalSeconds;
+        // faceDetected = thisplayer.faceDetected;
+        // bool isTalking = !thislipsync.isSilent;
+        // double secondsFace = (now - faceLastDetected).TotalSeconds;
+        // if(faceDetected){
+        //     faceLastDetected = DateTime.Now;
+        // }
+        // if(videoAnimator.GetBool("stopped") == false){
+        // 	if(areDisplayed){
+        // 		StartCoroutine(closeBubbles());
+        //         areDisplayed = false;
+        // 	}
+        // }
+        // else{
+        //     if(secondsFace < 5){
+        //         if(isTalking){
+        //             if(areDisplayed){
+        //                 StartCoroutine(closeBubbles());
+        //                 areDisplayed = false;
+        //             }
+        //             timeLastSpoke = DateTime.Now;
+        //         }
+        //         else if (secondsSpeak > 30){
+        //             if(!areDisplayed){
+        //                 StartCoroutine(openBubbles());
+        //                 areDisplayed = true;
+        //             }
+        //         }
+        //     }
+        //     else {
+        //         if(areDisplayed){
+        //             StartCoroutine(closeBubbles());
+        //             areDisplayed = false;
+        //         }
+        //     }
+        // }
     }
 }
