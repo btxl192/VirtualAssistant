@@ -24,7 +24,15 @@ After the setup finishes, the skill server can be started by running `./start.sh
 
 You can [download a zip of the compiled AVS client](https://mw-public-data.s3.eu-west-2.amazonaws.com/upload-space/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855/avs.zip). It contains only compiled files but they are already patched for use by the assistant.
 
-You would still need to install [Python 3](https://www.python.org/downloads/windows/) and [msys2](https://www.msys2.org/) manually. **You should install msys2 into the default location `C:\msys64`**, otherwise you would have to change the hard-coded path in `startsample.bat`. You would also need to install python dependencies by:
+You would still need to install [Python 3](https://www.python.org/downloads/windows/) and [msys2](https://www.msys2.org/) manually. **You should install msys2 into the default location `C:\msys64`**, otherwise you would have to change the hard-coded path in `startsample.bat`. After installing msys, open a msys terminal and enter:
+
+```sh
+pacman -S --noconfirm --needed git mingw-w64-x86_64-toolchain mingw-w64-x86_64-lld mingw-w64-x86_64-cmake msys/tar msys/make mingw-w64-x86_64-sqlite3 mingw64/mingw-w64-x86_64-gstreamer mingw64/mingw-w64-x86_64-gst-plugins-good mingw64/mingw-w64-x86_64-gst-plugins-base mingw64/mingw-w64-x86_64-gst-plugins-ugly mingw64/mingw-w64-x86_64-gst-plugins-bad mingw64/mingw-w64-x86_64-faad2 mingw64/mingw-w64-x86_64-portaudio
+```
+
+to install avs dependencies.
+
+You would also need to install python dependencies by:
 
 1. Running `pip install flask eventlet pvporcupine eng_to_ipa`.
 2. Install pyaudio: you can try `pip install pyaudio`, but this failed when we tried it. Instead, you could [download third-party compiled packages here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio). Just download `PyAudio‑0.2.11‑cp39‑cp39‑win_amd64.whl` and run <code>pip install <b>&lt;path to downloaded file&gt;</b></code>.
