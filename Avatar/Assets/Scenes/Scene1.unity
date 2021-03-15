@@ -2848,6 +2848,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 335831422}
   m_CullTransparentMesh: 0
+--- !u!1 &384663313
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 384663314}
+  m_Layer: 0
+  m_Name: Bubbles
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &384663314
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 384663313}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.11255252, y: 1, z: -3.2774098}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 504742273}
+  - {fileID: 1046498115}
+  - {fileID: 708987132}
+  - {fileID: 1802115150}
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &389980582
 GameObject:
   m_ObjectHideFlags: 0
@@ -7959,12 +7993,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 504742272}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.093, y: 1.31, z: 0}
+  m_LocalPosition: {x: 0.20555252, y: 0.12504745, z: 3.2774098}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children:
   - {fileID: 1092312244}
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_Father: {fileID: 384663314}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &595597104
 GameObject:
@@ -8403,12 +8437,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 708987131}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -0.218, y: 1.463, z: 0}
+  m_LocalPosition: {x: -0.10544747, y: 0.27804756, z: 3.2774098}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children:
   - {fileID: 625451039}
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_Father: {fileID: 384663314}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &730363731
 GameObject:
@@ -8500,7 +8534,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &756145498
 GameObject:
@@ -8779,7 +8813,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &908453551
 GameObject:
@@ -9060,12 +9094,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1046498114}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.333, y: 0.998, z: 0}
+  m_LocalPosition: {x: 0.44555253, y: -0.18695247, z: 3.2774098}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children:
   - {fileID: 93525347}
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_Father: {fileID: 384663314}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1092312242
 GameObject:
@@ -14246,7 +14280,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1383962694
 GameObject:
@@ -14485,7 +14519,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2147341122}
   m_HandleRect: {fileID: 2147341121}
   m_Direction: 2
-  m_Value: 0.9999997
+  m_Value: 0.9999998
   m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -16111,12 +16145,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1802115149}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -0.298, y: 1.066, z: 0}
+  m_LocalPosition: {x: -0.18544748, y: -0.11895251, z: 3.2774098}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children:
   - {fileID: 756145500}
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_Father: {fileID: 384663314}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1827583218 stripped
 GameObject:
