@@ -23,6 +23,11 @@ public class player : MonoBehaviour
         activeModel = gameObject;
     }
 
+    private void Awake()
+    {
+        activeModel = gameObject;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,8 +35,7 @@ public class player : MonoBehaviour
         cameraFaceTracker = GameObject.Find("RawImage").GetComponent<FaceTracker>();
         GameObject main_camera = GameObject.Find("Main Camera");
         neckStartAngle = System.Convert.ToInt32(Rotator.Rotate(neck.transform, new Vector3(0f, 0f, 0f)).y * 50);
-        faceDetected = cameraFaceTracker.faceDetected;
-        activeModel = gameObject;
+        faceDetected = cameraFaceTracker.faceDetected;       
     }
     private void Update()
     {
