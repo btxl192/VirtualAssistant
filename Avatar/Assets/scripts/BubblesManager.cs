@@ -102,7 +102,11 @@ public class BubblesManager : MonoBehaviour
 
     private IEnumerator openBubbles()
     {
-
+        bubbleLeftUp.text = string.Empty;
+        bubbleLeftDown.text = string.Empty;
+        bubbleRightUp.text = string.Empty;
+        bubbleRightDown.text = string.Empty;
+        
         yield return new WaitForSeconds(1);
 
         bubbleRightUpAnimator.SetTrigger("Open");
