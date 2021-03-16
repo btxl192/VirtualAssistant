@@ -1,5 +1,0 @@
-flask
-eventlet
-pvporcupine
-pyaudio
-eng_to_ipa

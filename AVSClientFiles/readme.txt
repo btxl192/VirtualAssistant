@@ -1,29 +1,30 @@
-HOW TO USE:
+1) Install Python 3.6.8
 
-1) Set up the AVS client according to    
+NOTE: Python MUST be added to your PATH
 
-   https://developer.amazon.com/en-US/docs/alexa/avs-device-sdk/windows-64.html
+2) Install MINGW
 
-   INSTEAD of the official repo, use the following repo
+3) Run MINGW 64 bit
 
-   Clone the repo from https://github.com/btxl192/CustomAVSSDK
+4) In the MINGW terminal, run
 
-2) Set up captions according to 
+wget https://raw.githubusercontent.com/btxl192/CustomAVSSDK/master/setup.sh \
+wget https://raw.githubusercontent.com/alexa/avs-device-sdk/master/tools/Install/genConfig.sh \
+wget https://raw.githubusercontent.com/alexa/avs-device-sdk/master/tools/Install/mingw.sh
 
-   https://developer.amazon.com/en-US/docs/alexa/avs-device-sdk/features.html#captions
+5) In the MINGW terminal, run 
 
-   For clarification, the command in step 2 in the captions setup page should look something like:
+setup.sh <path to config.json>
 
-   cmake "<absolute path to the avs-device-sdk folder>" \
--DCAPTIONS=ON \
--DLIBWEBVTT_LIB_PATH="<absolute path to liblibwebvtt.dll.a>"\
--DLIBWEBVTT_INCLUDE_DIR="<absolute path to /webvtt/include>"
+   For more information about config.json:
+   https://developer.amazon.com/en-US/docs/alexa/alexa-voice-service/register-a-product-with-avs.html
 
-3) Copy the following files to your MINGW home directory 
+6) After the setup is done, run sampleapp.bat
+   Register the AVS client with the displayed code
 
-   host_output.py
-   startapp.bat
-   startaudiohost.bat
-   startsample.bat
+   For more information about registering your product:
+   https://developer.amazon.com/en-US/docs/alexa/alexa-voice-service/register-a-product-with-avs.html
 
-4) Use startapp.bat to run the client
+7) After registering your product, close sampleapp.bat
+
+8) From now on, use startapp.bat to run the AVS client
