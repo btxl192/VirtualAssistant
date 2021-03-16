@@ -21,12 +21,12 @@ wget https://raw.githubusercontent.com/alexa/avs-device-sdk/master/tools/Install
 
 ./setup.sh <path to config.json>
 
-7) After the setup is done, run sampleapp.bat
+7) After the setup is done, run startsample.bat
    Register the AVS client with the displayed code
 
    For more information about registering your product:
    https://developer.amazon.com/en-US/docs/alexa/alexa-voice-service/register-a-product-with-avs.html
 
-8) After registering your product, close sampleapp.bat
+8) After registering your product, close startsample.bat
 
 9) From now on, use startapp.bat to run the AVS client
