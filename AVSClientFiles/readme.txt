@@ -12,19 +12,21 @@ wget https://raw.githubusercontent.com/btxl192/CustomAVSSDK/master/setup.sh \
 wget https://raw.githubusercontent.com/alexa/avs-device-sdk/master/tools/Install/genConfig.sh \
 wget https://raw.githubusercontent.com/alexa/avs-device-sdk/master/tools/Install/mingw.sh
 
-5) In the MINGW terminal, run 
-
-./setup.sh <path to config.json>
+5) Retrieve your AVS product's config.json and place it in your MINGW home directory
 
    For more information about config.json:
    https://developer.amazon.com/en-US/docs/alexa/alexa-voice-service/register-a-product-with-avs.html
 
-6) After the setup is done, run sampleapp.bat
+6) In the MINGW terminal, run 
+
+./setup.sh <path to config.json>
+
+7) After the setup is done, run sampleapp.bat
    Register the AVS client with the displayed code
 
    For more information about registering your product:
    https://developer.amazon.com/en-US/docs/alexa/alexa-voice-service/register-a-product-with-avs.html
 
-7) After registering your product, close sampleapp.bat
+8) After registering your product, close sampleapp.bat
 
-8) From now on, use startapp.bat to run the AVS client
+9) From now on, use startapp.bat to run the AVS client
