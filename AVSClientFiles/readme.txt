@@ -14,7 +14,7 @@ wget https://raw.githubusercontent.com/alexa/avs-device-sdk/master/tools/Install
 
 5) In the MINGW terminal, run 
 
-setup.sh <path to config.json>
+./setup.sh <path to config.json>
 
    For more information about config.json:
    https://developer.amazon.com/en-US/docs/alexa/alexa-voice-service/register-a-product-with-avs.html
