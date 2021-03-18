@@ -8,9 +8,9 @@ using SimpleJSON;
 public class weatherControl : MonoBehaviour
 {
     private static string API_KEY = "c9a3173c6264df62ecb1f0cc390ed75d";
-    private static string location = "London";
-    private string URL = "api.openweathermap.org/data/2.5/weather?q=" + location + "&appid=" + API_KEY;
     private string weather;
+
+    public Config config;
 
     public Material clear;
     public Material cloudy;
@@ -36,6 +36,8 @@ public class weatherControl : MonoBehaviour
 
     private IEnumerator GetWeather()
     {
+        string location = config.weatherLocation;
+        string URL = "api.openweathermap.org/data/2.5/weather?q=" + location + "&appid=" + API_KEY;
         UnityWebRequest www = UnityWebRequest.Get(URL);
         yield return www.SendWebRequest();
         if (www.isNetworkError || www.isHttpError)

@@ -14,6 +14,8 @@ public class Config : MonoBehaviour
 
     public bool testClient { get; private set; }
 
+    public string weatherLocation { get; private set; }
+
     public GameObject[] avatars;
     public GameObject activeAvatar;
 
@@ -27,6 +29,7 @@ public class Config : MonoBehaviour
             this.testClient = json["testClient"].Value<bool>();
             int activeAvatarIndex = json["avatar"].Value<int>();
             activeAvatar = avatars[activeAvatarIndex];
+            this.weatherLocation = json["weatherLocation"].Value<string>();
         }
         activeAvatar.SetActive(true);
     }

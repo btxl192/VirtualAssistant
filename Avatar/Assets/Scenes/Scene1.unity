@@ -14519,8 +14519,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2147341122}
   m_HandleRect: {fileID: 2147341121}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -16187,6 +16187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 332ec733fe330c04eb9479b6543f6706, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  config: {fileID: 389980586}
   clear: {fileID: 2100000, guid: 01f4eb1c73693428d923f1520032e7f9, type: 2}
   cloudy: {fileID: 2100000, guid: f2b5f3f20933f434e850db1b710542fd, type: 2}
   rain: {fileID: 454567818}

@@ -100,6 +100,9 @@
     <h2>Skill server endpoint</h2>
     <p>Enter the <b>domain</b> of the skill server here:</p>
     <input type="text" placeholder="example.com" name="domainname" value="skill.comp0016.mww.moe" required>
+    <h2>Weather location</h2>
+    <p>Enter the name of a city that the assistant machine will be in:</p>
+    <input type="text" placeholder="London" name="weatherloc" value="London" required>
     <h2>Debugging options</h2>
     <label>
       <input type="checkbox" name="testclient">
@@ -129,7 +132,8 @@
           "alexaResponseIP": "localhost",
           "alexaResponsePort": 5000,
           "avatar": parseInt([...f.querySelectorAll("input[name=\"avatar\"]")].find(x => x.checked).value),
-          "testClient": get_field("testclient").checked
+          "testClient": get_field("testclient").checked,
+          "weatherLocation": get_field("weatherloc").value,
         };
         console.log(json);
         let a = document.createElement("a");

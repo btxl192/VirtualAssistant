@@ -3,5 +3,6 @@
 	"alexaResponseIP": "localhost",
 	"alexaResponsePort": 5000,
 	"avatar": 1,
-	"testClient": false
+	"testClient": false,
+	"weatherLocation": "London"
 }
