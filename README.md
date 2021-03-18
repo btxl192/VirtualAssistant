@@ -2,9 +2,9 @@
 
 Project website: https://students.cs.ucl.ac.uk/2020/group24/
 
-To get the system ready, two separate set-ups need to be done.
+## Development setup
 
-## Skill server setup
+### Skill server setup
 
 1. Create a debian cloud server.
 2. Copy API-code into the server. e.g.:
@@ -20,7 +20,7 @@ This will take a while as it will install certbot, get HTTPS certificate from Le
 
 After the setup finishes, the skill server can be started by running `./start.sh`. To keep the certificate renewed, just run `./configure.sh DOMAIN_NAME` every 3 months.
 
-## Setting up AVS client with pre-packaged zip
+### Setting up AVS client with pre-packaged zip
 
 You can [download a zip of the compiled AVS client](https://mw-public-data.s3.eu-west-2.amazonaws.com/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855/avs.zip). It contains only compiled files (and therefore might not be suitable for debugging) but they are ready to run.
 
@@ -34,6 +34,12 @@ to install avs dependencies, then, unzip the avs zip to any folder, and run `sta
 
 You will need to authenticate your Amazon account and grant Alexa access by following the link printed in the terminal window with the title "startsample.bat".
 
-## Setting up AVS client manually
+### Setting up AVS client manually
 
 See [AVSClientFiles/readme.txt](AVSClientFiles/readme.txt)
+
+### Unity client setup
+
+Open [Avatar/ConfigGen/index.html](Avatar/ConfigGen/index.html) in a browser to generate the config file for the unity client.
+
+After that, the unity client should work as long as the AVS client is running.
