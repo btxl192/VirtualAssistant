@@ -2,6 +2,10 @@
 
 Project website: https://students.cs.ucl.ac.uk/2020/group24/
 
+## User setup
+
+For user setup please consult the setup manual user-manual.pdf with detailed screenshots and instructions.
+
 ## Development setup
 
 ### Skill server setup
@@ -16,9 +20,7 @@ scp -r API-code skill.comp0016.mww.moe:/home/azureuser/API-code
 cd API-code/
 ./configure.sh skill.comp0016.mww.moe
 ```
-This will take a while as it will install certbot, get HTTPS certificate from Let's Encrypt, and install Docker and build the container which will run the skill server.
-
-After the setup finishes, the skill server can be started by running `./start.sh`. To keep the certificate renewed, just run `./configure.sh DOMAIN_NAME` every 3 months.
+This will take a while as it will install certbot, get HTTPS certificate from Let's Encrypt, and install Docker and build the container which will run the skill server. After this, the server would be installed as a systemd service `skill-backend.service` and will automatically be started.
 
 ### Setting up AVS client with pre-packaged zip
 

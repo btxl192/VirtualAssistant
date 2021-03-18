@@ -7,6 +7,7 @@ if [ -z "$HOST" ]; then
 fi
 
 set -e
+cd "$(dirname "$0")"
 echo This script assumes that you are running on debian or ubuntu.
 echo I will now install docker
 curl -fsSL https://get.docker.com | sudo bash -
@@ -15,13 +16,27 @@ sudo docker build . -t alexaskill
 echo I will now install certbot with apt.
 sudo apt update -y
 sudo apt install python3 python3-pip certbot -y
-echo I will now ask certbot for a certificate.
-CERTBOT_DIR=/tmp/certbot
-sudo mkdir $CERTBOT_DIR || true
-sudo chown 0:0 -R $CERTBOT_DIR
-sudo certbot certonly --config-dir $CERTBOT_DIR --work-dir $CERTBOT_DIR --logs-dir $CERTBOT_DIR --agree-tos -n -m "comp0016-acme-account@maowtm.org" --standalone -d "$HOST"
-CPATH="$CERTBOT_DIR/live/$HOST"
-sudo cp "$CPATH/fullchain.pem" "/opt/ssl.crt"
-sudo cp "$CPATH/privkey.pem" "/opt/ssl.key"
-echo Certificates has been saved into /opt/ssl."{crt,key}"
+SERVICE_NAME=skill-backend.service
+cat > $SERVICE_NAME <<EOF
+[Unit]
+Description=Skill server
+After=network.target
+
+[Install]
+WantedBy=network.target
+
+[Service]
+Type=simple
+User=0
+Group=0
+EOF
+echo ExecStart=$(pwd)/start.sh >> $SERVICE_NAME
+sudo cp $SERVICE_NAME /etc/systemd/system/
+sudo systemctl daemon-reload
 echo "$HOST" > setup.finished
+sudo systemctl enable $SERVICE_NAME
+sudo systemctl start $SERVICE_NAME
+echo "Configuration completed!"
+echo "Skill server has been started and will automatically be started at boot."
+echo "Use \"systemctl status $SERVICE_NAME to see more details.\""
+echo "Now, just set your skill domain in the unity client config to $HOST and skill endpoint to https://$HOST/api/v1/blueassistant"
