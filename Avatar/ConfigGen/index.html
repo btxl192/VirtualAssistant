@@ -1,0 +1,144 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unity Front-end Configuration Generator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      font-size: 18px;
+      line-height: 1.5;
+      margin: 0 auto;
+      padding: 10px;
+      max-width: 1000px;
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: normal;
+      color: #3b5998;
+    }
+
+    .avatar-choices {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .avatarchoice {
+      border: solid 2px #ADE4F9;
+      border-radius: 4px;
+      padding: 10px;
+      display: flex;
+      flex-wrap: nowrap;
+      flex-direction: column;
+      align-items: center;
+      margin: 6px;
+    }
+
+    .avatarchoice.selected {
+      background-color: #ADE4F9;
+      border-color: #3b5998;
+    }
+
+    .avatarchoice img {
+      width: 300px;
+      margin: auto;
+    }
+
+    .avatarchoice input {
+      margin-top: 10px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <noscript>This generator requires JavaScript to run, but it seems to be disabled. Please enable JavaScript.</noscript>
+  <h1>Unity configuration generator</h1>
+  <form>
+    <h2>Select avatar</h2>
+    <div class="avatar-choices">
+      <label class="avatarchoice">
+        <img src="avatar0.PNG">
+        <input type="radio" name="avatar" value="0" required>
+      </label>
+      <label class="avatarchoice">
+        <img src="avatar1.PNG">
+        <input type="radio" name="avatar" value="1" required>
+      </label>
+    </div>
+    <script>
+      (function () {
+        function update() {
+          for (let ac of document.querySelectorAll(".avatarchoice")) {
+            let inp = ac.querySelector("input[type=\"radio\"]");
+            if (inp.checked) {
+              ac.classList.add("selected");
+            } else {
+              ac.classList.remove("selected");
+            }
+          }
+        }
+        update();
+        for (let inp of document.querySelectorAll(".avatarchoice input[type=\"radio\"]")) {
+          inp.addEventListener("change", evt => {
+            update();
+          });
+        }
+      })();
+    </script>
+    <h2>Skill server endpoint</h2>
+    <p>Enter the <b>domain</b> of the skill server here:</p>
+    <input type="text" placeholder="example.com" name="domainname" value="skill.comp0016.mww.moe" required>
+    <h2>Debugging options</h2>
+    <label>
+      <input type="checkbox" name="testclient">
+      Use test client
+    </label>
+    <h2>Generate config</h2>
+    <input type="submit" value="Generate config.json"><br>
+    <p>
+      You need to save it as <code>Avatar/Assets/config.json</code> to apply those config. If you build a final
+      executable, you also need to put this json into <code>avatar_Data</code> under your build directory.
+    </p>
+    <p>
+      There is a separate tool to generate <code>navigation.json</code> and other navigation-related assets, which needs
+      to be deployed both to the unity client and on the skill server.
+    </p>
+  </form>
+  <script>
+    (function () {
+      let f = document.querySelector("form");
+      function get_field(name) {
+        return f.querySelector(`input[name="${name}"]`);
+      }
+      f.addEventListener("submit", evt => {
+        evt.preventDefault();
+        let json = {
+          "domainName": get_field("domainname").value,
+          "alexaResponseIP": "localhost",
+          "alexaResponsePort": 5000,
+          "avatar": parseInt([...f.querySelectorAll("input[name=\"avatar\"]")].find(x => x.checked).value),
+          "testClient": get_field("testclient").checked
+        };
+        console.log(json);
+        let a = document.createElement("a");
+        a.href = "data:application/json," + JSON.stringify(json);
+        a.download = "config.json";
+        a.click();
+      });
+    })()
+  </script>
+</body>
+
+</html>
