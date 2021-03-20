@@ -16,6 +16,6 @@ public class avatarPositionController : MonoBehaviour
         transform.position = new Vector3(
             moveToSideProg * screenRatio * 0.658f,
             0.0f,
-            -moveToSideProg * 0.36f);
+            1.19f - moveToSideProg * 0.3f);
     }
 }
