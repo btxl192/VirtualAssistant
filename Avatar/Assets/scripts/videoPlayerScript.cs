@@ -70,8 +70,6 @@ public class videoPlayerScript : MonoBehaviour
     public void PauseVideo()
     {
         videoPlayer.Pause();
-        animator.SetBool("stopped", true);
-        avatorAnimator.SetBool("videoPlaying", false);
     }
 
     public void StopVideo()
@@ -87,7 +85,7 @@ public class videoPlayerScript : MonoBehaviour
         WebsocketHandler.MessageReceived -= HandleMsg;
     }
 
-    private void HandleMsg(JObject msgjson, string msgtitle, string msgtext)
+    public void HandleMsg(JObject msgjson, string msgtitle, string msgtext)
     {
         if (msgtitle.Equals("VidControl"))
         {
@@ -115,14 +113,14 @@ public class videoPlayerScript : MonoBehaviour
                     //thisplayer.stopTalking = false;
                     break;
             }
-        } 
-        else if (msgtitle.Equals("VidUrl")) 
+        }
+        else if (msgtitle.Equals("VidUrl"))
         {
             if (videoPlayer.url != msgtext)
             {
                 videoPlayer.url = msgtext;
             }
-            
+
             // videoPlayer.url = "file://" + Application.dataPath + "/video/nttdata-about.mp4";
         }
 
