@@ -1,0 +1,15 @@
+{
+    "name": "OpenCVSharpDemo",
+    "references": [
+        "GUID:512a0090ca4d5d04ca7ac900c03fbc16"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
