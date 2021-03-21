@@ -1,0 +1,2 @@
+python get_alexa_audio.py
+pause

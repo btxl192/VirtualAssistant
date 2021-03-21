@@ -18,18 +18,16 @@ public class orientationControl : MonoBehaviour
         //Screen.SetResolution(height, width, false);
         if (height > width) //portrait
         {
-            /*Debug.Log("portrait");
             landscapeCamera.SetActive(false);
-            portraitCamera.SetActive(true);*/
+            portraitCamera.SetActive(true);
             setCamera("portrait");
         }
         else //landscape
         {
-/*            Debug.Log("landscape");
             portraitCamera.SetActive(false);
-            landscapeCamera.SetActive(true);*/
+            landscapeCamera.SetActive(true);
             setCamera("landscape");
-        }        
+        }
     }
 
     // Update is called once per frame
