@@ -46,4 +46,8 @@ After that, the unity client should work as long as the AVS client is running.
 
 ## Navigation configuration
 
+For generation instruction see section "Navigation configuration" in user manual.
+
+### Applying
+
 TODO
