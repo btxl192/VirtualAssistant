@@ -46,9 +46,26 @@ Open [Avatar/ConfigGen/index.html](Avatar/ConfigGen/index.html) in a browser to 
 
 After that, the unity client should work as long as the AVS client is running.
 
+When building a final executable, make sure the "Navigation" folder is inside the parent directory of the build directory. For example:
+
+```
+(project root)
+├── Avatar
+│   └── ... (unity project)
+├── avatar-build (build folder)
+│   ├── Avatar_Data
+│   ├── Avatar.exe
+│   └── ...
+├── Navigation
+│   ├── 1
+│   ├── 2
+│   └── ...
+└── ... (other files in the repository)
+```
+
 ### Using the test alexa client
 
-The test client is located inside TestAlexaClient. It is basically a python script which controls a chrome instance visiting the Alexa skill test page https://developer.amazon.com/alexa/console/ask/test/amzn1.ask.skill.fa7cfeb1-e524-4024-a258-5249bec81e5f/development/en_GB . You can use it instead of the AVS client when developing the unity front-end&mdash;you just need to set `testClient` to `true` in `config.json` or ticking the "Use test client" checkbox when generating the config.
+The test client is located inside TestAlexaClient. It is basically a python script which controls a chrome instance visiting the [Alexa skill test page](https://developer.amazon.com/alexa/console/ask/test/amzn1.ask.skill.fa7cfeb1-e524-4024-a258-5249bec81e5f/development/en_GB). You can use it instead of the AVS client when developing the unity front-end&mdash;you just need to set `testClient` to `true` in `config.json` or ticking the "Use test client" checkbox when generating the config.
 
 You can put your Amazon credential in the form of
 
@@ -58,12 +75,16 @@ password
 ```
 into a new file `login.txt` under `TestAlexaClient`, so that the client can automatically populate the credentials.
 
+The test client requires chrome to be installed and a correct version (corrosponding to your installed chrome version) of the "chromedriver.exe" binary. You can [download the required version of chromedriver.exe here](https://chromedriver.chromium.org/downloads). Place the downloaded executable into TestAlexaClient and rename it to be `chromedriver.exe`. Afterward, you can run `run.bat` to start the test client.
+
+You need to repeat the previous step each time your chrome updates, if you want to continue to use the test client.
+
 ## Navigation configuration
 
-For generation instruction see section "Navigation configuration" in user manual.
+For instruction about configurating the floor map navigation feature see section "Navigation configuration" in user manual.
 
-### Applying
+## Legal
 
-TODO
+**The software is an early proof of concept for development purposes and should not be used as-is in a live environment without further redevelopment and/or testing.** No warranty is given and no real data or personally identifiable data should be stored. Usage and its liabilities are your own.
 
-## Code structure documentation
+[See a list of open source libraries & assets used](https://students.cs.ucl.ac.uk/2020/group24/license-details.html)
