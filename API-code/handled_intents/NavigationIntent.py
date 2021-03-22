@@ -25,8 +25,10 @@ class NavigationIntent(intent_base):
         #slots = intents.to_dict().get("slots")
         #room = slots.get("Room").get("value").lower()
         room = get_slot_value(handler_input, "Room").lower()
-        num = get_slot_value(handler_input, "Number").lower()
-        room += str(num)
+        room = room.replace(" ", "")
+        num = get_slot_value(handler_input, "Number")
+        if num is not None:
+            room += str(num).lower()
         blueFloor = get_blue_floor()
         if room in get_rooms(str(blueFloor)):
             self.response = f.get(str(blueFloor)).get(room)

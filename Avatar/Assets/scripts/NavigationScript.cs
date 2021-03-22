@@ -41,10 +41,15 @@ public class NavigationScript : MonoBehaviour
         paused = true;
         videoPlayer = GetComponent<UnityEngine.Video.VideoPlayer>();
         rawimage = GetComponent<UnityEngine.UI.RawImage>();
-
+        // Debug.Log(Application.dataPath);
+        // Debug.Log(Directory.GetCurrentDirectory());
         string path = Directory.GetCurrentDirectory();
         sep = Path.DirectorySeparatorChar;
         navigationDir = path + sep + ".." + sep + "Navigation";
+        if (!Directory.Exists(navigationDir)){
+            navigationDir = path + sep + ".." + sep + ".." + "Navigation";
+        }
+        // Debug.Log(File.Exists(navigationDir + sep + "1/a.webm"));
         room = "-";
         string text = System.IO.File.ReadAllText(navigationDir + sep + "Blue.json");
         char[] chars = text.ToCharArray();
@@ -140,6 +145,7 @@ public class NavigationScript : MonoBehaviour
     {
         if (msgtitle.Equals("NavRoom"))
         {
+            Debug.Log(msgtext);
             room = msgtext;
         }
         if (msgtitle.Equals("NavFloor"))
