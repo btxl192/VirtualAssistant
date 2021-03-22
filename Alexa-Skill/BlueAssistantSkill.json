@@ -2,6 +2,11 @@
     "interactionModel": {
         "languageModel": {
             "invocationName": "blue assistant",
+            "modelConfiguration": {
+                "fallbackIntentSensitivity": {
+                    "level": "LOW"
+                }
+            },
             "intents": [
                 {
                     "name": "AMAZON.FallbackIntent",
@@ -9,11 +14,15 @@
                 },
                 {
                     "name": "AMAZON.CancelIntent",
-                    "samples": []
+                    "samples": [
+                        "cancel"
+                    ]
                 },
                 {
                     "name": "AMAZON.HelpIntent",
-                    "samples": []
+                    "samples": [
+                        "help"
+                    ]
                 },
                 {
                     "name": "AMAZON.StopIntent",
@@ -79,6 +88,7 @@
                 {
                     "name": "AMAZON.ResumeIntent",
                     "samples": [
+                        "play video",
                         "Resume",
                         "Continue",
                         "Play",
@@ -92,6 +102,58 @@
                         "Stop playing video",
                         "Stop video",
                         "Stop the video"
+                    ]
+                },
+                {
+                    "name": "NavigationIntent",
+                    "slots": [
+                        {
+                            "name": "Room",
+                            "type": "AMAZON.Room"
+                        },
+                        {
+                            "name": "AnotherRoom",
+                            "type": "AMAZON.Room"
+                        }
+                    ],
+                    "samples": [
+                        "where is {Room}",
+                        "where is the {Room}",
+                        "how can i get to the {Room}",
+                        "i want to go to the {Room}",
+                        "i want to go to {Room}",
+                        "i want to get to {Room}",
+                        "what is the way to the {Room}",
+                        "how can I get from {Room} to {AnotherRoom}",
+                        "how can i get to {Room}"
+                    ]
+                },
+                {
+                    "name": "CompanyInfoMoreIntent",
+                    "slots": [
+                        {
+                            "name": "Company",
+                            "type": "AMAZON.Corporation"
+                        }
+                    ],
+                    "samples": [
+                        "What does {Company} work on"
+                    ]
+                },
+                {
+                    "name": "TranslatorIntent",
+                    "slots": [
+                        {
+                            "name": "text",
+                            "type": "AMAZON.Language"
+                        },
+                        {
+                            "name": "destLang",
+                            "type": "AMAZON.Language"
+                        }
+                    ],
+                    "samples": [
+                        "translate {text} to {destLang}"
                     ]
                 }
             ],
