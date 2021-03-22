@@ -43,3 +43,7 @@ See [AVSClientFiles/readme.txt](AVSClientFiles/readme.txt)
 Open [Avatar/ConfigGen/index.html](Avatar/ConfigGen/index.html) in a browser to generate the config file for the unity client. Follow the instructions at the button of the page.
 
 After that, the unity client should work as long as the AVS client is running.
+
+## Navigation configuration
+
+TODO
