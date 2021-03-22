@@ -65,6 +65,8 @@ class intent_base(AbstractRequestHandler):
         return is_intent_name(self.getIntentName())(handler_input)
 
     def handle(self, handler_input):
+        self.clear_unity_msg()
+        
         dismissal_msg = ""
         
         #prepend the dismissal message if the intent is not an answer intent
@@ -99,7 +101,10 @@ class intent_base(AbstractRequestHandler):
         set_sess_attr(handler_input, "previous_intent", self.getIntentName())
     
         return resp.response
-
+    
+    def clear_unity_msg(self):
+        self.unity_msg.msg = {}
+    
     def add_unity_msg(self, message_title, message_text):
         self.unity_msg.msg[message_title] = message_text        
 
