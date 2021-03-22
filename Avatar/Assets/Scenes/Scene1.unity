@@ -262,7 +262,7 @@ SpriteRenderer:
   m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3154b9b45c80e74a9851d5dc909822e9, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.54901963}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -2795,7 +2795,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00000001397, y: -0.018}
+  m_AnchoredPosition: {x: 0.034, y: -0.065}
   m_SizeDelta: {x: 0.33531946, y: 0.0714159}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &335831424
@@ -2852,7 +2852,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 257
+  m_textAlignment: 514
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -8275,7 +8275,7 @@ SpriteRenderer:
   m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3154b9b45c80e74a9851d5dc909822e9, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.54901963}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -8753,7 +8753,7 @@ SpriteRenderer:
   m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3154b9b45c80e74a9851d5dc909822e9, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.54901963}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -8956,10 +8956,10 @@ MonoBehaviour:
   bubbleLeftDownAnimator: {fileID: 93525348}
   bubbleRightUpAnimator: {fileID: 625451040}
   bubbleRightDownAnimator: {fileID: 756145501}
-  bubbleLeftUpText: Tell me about   NTT DATA!
-  bubbleLeftDownText: Play a video  about NTT     DATA!
+  bubbleLeftUpText: Tell me about NTT DATA!
+  bubbleLeftDownText: Play a video about NTT DATA!
   bubbleRightUpText: Hi, I'm Blue!
-  bubbleRightDownText: How can I get to ...?
+  bubbleRightDownText: How can I get to Meeting Room?
 --- !u!4 &878295902
 Transform:
   m_ObjectHideFlags: 0
@@ -9393,7 +9393,7 @@ SpriteRenderer:
   m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3154b9b45c80e74a9851d5dc909822e9, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.54901963}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -14225,7 +14225,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00000001397, y: -0.018}
+  m_AnchoredPosition: {x: 0.03, y: -0.012}
   m_SizeDelta: {x: 0.33531946, y: 0.0714159}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1265004667
@@ -14275,14 +14275,14 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 0.05
-  m_fontSizeBase: 0.05
+  m_fontSize: 0.04
+  m_fontSizeBase: 0.04
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 257
+  m_textAlignment: 514
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -14550,7 +14550,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.013, y: -0.008}
+  m_AnchoredPosition: {x: 0.003, y: -0.008}
   m_SizeDelta: {x: 0.33531946, y: 0.0714159}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1383962696
@@ -14607,7 +14607,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 257
+  m_textAlignment: 514
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -14929,7 +14929,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.063, y: 0.002}
+  m_AnchoredPosition: {x: 0.004, y: -0.009}
   m_SizeDelta: {x: 0.33531946, y: 0.0714159}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1641144199
@@ -14986,7 +14986,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 257
+  m_textAlignment: 514
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
