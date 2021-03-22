@@ -25,9 +25,11 @@ class NavigationIntent(intent_base):
         #slots = intents.to_dict().get("slots")
         #room = slots.get("Room").get("value").lower()
         room = get_slot_value(handler_input, "Room").lower()
+        num = get_slot_value(handler_input, "Number").lower()
+        room += str(num)
         blueFloor = get_blue_floor()
         if room in get_rooms(str(blueFloor)):
-            self.response = f.get(str(blueFloor)).get(room)[0]
+            self.response = f.get(str(blueFloor)).get(room)
             self.user_input = "Asked for navigation to " + room
             self.add_unity_msg("NavRoom", room)
             return
@@ -36,8 +38,8 @@ class NavigationIntent(intent_base):
             if(blueFloor + i) in floors:
                 if room in get_rooms(blueFloor + i):
                     output_speech = "Take the lift to " + str(blueFloor + i) + "th floor. "
-                    otput_speech += f.get(str(blueFLoor)).get("lift")[0] + " then "
-                    output_speech += f.get(str(blueFloor) + i).get(room)[0]
+                    otput_speech += f.get(str(blueFLoor)).get("lift") + " then "
+                    output_speech += f.get(str(blueFloor) + i).get(room)
                     self.response = output_speech
                     self.user_input = "Asked for navigation to " + room
                     self.add_unity_msg("NavRoom", room)
@@ -46,10 +48,14 @@ class NavigationIntent(intent_base):
             if(blueFloor - i) in floors:
                 if room in get_rooms(blueFloor - i):
                     output_speech = "Take the lift to " + str(blueFloor - i) +"th floor. "
-                    otput_speech += f.get(str(blueFLoor)).get("lift")[0] + " then "
-                    output_speech += f.get(str(blueFloor) + i).get(room)[0]
+                    otput_speech += f.get(str(blueFLoor)).get("lift") + " then "
+                    output_speech += f.get(str(blueFloor) + i).get(room)
                     self.response = output_speech
                     self.user_input = "Asked for navigation to " + room
                     self.add_unity_msg("NavRoom", room)
                     self.add_unity_msg("NavFloor", blueFloor - i)
+                    return
+        self.response = "Sorry I could not recognise that room, please try again"
+        self.user_input = "Asked for navigation to " + room
+
                 
