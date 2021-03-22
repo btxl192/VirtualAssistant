@@ -164,7 +164,7 @@ public class BubblesManager : MonoBehaviour
         	}
         }
         else{
-            if(secondsFace < 30){
+            if(secondsFace < 5){
                 if(isTalking){
                     if(areDisplayed){
                         // StartCoroutine(closeBubbles());
@@ -173,7 +173,7 @@ public class BubblesManager : MonoBehaviour
                     }
                     timeLastSpoke = DateTime.Now;
                 }
-                else if (secondsSpeak > 5){
+                else if (secondsSpeak > 30){
                     if(!areDisplayed){
                         // StartCoroutine(openBubbles());
                         openBubbles();
