@@ -1,5 +1,4 @@
 if not exist ".\firststart" pip install -r requirements.txt
-
 echo. > ".\firststart"
 
 if exist floorRooms rmdir /s /q floorRooms

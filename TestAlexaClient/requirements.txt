@@ -1,0 +1,7 @@
+pydub
+selenium
+flask
+flask_socketio
+eventlet
+pvporcupine
+pyaudio

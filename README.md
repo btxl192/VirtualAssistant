@@ -2,6 +2,8 @@
 
 Project website: https://students.cs.ucl.ac.uk/2020/group24/
 
+Currently, this project only supports Windows.
+
 ## User setup
 
 For user setup please consult the setup manual user-manual.pdf with detailed screenshots and instructions.
@@ -44,6 +46,18 @@ Open [Avatar/ConfigGen/index.html](Avatar/ConfigGen/index.html) in a browser to 
 
 After that, the unity client should work as long as the AVS client is running.
 
+### Using the test alexa client
+
+The test client is located inside TestAlexaClient. It is basically a python script which controls a chrome instance visiting the Alexa skill test page https://developer.amazon.com/alexa/console/ask/test/amzn1.ask.skill.fa7cfeb1-e524-4024-a258-5249bec81e5f/development/en_GB . You can use it instead of the AVS client when developing the unity front-end&mdash;you just need to set `testClient` to `true` in `config.json` or ticking the "Use test client" checkbox when generating the config.
+
+You can put your Amazon credential in the form of
+
+```
+email
+password
+```
+into a new file `login.txt` under `TestAlexaClient`, so that the client can automatically populate the credentials.
+
 ## Navigation configuration
 
 For generation instruction see section "Navigation configuration" in user manual.
@@ -51,3 +65,5 @@ For generation instruction see section "Navigation configuration" in user manual
 ### Applying
 
 TODO
+
+## Code structure documentation
