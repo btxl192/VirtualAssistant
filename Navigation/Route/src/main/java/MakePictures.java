@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
@@ -27,14 +28,14 @@ public class MakePictures implements Runnable{
             String picName = floor + "/" + room + "Pic.png";
             String mp4VidName = floor + "/" + room + "Vid.mp4";
             String webmVidName = floor + "/" + room + ".webm";
-            Process p = Runtime.getRuntime().exec("ffmpeg -r 1/5 -i " + picName + " -c:v libx264 -r 1/5 -pix_fmt yuv420p " + mp4VidName);
+            Process p = Runtime.getRuntime().exec("./ffmpeg.exe -r 1/5 -i " + picName + " -c:v libx264 -r 1/5 -pix_fmt yuv420p " + mp4VidName);
             p.waitFor();
-            p = Runtime.getRuntime().exec("ffmpeg -i " + mp4VidName + " -c:v libvpx -b:v 1M -c:a libvorbis " + webmVidName);
+            p = Runtime.getRuntime().exec("./ffmpeg.exe -i " + mp4VidName + " -c:v libvpx -b:v 1M -c:a libvorbis " + webmVidName);
             p.waitFor();
-            p = Runtime.getRuntime().exec("rm " + mp4VidName);
-            p.waitFor();
-            p = Runtime.getRuntime().exec("rm " + picName);
-            p.waitFor();
+            File file = new File(mp4VidName);
+            file.delete();
+            file = new File(picName);
+            file.delete();
         } catch (InterruptedException | IOException e) {
             System.out.println("Failed to produce video for " + room + " on floor " + floor + " !");
         }

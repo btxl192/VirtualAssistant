@@ -16,6 +16,7 @@ class GUI:
 		path = os.path.join(curDir, "floorRooms")
 		os.mkdir(path)
 		self.window = tk.Tk()
+		self.window.protocol("WM_DELETE_WINDOW", self.quit)
 		self.window.title("Blue Navigation")
 		self.window.geometry("1200x650")
 		self.img = None
@@ -129,12 +130,17 @@ class GUI:
 
 	def uploadRoom(self):
 		a = self.questionEntry.get()
+		a = a.replace(" ", "")
+		if a == "":
+			return
 		self.rooms.append(a)
 		self.nextRoom()
 
 	def deletePhotos(self):
 		for i in range(self.numOfRooms):
-			os.remove("floorRooms/room" + str(i) + ".jpg")
+			paths = os.path.join("floorRooms", "room" + str(i) + ".jpg")
+			if path.exists(paths):
+				os.remove(paths)
 		
 	def nextRoom(self):
 		self.questionEntry.delete(0, tk.END)
@@ -210,6 +216,7 @@ class GUI:
 		self.questionButton1.grid(column=3, row=0)
 
 	def quit(self):
+		self.deletePhotos()
 		curDir = os.getcwd()
 		path = os.path.join(curDir, "floorRooms")
 		os.rmdir(path)
