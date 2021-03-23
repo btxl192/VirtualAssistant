@@ -63,7 +63,7 @@ When building a final executable, make sure the "Navigation" folder is inside th
 └── ... (other files in the repository)
 ```
 
-### Using the test alexa client
+## Using the test alexa client
 
 The test client is located inside TestAlexaClient. It is basically a python script which controls a chrome instance visiting the [Alexa skill test page](https://developer.amazon.com/alexa/console/ask/test/amzn1.ask.skill.fa7cfeb1-e524-4024-a258-5249bec81e5f/development/en_GB). You can use it instead of the AVS client when developing the unity front-end&mdash;you just need to set `testClient` to `true` in `config.json` or ticking the "Use test client" checkbox when generating the config.
 
@@ -78,6 +78,10 @@ into a new file `login.txt` under `TestAlexaClient`, so that the client can auto
 The test client requires chrome to be installed and a correct version (corrosponding to your installed chrome version) of the "chromedriver.exe" binary. You can [download the required version of chromedriver.exe here](https://chromedriver.chromium.org/downloads). Place the downloaded executable into TestAlexaClient and rename it to be `chromedriver.exe`. Afterward, you can run `run.bat` to start the test client.
 
 You need to repeat the previous step each time your chrome updates, if you want to continue to use the test client.
+
+### Unit testing with the test alexa client
+
+The test alexa client enables us to write some unit tests for the Alexa skill. To run the tests, run `TestAlexaClient/testing/unit_testing.py` with python.
 
 ## Navigation configuration
 

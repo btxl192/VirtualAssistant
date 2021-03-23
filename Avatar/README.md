@@ -2,4 +2,6 @@
 
 This is the actual user interface.
 
-TODO
+## How it works
+
+## Unit testing
