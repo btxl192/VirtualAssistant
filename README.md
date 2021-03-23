@@ -83,6 +83,18 @@ You need to repeat the previous step each time your chrome updates, if you want 
 
 For instruction about configurating the floor map navigation feature see section "Navigation configuration" in user manual.
 
+## Project overview
+
+(This content is also available [on the project website](https://students.cs.ucl.ac.uk/2020/group24/#system-design))
+
+![System Architecture Diagram](https://students.cs.ucl.ac.uk/2020/group24/system-arch.ccea54bc.svg)
+
+As seen above, this project contain 3 separate but connected components.
+
+* The skill server's address will be entered as the "skill endpoint" on Amazon. When our skill is invoked by any Alexa device or clients, Amazon will send a request to our server, and we would have a chance to return a response for the user's query. Detailed information are available under [API-code/README.md](API-code/README.md)
+* The Alexa client runs on the client's machine along with the unity client, and handle microphone input, calling the Alexa Voice Service API, as well as sending the audio responses received from Alexa to unity. It is actually a patched version of the official Alexa client written in C++, and our modified version is available in a [separate repository](https://github.com/btxl192/CustomAVSSDK/), in which the README.md contains some detail about what we changed.
+* The unity client, which contains the actual user interface and communicates with the two components above. For more detail see [Avatar/README.md](Avatar/README.md)
+
 ## Legal
 
 **The software is an early proof of concept for development purposes and should not be used as-is in a live environment without further redevelopment and/or testing.** No warranty is given and no real data or personally identifiable data should be stored. Usage and its liabilities are your own.
