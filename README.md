@@ -97,7 +97,17 @@ As seen above, this project contain 3 separate but connected components.
 
 * The skill server's address will be entered as the "skill endpoint" on Amazon. When our skill is invoked by any Alexa device or clients, Amazon will send a request to our server, and we would have a chance to return a response for the user's query. Detailed information are available under [API-code/README.md](API-code/README.md)
 * The Alexa client runs on the client's machine along with the unity client, and handle microphone input, calling the Alexa Voice Service API, as well as sending the audio responses received from Alexa to unity. It is actually a patched version of the official Alexa client written in C++, and our modified version is available in a [separate repository](https://github.com/btxl192/CustomAVSSDK/), in which the README.md contains some detail about what we changed.
+
+  Note that the official Alexa client does not contain hot word detection (recognizing when the user calls "Alexa" and hence start listening for query). This is implemented by using an third-party library in the python script.
+
 * The unity client, which contains the actual user interface and communicates with the two components above. For more detail see [Avatar/README.md](Avatar/README.md)
+
+## Areas for improvement
+
+* Integrate the client components and create installers to carry the steps documented in the user manual automatically.
+* Improve hot word recognition - currently the user usually has to call "Alexa" multiple times for the detection to trigger.
+* Improve lip sync and emotion.
+* Move off Alexa - so that the user can talk with the assistant directly and developers has more control.
 
 ## Legal
 
