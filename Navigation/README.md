@@ -2,7 +2,7 @@
 
 ## Client Setup
 
-Running the run.bat file will open a gui that will prompt the user to upload floor plan. If it has already been run and want to update already configures floors, the folder corresponding to the floor been updated should be deleted first as well as the Blue.json file if the assistant is on the updated floor.
+Running the run.bat file will open a gui that will prompt the user to upload floor plan. If it has already been run and want to update already configured floors, the folder corresponding to the floor been updated should be deleted first as well as the Blue.json file if the assistant is on the updated floor.
 
 ### IMPORTANT
 T	he Navigation folder and the ".exe" unity file should follow either one of the following structures:
