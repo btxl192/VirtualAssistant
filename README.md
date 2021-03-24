@@ -85,7 +85,7 @@ The test alexa client enables us to write some unit tests for the Alexa skill. T
 
 ## Navigation configuration
 
-For instruction about configurating the floor map navigation feature see section "Navigation configuration" in user manual.
+For detailed developer instructions see [Navigation/README.md](Navigation/README.md).
 
 ## Project overview
 
