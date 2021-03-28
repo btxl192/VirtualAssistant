@@ -8,8 +8,8 @@ NOTE: Python MUST be added to your PATH
 
 4) In the MINGW terminal, run
 
-wget https://raw.githubusercontent.com/btxl192/CustomAVSSDK/master/setup.sh \
-wget https://raw.githubusercontent.com/alexa/avs-device-sdk/master/tools/Install/genConfig.sh \
+wget https://raw.githubusercontent.com/btxl192/CustomAVSSDK/master/setup.sh && \
+wget https://raw.githubusercontent.com/alexa/avs-device-sdk/master/tools/Install/genConfig.sh && \
 wget https://raw.githubusercontent.com/alexa/avs-device-sdk/master/tools/Install/mingw.sh
 
 5) Retrieve your AVS product's config.json and place it in your MINGW home directory
@@ -17,7 +17,7 @@ wget https://raw.githubusercontent.com/alexa/avs-device-sdk/master/tools/Install
    For more information about config.json:
    https://developer.amazon.com/en-US/docs/alexa/alexa-voice-service/register-a-product-with-avs.html
 
-6) In the MINGW terminal, run 
+6) In the MINGW terminal, run
 
 ./setup.sh <path to config.json>
 
