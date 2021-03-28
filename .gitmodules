@@ -1,0 +1,3 @@
+[submodule "CustomAVSSDK"]
+	path = CustomAVSSDK
+	url = https://github.com/btxl192/CustomAVSSDK.git
